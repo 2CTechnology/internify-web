@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\PlotingController;
 use App\Http\Controllers\API\ProdiController;
 use App\Http\Controllers\API\UsersController;
 use Illuminate\Http\Request;
@@ -23,3 +24,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/login', [UsersController::class, 'login']);
 Route::post('/register', [UsersController::class, 'register']);
 Route::get('/get-prodi', [ProdiController::class, 'get']);
+
+Route::middleware('auth:sanctum')
+    ->group(function (){
+        Route::get('/get-area', [PlotingController::class, 'getArea']);
+    });

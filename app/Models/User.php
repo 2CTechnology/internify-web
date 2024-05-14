@@ -21,6 +21,14 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'angkatan',
+        'golongan',
+        'prodi_id',
+        'no_identitas',
+        'created_at',
+        'updated_at',
+        'role',
+        'is_accepted'
     ];
 
     /**

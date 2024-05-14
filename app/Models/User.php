@@ -50,4 +50,13 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function kelompok () {
+        return $this->hasOne(Kelompok::class, 'id_users');
+    }
+
+    public function anggota () {
+        $kelompok = new Kelompok();
+        return $kelompok->anggota();
+    }
 }

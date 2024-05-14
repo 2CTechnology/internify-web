@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\ProdiController;
 use App\Http\Controllers\API\UsersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,3 +22,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/login', [UsersController::class, 'login']);
 Route::post('/register', [UsersController::class, 'register']);
+Route::get('/get-prodi', [ProdiController::class, 'get']);

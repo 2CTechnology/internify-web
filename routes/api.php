@@ -28,4 +28,5 @@ Route::get('/get-prodi', [ProdiController::class, 'get']);
 Route::middleware('auth:sanctum')
     ->group(function (){
         Route::get('/get-area', [PlotingController::class, 'getArea']);
+        Route::get('/get-list-dospem', [PlotingController::class, 'getDosenByArea']);
     });

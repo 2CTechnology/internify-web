@@ -23,6 +23,10 @@ class UsersController extends Controller
         try {
             $user = User::where('email', $request->get('email'))
                 ->where('role', 'Mahasiswa')
+                ->with([
+                    'kelompok',
+                    'kelompok.anggota'
+                ])
                 ->first();
             if($user != null) {
                 if(Hash::check($request->get('password'), $user->password)){

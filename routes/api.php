@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\KelompokController;
 use App\Http\Controllers\API\PlotingController;
 use App\Http\Controllers\API\ProdiController;
 use App\Http\Controllers\API\UsersController;
@@ -29,4 +30,5 @@ Route::middleware('auth:sanctum')
     ->group(function (){
         Route::get('/get-area', [PlotingController::class, 'getArea']);
         Route::get('/get-list-dospem', [PlotingController::class, 'getDosenByArea']);
+        Route::post('/create-kelompok', [KelompokController::class, 'createKelompok']);
     });

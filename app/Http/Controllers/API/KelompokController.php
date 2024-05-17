@@ -85,6 +85,7 @@ class KelompokController extends Controller
 
             DB::commit();
             $message = 'Berhasil menambahkan tempat magang.';
+            $responseCode = Response::HTTP_OK;
         } catch (Exception $e) {
             DB::rollBack();
             $message = 'Terjadi kesalahan. ' . $e->getMessage();
@@ -104,23 +105,30 @@ class KelompokController extends Controller
         }
     }
     
-    public function uploadProposal (Request $request) {
+    public function uploadProposal ($id, Request $request) {
         $data = null;
         $message = '';
         $responseCode = Response::HTTP_BAD_REQUEST;
 
         DB::beginTransaction();
         try {
-            $idUser = auth()->user()->id;
-            $file = $request->file('file_ketentuan');
+            $alurMagang = AlurMagang::where('id_kelompok', $id)->first();
+            
+            $file = $request->file('proposal');
             $filename = $file->getClientOriginalName();
-            $filePath = public_path() . '/upload/proposal/' . $idUser;
+            $filePath = public_path() . '/upload/proposal/' . $id;
             if(!File::isDirectory($filePath)) {
                 File::makeDirectory($filePath, 493, true);
             }
             $file->move($filePath, $filename);
 
+            $alurMagang->proposal = '/upload/proposal/' . $id . '/' . $filename;
+            $alurMagang->updated_at = now();
+            $alurMagang->save();
             
+            DB::commit();
+            $message = 'Berhasil upload proposal.';
+            $responseCode = Response::HTTP_OK;
         } catch (Exception $e) {
             DB::rollBack();
             $message = 'Terjadi kesalahan. ' . $e->getMessage();
@@ -133,8 +141,7 @@ class KelompokController extends Controller
             $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
         } finally {
             $response = [
-                'message' => $message,
-                'data' => $data
+                'message' => $message
             ];
 
             return response()->json($response, $responseCode);

@@ -32,4 +32,5 @@ Route::middleware('auth:sanctum')
         Route::get('/get-list-dospem', [PlotingController::class, 'getDosenByArea']);
         Route::post('/create-kelompok', [KelompokController::class, 'createKelompok']);
         Route::post('/insert-tempat-magang/{id}', [KelompokController::class, 'insertTempatMagang']);
+        Route::post('/upload-proposal/{id}', [KelompokController::class, 'uploadProposal']);
     });

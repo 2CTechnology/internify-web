@@ -96,29 +96,7 @@ class UsersController extends Controller
             $user->role = 'Mahasiswa';
             $user->created_at = now();
             $user->save();
-            $userId = $user->id;
-
-            $kelompok = new Kelompok();
-            $kelompok->nama_kelompok = $request->get('nama_kelompok');
-            $kelompok->id_users = $userId;
-            $kelompok->id_dospem = $request->get('id_dospem');
-            $kelompok->created_at = now();
-            $kelompok->save();
-            $kelompokId = $kelompok->id;
-
-            $anggotas = [];
-            foreach($request->get('anggota') as $key => $item) {
-                array_push($anggotas, [
-                    'nim' => $item['nim'],
-                    'nama' => $item['nama'],
-                    'id_prodi' => $item['id_prodi'],
-                    'angkatan' => $item['angkatan'],
-                    'golongan' => $item['golongan'],
-                    'created_at' => now(),
-                    'id_kelompok' => $kelompokId,
-                ]);
-            }
-            Anggota::insert($anggotas);
+            
             DB::commit();
             $message = 'Berhasil menambahkan data.';
             $responseCode = Response::HTTP_OK;

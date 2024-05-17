@@ -16,4 +16,8 @@ class Kelompok extends Model
         'created_at',
         'updated_at'
     ];
+
+    public function anggota() {
+        return $this->hasMany(Anggota::class, 'id_kelompok');
+    }
 }

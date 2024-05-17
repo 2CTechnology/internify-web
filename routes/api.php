@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\API\KelompokController;
+use App\Http\Controllers\API\PlotingController;
 use App\Http\Controllers\API\ProdiController;
 use App\Http\Controllers\API\UsersController;
 use Illuminate\Http\Request;
@@ -23,3 +25,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/login', [UsersController::class, 'login']);
 Route::post('/register', [UsersController::class, 'register']);
 Route::get('/get-prodi', [ProdiController::class, 'get']);
+
+Route::middleware('auth:sanctum')
+    ->group(function (){
+        Route::get('/get-area', [PlotingController::class, 'getArea']);
+        Route::get('/get-list-dospem', [PlotingController::class, 'getDosenByArea']);
+        Route::post('/create-kelompok', [KelompokController::class, 'createKelompok']);
+        Route::post('/insert-tempat-magang/{id}', [KelompokController::class, 'insertTempatMagang']);
+        Route::post('/upload-proposal/{id}', [KelompokController::class, 'uploadProposal']);
+    });

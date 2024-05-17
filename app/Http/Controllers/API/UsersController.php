@@ -32,26 +32,26 @@ class UsersController extends Controller
                 if(Hash::check($request->get('password'), $user->password)){
                     $token = $user->createToken($user->name.'-AuthToken')->plainTextToken;
                     $data = [
-                        'user' => $user,
-                        'token' => $token
+                        'token' => $token,
+                        'user' => $user
                     ];
                     $responseCode = Response::HTTP_OK;
-                    $message = 'Berhasil login.';
+                    $message = 'Login Success';
                 } else {
                     $data = [
                         'user' => null,
                         'token' => null
                     ];
-                    $responseCode = Response::HTTP_OK;
-                    $message = 'Password salah.';
+                    $responseCode = Response::HTTP_UNAUTHORIZED;
+                    $message = 'Incorrect Password';
                 }
             } else {
                 $data = [
                     'user' => null,
                     'token' => null
                 ];
-                $responseCode = Response::HTTP_OK;
-                $message = 'Email salah.';
+                $responseCode = Response::HTTP_UNAUTHORIZED;
+                $message = 'Incorrect Email';
             }
         } catch (Exception $e) {
             $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
@@ -70,8 +70,9 @@ class UsersController extends Controller
         } 
         finally {
             $response = [
+                'status_code' => $responseCode,
                 'message' => $message,
-                'data' => $data
+                'response' => $data
             ];
             return response()->json($response, $responseCode);
         }

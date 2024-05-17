@@ -25,6 +25,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/login', [UsersController::class, 'login']);
 Route::post('/register', [UsersController::class, 'register']);
 Route::get('/get-prodi', [ProdiController::class, 'get']);
+Route::post('/lupa-password', [UsersController::class, 'lupaPassword']);
+Route::post('/cek-otp', [UsersController::class, 'cekOTP']);
+Route::post('/reset-password', [UsersController::class, 'resetPassword']);
 
 Route::middleware('auth:sanctum')
     ->group(function (){

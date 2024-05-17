@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\AlurMagang;
 use App\Models\Anggota;
 use App\Models\Kelompok;
 use Exception;
@@ -24,7 +25,6 @@ class KelompokController extends Controller
             $kelompok = new Kelompok();
             $kelompok->nama_kelompok = $request->get('nama_kelompok');
             $kelompok->id_users = auth()->user()->id;
-            $kelompok->id_dospem = $request->get('id_dospem');
             $kelompok->created_at = now();
             $kelompok->save();
             $kelompokId = $kelompok->id;
@@ -64,14 +64,27 @@ class KelompokController extends Controller
         }
     }
 
-    public function postKelompok (Request $request) {
+    public function InsertTempatMagang ($id, Request $request) {
         $data = null;
         $message = '';
         $responseCode = Response::HTTP_BAD_REQUEST;
 
         DB::beginTransaction();
         try {
+            $kelompok = Kelompok::find($id);
+            $kelompok->id_dospem = $request->get('id_dospem');
+            $kelompok->updated_at = now();
+            $kelompok->save();
 
+            $alurMagang = new AlurMagang();
+            $alurMagang->id_kelompok = $kelompok->id;
+            $alurMagang->tempat_magang = $request->get('tempat_magang');
+            $alurMagang->status = null;
+            $alurMagang->created_at = now();
+            $alurMagang->save();
+
+            DB::commit();
+            $message = 'Berhasil menambahkan tempat magang.';
         } catch (Exception $e) {
             DB::rollBack();
             $message = 'Terjadi kesalahan. ' . $e->getMessage();
@@ -85,7 +98,6 @@ class KelompokController extends Controller
         } finally {
             $response = [
                 'message' => $message,
-                'data' => $data
             ];
 
             return response()->json($response, $responseCode);

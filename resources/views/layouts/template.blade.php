@@ -122,10 +122,15 @@
                     </div>
                   </a>
                   <div class="dropdown-menu dropdown-menu-right">
-                    <a href="#!" class="dropdown-item">
-                      <i class="ni ni-user-run"></i>
-                      <span>Logout</span>
-                    </a>
+                    <form action="{{ route('logout') }}" method="post">
+                        @csrf
+                        <div class="dropdown-item">
+                            <button button type="submit" class="border-0">
+                                <i class="ni ni-user-run"></i>
+                                Logout
+                            </button>
+                        </div>
+                    </form>
                   </div>
                 </li>
             </ul>

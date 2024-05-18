@@ -36,4 +36,6 @@ Route::middleware('auth:sanctum')
         Route::post('/create-kelompok', [KelompokController::class, 'createKelompok']);
         Route::post('/insert-tempat-magang/{id}', [KelompokController::class, 'insertTempatMagang']);
         Route::post('/upload-proposal/{id}', [KelompokController::class, 'uploadProposal']);
+        Route::get('/get-kelompok', [KelompokController::class, 'getKelompokById']);
+        Route::post('/upload-surat-balasan/{id}', [KelompokController::class, 'uploadSuratBalasan']);
     });

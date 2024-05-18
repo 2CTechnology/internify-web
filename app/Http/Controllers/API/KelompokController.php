@@ -147,4 +147,82 @@ class KelompokController extends Controller
             return response()->json($response, $responseCode);
         }
     }
+    
+    public function uploadSuratBalasan ($id, Request $request) {
+        $message = '';
+        $responseCode = Response::HTTP_BAD_REQUEST;
+
+        DB::beginTransaction();
+        try {
+            $alurMagang = AlurMagang::where('id_kelompok', $id)->first();
+            
+            $file = $request->file('surat_balasan');
+            $filename = $file->getClientOriginalName();
+            $filePath = public_path() . '/upload/surat-balasan/' . $id;
+            if(!File::isDirectory($filePath)) {
+                File::makeDirectory($filePath, 493, true);
+            }
+            $file->move($filePath, $filename);
+
+            $alurMagang->surat_balasan = '/upload/surat-balasan/' . $id . '/' . $filename;
+            $alurMagang->updated_at = now();
+            $alurMagang->save();
+            
+            DB::commit();
+            $message = 'Berhasil upload surat balasan.';
+            $responseCode = Response::HTTP_OK;
+        } catch (Exception $e) {
+            DB::rollBack();
+            $message = 'Terjadi kesalahan. ' . $e->getMessage();
+            $data = null;
+            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+        } catch (QueryException $e) {
+            DB::rollBack();
+            $message = 'Terjadi kesalahan. ' . $e->getMessage();
+            $data = null;
+            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+        } finally {
+            $response = [
+                'message' => $message
+            ];
+
+            return response()->json($response, $responseCode);
+        }
+    }
+
+    public function getKelompokById() {
+        $data = null;
+        $message = '';
+        $responseCode = Response::HTTP_BAD_REQUEST;
+
+        try {
+            $kelompok = Kelompok::with('anggota')
+                ->where('id_users', auth()->user()->id)
+                ->join('users as d', 'd.id', 'kelompoks.id_dospem')
+                ->select(
+                    'kelompoks.*',
+                    'd.name'
+                )
+                ->first();
+
+            $data = $kelompok;
+            $message = 'Berhasil menampilkan kelompok.';
+            Response::HTTP_OK;
+        } catch (Exception $e) {
+            $message = 'Terjadi kesalahan. ' . $e->getMessage();
+            $data = null;
+            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+        } catch (QueryException $e) {
+            $message = 'Terjadi kesalahan. ' . $e->getMessage();
+            $data = null;
+            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+        } finally {
+            $response = [
+                'message' => $message,
+                'data' => $data
+            ];
+
+            return response()->json($response, $responseCode);
+        } 
+    }
 }

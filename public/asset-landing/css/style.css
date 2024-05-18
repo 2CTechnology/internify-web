@@ -1,0 +1,450 @@
+*{
+    scroll-behavior: smooth;
+    font-family: 'poppins';
+}
+section {
+    height: 100vh;
+    align-items: center;
+    display: flex;
+}
+
+/* CSS Reset */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+
+/* START */
+body{
+    font-family: 'poppins';
+    background-color: #fff;
+    line-height: 1.65;
+}
+
+/* Navbar */
+.container-satu {
+    width: 100%;
+    margin-top: 0;
+    margin-bottom: 5px;
+    margin-right: auto;
+    margin-left: auto;
+    padding-left: 30px;
+    padding-right: 30px;
+    background-color: #fff;
+    display: flex;
+    justify-content: space-between;
+    position: fixed;
+    top: 0;
+    z-index: 99;
+    box-sizing: border-box;
+    transition: box-shadow 0.3s ease;    
+}
+.container-satu.shadow {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.logo img{
+    width: 169px;
+    height: 57px;
+    margin-top: 10px;
+    margin-left: 30px;
+}
+.navbar {
+    width: 100%;
+    height: 60px;
+    padding: 20px;
+    box-sizing: border-box;
+    justify-content: end;
+}
+.navbar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    color: #000;
+}
+.navbar ul li{
+    padding: 0 .5em .25em;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: .3s;
+    margin-top: 5px;
+}
+.navbar ul li:hover {
+    color: #000;
+}
+.navbar ul li::before {
+    content: "";
+    position: absolute;
+    inset: calc(100% - 3px) 0 0 0; /* 3px ketebalan */
+    background-color: #eae;
+    scale: 0.1;
+    transition: .3s, translate 0s .3s;
+}
+.navbar ul:hover li:before {
+    scale: 1;
+}
+.navbar ul li:hover:before {
+    translate: 0;
+    transition: .3s;
+}
+.navbar ul:hover li:has(~ li:hover):before {
+    translate: 100% 0;
+    transition: .2s .2s, scale 0s .4s;
+}
+.navbar ul:hover li:hover ~ li::before {
+    translate: -100% 0;
+    transition: .2s .2s, scale 0s .4s;
+}
+.navbar a {
+    text-decoration: none;
+    color: #000;;
+    font-size: 18px;
+    margin-left: 30px;
+    margin-right: 30px;
+}
+
+/* Section 1 */
+.container-dua {
+    width: 1280px;
+    margin-top: 220px;
+    margin-right: auto;
+    margin-left: auto;
+    /* margin: 260px auto; */
+    display: flex;
+}
+.judul{
+    width: 700px;
+}
+.judul h1 {
+    font-weight: bold;
+    font-size: 42px;
+    margin-left: 30px;
+}
+.judul p {
+    font-size: 18px;
+    line-height: 30px;
+    text-align: justify;
+    margin-left: 30px;
+    margin-top: 12px;
+}
+.btn {
+    margin-left: 30px;
+    margin-top: 20px;
+    background-color: #4674DE;
+    width: 205px;
+    height: 40px;
+    border-radius: 10px;
+    font-size: 14px;
+    text-decoration: none;
+    color: #fff;
+    display: flex;
+    align-items: center;
+}
+.btn svg {
+    margin-left: 20px;
+}
+.btn:hover {
+    background-color: #48479C;
+    color: #fff;
+}
+.hero-image {
+    margin-top: -150px;
+    margin-left: 100px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Section 2 */
+#penjelasan {
+    margin-top: -50px;
+}
+.container-tiga{
+    width: 1280px;
+    margin: -150px auto;
+    display: flex;
+}
+.sub-judul-1 {
+    width: 700px;
+}
+.sub-judul-1 h3 {
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 28px;
+    margin-left: 30px;  
+}
+.sub-judul-1 p {
+    font-size: 16px;
+    line-height: 30px;
+    text-align: justify;
+    margin-left: 30px;
+    margin-top: 40px;
+}
+.filler-image {
+    margin-top: 90px;
+    margin-left: 42px;
+}
+
+/* Section 3 */
+.container-empat {
+    width: 1280px;
+    margin: auto;
+}
+#sub-judul-2 {
+    margin-top: -120px;
+    margin-bottom: 80px;
+}
+.sub-judul-2 {
+    width: 300px;
+    margin: auto;
+}
+.sub-judul-2 h3 {
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 28px;
+    margin-bottom: 40px;
+    text-align: center;
+}
+.container-empat .content p {
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+.card-parent {
+    display: flex;
+    /* justify-content: space-between; */
+    width: 85%;
+    margin: auto;
+}
+.card {
+    width: 300px;
+    box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.20);
+    border-radius: 10px;
+    background-color: #eee;
+    overflow: hidden;
+    margin: 15px;
+    flex: 1;
+}
+.card .header {
+    height: 200px;
+    background-color: #5db5fd;
+    display: flex;
+    justify-content: center;
+}
+.card .content {
+    text-align: center;
+    padding-bottom: 20px;
+    padding-top: 10px;
+    background-color: #fff;
+    
+}
+.card .content button {
+    background-color: #4674DE;
+    width: 205px;
+    height: 40px;
+    border-radius: 10px;
+    font-size: 14px;
+    text-decoration: none;
+    color: #fff;
+    border: none;
+    align-items: center;
+}
+
+/* Section 4 */
+#sub-judul-3 {
+    margin-top: -150px;
+}
+.container-lima {
+    width: 1280px;
+    margin: 0 auto;
+    margin-top: 200px;
+}
+.sub-judul-3 {
+    margin: auto;
+    text-align: center;
+}
+.sub-judul-3 h3 {
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 28px;    
+}
+.accordion {
+    margin: 50px auto;
+    width: 800px;
+}
+.accordion li {
+    list-style: none;
+    width: 100%;
+    margin: 20px;
+    padding: 10px;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+.accordion li label{
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    font-size: 18px;
+    font-weight: 500;
+    cursor: pointer;
+    color: #000;
+}
+.accordion label::before {
+    content: '+';
+    margin-right: 10px;
+    font-size: 24px;
+    font-weight: 600;
+}
+.accordion input[type="checkbox"]{
+    display: none;
+}
+.accordion li input[type="checkbox"]:checked + label + .content{
+    max-height: 400px;
+    padding: 10px 10px 20px;
+}
+.accordion li input[type="checkbox"]:checked + label::before{
+    content: '-';
+}
+.accordion .content {
+    color: #000;
+    font-size: 14px;
+    padding: 0 10px;
+    line-height: 26px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s, padding 0.5s;
+}
+
+/* Section 5 */
+.container-enam {
+    width: 1280px;
+    margin: 150px auto;
+}
+.sub-judul-4{
+    margin: auto;
+    text-align: center;
+}
+.sub-judul-4 h3{
+    font-weight: bold;
+    text-decoration: underline;
+    font-size: 28px;
+}
+.accordion-download{
+    margin: 50px auto;
+    width: 800px;
+}
+.accordion-download li {
+    list-style: none;
+    width: 100%;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 20px;
+    padding: 10px 10px 10px 30px;
+    border-radius: 8px;
+    background: white;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -moz-osx-font-smoothing: grayscale;
+    transition-duration: 0.3s;
+    transition-property: transform;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+.accordion-download a {
+    text-decoration: none;
+    color: #000;
+}
+.accordion-download svg {
+    margin-right: 20px;
+}
+.accordion-download li:hover {
+    transform: scale(1.1);
+}
+
+/* Footer */
+.footer {
+    width: 100%;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    box-shadow: 0px 8px 24px rgba(149, 157, 165, 0.75);
+}
+.logo-footer {
+    flex: 1;
+}
+.logo-footer img {
+    width: 169px;
+    height: 57px;
+    margin-left: 50px;
+    margin-top: 5px;
+}
+.base-information {
+    flex: 3;
+    margin-left: 250px;
+}
+.base-information h5 {
+    font-weight: bold;
+    font-size: 24px;
+    margin-bottom: 15px;
+    text-decoration: underline;
+}
+.base-information p {
+    margin: 10px 0;
+    font-size: 16px;
+}
+.social-media {
+    flex: 2;
+}
+.social-media h5 {
+    font-weight: bold;
+    font-size: 24px;
+    margin-bottom: 15px;
+    text-decoration: underline;
+}
+.social-media a {
+    margin-right: 35px;
+}

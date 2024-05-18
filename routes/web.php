@@ -23,3 +23,8 @@ Route::group(['middleware' => 'auth'], function(){
 
 Route::get('/dashboard', [DashboardController::class, 'index']);
 Route::get('/form', [DashboardController::class, 'form']);
+
+
+Route::get('/landing', function(){
+    return view('user.landing');
+});

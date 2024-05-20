@@ -136,18 +136,20 @@ class UsersController extends Controller
                         'created_at' => now()
                     ]);
                 $data = [
+                    'id_user' => $user->id,
                     'otp' => $otp,
-                    'id_user' => $user->id
                 ];
                 Mail::to($user->email)->send(new OTPMail($data));
-                $message = 'Berhasil generate OTP lupa password.';
+
+                $responseCode = Response::HTTP_OK;
+                $message = 'We Have Sent OTP Code, Please Check Your Email';
                 
                 DB::commit();
             } else {
-                $message = 'Email tidak dapat ditemukan.';
+                $responseCode = Response::HTTP_UNAUTHORIZED;
+                $message = 'Email Not Found';
                 $data = null;
             }
-            $responseCode = Response::HTTP_OK;
         } catch (Exception $e) {
             DB::rollBack();
             $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
@@ -160,8 +162,9 @@ class UsersController extends Controller
             $data = null;
         } finally {
             $response = [
+                'status_code' => $responseCode,
                 'message' => $message,
-                'data' => $data
+                'response' => $data
             ];
 
             return response()->json($response, $responseCode);
@@ -189,10 +192,16 @@ class UsersController extends Controller
                         'status' => 0,
                         'updated_at' => now()
                     ]);
-                $message = 'OTP berhasil terverifikasi.';
+                $responseCode = Response::HTTP_OK;
+                $message = 'Code OTP Successfully Verified';
+                $data = [
+                    'id_user' => $cek->id_user,
+                ];
                 DB::commit();
             } else {
-                $message = 'OTP tidak dapat ditemukan.';
+                $responseCode = Response::HTTP_NOT_FOUND;
+                $message = 'Code OTP Not Found';
+                $data = null;
             }
         } catch (Exception $e) {
             DB::rollBack();
@@ -206,7 +215,9 @@ class UsersController extends Controller
             $data = null;
         } finally {
             $response = [
-                'message' => $message
+                'status_code' => $responseCode,
+                'message' => $message,
+                'response' => $data
             ];
 
             return response()->json($response, $responseCode);
@@ -219,14 +230,22 @@ class UsersController extends Controller
 
         DB::beginTransaction();
         try {
-            DB::table('users')
-                ->where('id', $request->get('id'))
-                ->update([
-                    'password' => Hash::make($request->get('password')),
-                    'updated_at' => now()
-                ]);
-            DB::commit();
-            $message = 'Berhasil mengubah password.';
+            $user = User::where('id', $request->get('id'))
+            ->first();
+            if ($user != null) {
+                DB::table('users')
+                    ->where('id', $request->get('id'))
+                    ->update([
+                        'password' => Hash::make($request->get('password')),
+                        'updated_at' => now()
+                    ]);
+                DB::commit();
+                $responseCode = Response::HTTP_OK;
+                $message = 'Successfully Changed Password';
+            } else {
+                $responseCode = Response::HTTP_NOT_FOUND;
+                $message = 'User Not Found';
+            }
         } catch (Exception $e) {
             DB::rollBack();
             $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
@@ -237,6 +256,7 @@ class UsersController extends Controller
             $message = 'Terjadi kesalahan. ' . $e->getMessage();
         } finally {
             $response = [
+                'status_code' => $responseCode,
                 'message' => $message
             ];
 

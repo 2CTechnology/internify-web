@@ -81,19 +81,13 @@
                      <a href="#" class="nav-link">Dosen</a>
                    </li>
                    <li class="nav-item">
-                     <a href="#" class="nav-link">Tempat Magang</a>
+                     <a href="{{ route('tempat-magang.index') }}" class="nav-link">Tempat Magang</a>
                    </li>
                    <li class="nav-item">
-                     <a href="#" class="nav-link">FAQ</a>
+                     <a href="{{ route('faq.index') }}" class="nav-link">FAQ</a>
                    </li>
                    <li class="nav-item">
                      <a href="#" class="nav-link">File Template</a>
-                   </li>
-                   <li class="nav-item">
-                     <a href="../../pages/examples/timeline.html" class="nav-link">Timeline</a>
-                   </li>
-                   <li class="nav-item">
-                     <a href="../../pages/examples/profile.html" class="nav-link">Profile</a>
                    </li>
                  </ul>
                </div>

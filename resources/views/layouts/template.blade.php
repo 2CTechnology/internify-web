@@ -19,7 +19,7 @@
    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
    <meta name="description" content="Start your development with a Dashboard for Bootstrap 4.">
    <meta name="author" content="Creative Tim">
-   <title>Argon Dashboard PRO - Premium Bootstrap 4 Admin Template</title>
+   <title>Internify | @stack('title')</title>
    <!-- Favicon -->
    <link rel="icon" href="{{ asset('new-assets/img/brand/favicon.png')}}" type="image/png">
    <!-- Fonts -->
@@ -119,6 +119,7 @@
                </nav>
              </div>
              <div class="col-lg-6 col-5 text-right">
+                @stack('add-button')
              </div>
            </div>
          </div>
@@ -133,8 +134,26 @@
          </div>
          <!-- Card body -->
          <div class="card-body">
+            @if (Session::has('status'))
+                <div class="alert alert-success alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert">
+                        <i class="fa fa-times"></i>
+                    </button>
+                    <strong> {{ session('status') }}</strong>
+                </div>
+            @endif
+      
+            @if (Session::has('error'))
+                <div class="alert alert-danger alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert">
+                        <i class="fa fa-times"></i>
+                    </button>
+                    <strong> {{ session('error') }}</strong>
+                </div>
+            @endif
             @yield('content')
          </div>
+         @yield('card-footer')
        </div>
        <!-- Footer -->
        <footer class="footer pt-0">
@@ -152,6 +171,8 @@
    <script src="{{ asset('new-assets/js/argon.js?v=1.1.0')}}"></script>
    <!-- Demo JS - remove this in your project -->
    <script src="{{ asset('new-assets/js/demo.min.js')}}"></script>
+
+   @stack('custom-script')
  </body>
  
  </html>

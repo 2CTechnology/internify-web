@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\FaqController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,7 +26,12 @@ Route::group(['middleware' => 'auth'], function(){
 Route::get('/dashboard', [DashboardController::class, 'index']);
 Route::get('/form', [DashboardController::class, 'form']);
 
-
 Route::get('/landing', function(){
     return view('user.landing');
+});
+Auth::routes();
+Route::resource('faq', FaqController::class);
+
+Route::get('/template', function () {
+    return view('layouts.template');
 });

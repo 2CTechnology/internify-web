@@ -38,8 +38,9 @@ class ProdiController extends Controller
             $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
         } finally {
             $response = [
+                'status_code' => $responseCode,
                 'message' => $message,
-                'data' => $data
+                'response' => $data
             ];
 
             return response()->json($response, $responseCode);

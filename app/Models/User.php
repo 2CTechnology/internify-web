@@ -61,4 +61,8 @@ class User extends Authenticatable
         $kelompok = new Kelompok();
         return $kelompok->anggota();
     }
+
+    public function prodi () {
+        return $this->belongsTo(Prodi::class);
+    }
 }

@@ -36,7 +36,7 @@ class UsersSeeder extends Seeder
             ->insert([
                 'name' => 'Ex Mahasiswa',
                 'no_identitas' => 'd1234',
-                'email' => 'mahasiswa123@mail.com',
+                'email' => 'hafidzfadhillah606@gmail.com',
                 'password' => Hash::make('12345678'),
                 'role' => 'Mahasiswa',
                 'prodi_id' => 1,

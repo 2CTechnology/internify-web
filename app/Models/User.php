@@ -28,7 +28,9 @@ class User extends Authenticatable
         'created_at',
         'updated_at',
         'role',
-        'is_accepted'
+        'is_accepted',
+        'foto',
+        'no_telp'
     ];
 
     /**
@@ -58,5 +60,9 @@ class User extends Authenticatable
     public function anggota () {
         $kelompok = new Kelompok();
         return $kelompok->anggota();
+    }
+
+    public function prodi () {
+        return $this->belongsTo(Prodi::class);
     }
 }

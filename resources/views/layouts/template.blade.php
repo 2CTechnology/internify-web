@@ -56,7 +56,7 @@
                <div class="collapse" id="navbar-manajemen">
                  <ul class="nav nav-sm flex-column">
                    <li class="nav-item">
-                     <a href="#" class="nav-link">Akun Mahasiswa</a>
+                     <a href="{{ route('akun-mahasiswa.index') }}" class="nav-link">Akun Mahasiswa</a>
                    </li>
                    <li class="nav-item">
                      <a href="#" class="nav-link">Proposal Magang</a>
@@ -78,7 +78,7 @@
                <div class="collapse" id="navbar-master">
                  <ul class="nav nav-sm flex-column">
                    <li class="nav-item">
-                     <a href="#" class="nav-link">Dosen</a>
+                     <a href="{{ route('dospem.index') }}" class="nav-link">Dosen</a>
                    </li>
                    <li class="nav-item">
                      <a href="{{ route('tempat-magang.index') }}" class="nav-link">Tempat Magang</a>
@@ -199,6 +199,7 @@
    <script src="{{ asset('new-assets/js/argon.js?v=1.1.0')}}"></script>
    <!-- Demo JS - remove this in your project -->
    <script src="{{ asset('new-assets/js/demo.min.js')}}"></script>
+   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
    @stack('custom-script')
  </body>

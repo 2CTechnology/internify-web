@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\AkunMahasiswaController;
 use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DospemController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\FileTemplateController;
@@ -36,7 +38,9 @@ Auth::routes();
 Route::resource('faq', FaqController::class);
 Route::resource('tempat-magang', TempatMagangController::class);
 Route::resource('file-template', FileTemplateController::class);
-Route::resource('/prodi', ProdiController::class);
+Route::resource('prodi', ProdiController::class);
+Route::resource('dospem', DospemController::class);
+Route::resource('akun-mahasiswa', AkunMahasiswaController::class);
 
 Route::get('/template', function () {
     return view('layouts.template');

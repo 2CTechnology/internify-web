@@ -89,6 +89,9 @@
                    <li class="nav-item">
                      <a href="{{ route('file-template.index') }}" class="nav-link">File Template</a>
                    </li>
+                   <li class="nav-item">
+                     <a href="{{ route('prodi.index') }}" class="nav-link">Program Studi</a>
+                   </li>
                  </ul>
                </div>
              </li>

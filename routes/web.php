@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\FaqController;
@@ -35,6 +36,7 @@ Auth::routes();
 Route::resource('faq', FaqController::class);
 Route::resource('tempat-magang', TempatMagangController::class);
 Route::resource('file-template', FileTemplateController::class);
+Route::resource('/prodi', ProdiController::class);
 
 Route::get('/template', function () {
     return view('layouts.template');

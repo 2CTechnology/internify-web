@@ -78,7 +78,7 @@
                <div class="collapse" id="navbar-master">
                  <ul class="nav nav-sm flex-column">
                    <li class="nav-item">
-                     <a href="#" class="nav-link">Dosen</a>
+                     <a href="{{ route('dospem.index') }}" class="nav-link">Dosen</a>
                    </li>
                    <li class="nav-item">
                      <a href="{{ route('tempat-magang.index') }}" class="nav-link">Tempat Magang</a>

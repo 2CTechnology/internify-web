@@ -28,7 +28,9 @@ class User extends Authenticatable
         'created_at',
         'updated_at',
         'role',
-        'is_accepted'
+        'is_accepted',
+        'foto',
+        'no_telp'
     ];
 
     /**

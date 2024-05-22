@@ -20,4 +20,12 @@ class Kelompok extends Model
     public function anggota() {
         return $this->hasMany(Anggota::class, 'id_kelompok');
     }
+
+    public function dospem () {
+        return $this->belongsTo(User::class, 'id_dospem');
+    }
+
+    public function ketua () {
+        return $this->belongsTo(User::class, 'id_users');
+    }
 }

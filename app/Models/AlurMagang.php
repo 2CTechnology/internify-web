@@ -19,4 +19,8 @@ class AlurMagang extends Model
         'created_at',
         'updated_at'
     ];
+
+    public function kelompok() {
+        return $this->belongsTo(Kelompok::class, 'id_kelompok');
+    }
 }

@@ -8,7 +8,8 @@
     {{ $header }}
 @endpush
 
-{{-- @include('backend.akun-mahasiswa.modal.detail') --}}
+@include('backend.proposal.modal.detail')
+@include('backend.proposal.modal.tindak-lanjut')
 
 @section('content')
     <div class="row">
@@ -32,29 +33,15 @@
                                 <td class="text-center">{{ $item?->kelompok?->ketua?->no_identitas ?? '-' }}</td>
                                 <td class="text-center">{{ $item?->kelompok?->ketua?->name ?? '-' }}</td>
                                 <td class="text-center">{{ $item?->tempat_magang ?? '-' }}</td>
-                                @if ($item->is_accepted == 1)
-                                    <td class="text-center text-success">
-                                        Dikonfirmasi
-                                @elseif($item->is_accepted == 2)
-                                    <td class="text-center text-danger">
-                                        Ditolak
-                                @else
-                                    <td class="text-center">
-                                        Menunggu Konfirmasi
-                                @endif    
-                                </td>
+                                <td class="text-center">{{ ucwords($item->status_proposal) }}</td>
                                 <td class="text-center d-flex justify-content-center">
                                     {{-- <div class="form-inline text-center"> --}}
                                         <a href="#">
-                                            <button data-toggle="modal" data-target="#exampleModal" data-prodi="{{ $item->prodi->nama_prodi ?? '-' }}" data-golongan="{{ $item->golongan }}" data-email="{{ $item->email }}" data-angkatan="{{ $item->angkatan }}" type="button" id="PopoverCustomT-1" class="btn btn-warning btn-md btn-show-modal" data-toggle="tooltip" title="Detail" data-placement="top"><span class="fa fa-eye"></span></button>    
+                                            <button data-toggle="modal" data-target="#exampleModal{{ $item->id }}" data-prodi="{{ $item->prodi->nama_prodi ?? '-' }}" data-golongan="{{ $item->golongan }}" data-email="{{ $item->email }}" data-angkatan="{{ $item->angkatan }}" type="button" id="PopoverCustomT-1" class="btn btn-warning btn-md btn-show-modal" data-toggle="tooltip" title="Detail" data-placement="top"><span class="fa fa-eye"></span></button>    
                                         </a>
                                         @if ($item->is_accepted == 0)
                                             <a href="#" class="mx-2">
-                                                <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-md btn-konfirm" data-id="{{ $item->id }}" data-toggle="tooltip" title="Konfirmasi" data-placement="top"><span class="fa fa-pen"></span></button>
-                                                <form action="{{ route('akun-mahasiswa.update', $item->id) }}" method="post" enctype="multipart/form-data" id="accept-{{ $item->id }}">
-                                                    @csrf
-                                                    @method('PUT')
-                                                </form>
+                                                <button data-toggle="modal" data-target="#modalTindakLanjut" type="button" id="PopoverCustomT-1" class="btn btn-primary btn-md btn-konfirm" data-id="{{ $item->id }}" data-toggle="tooltip" title="Tindak Lanjut" data-placement="top"><span class="fa fa-pen"></span></button>
                                             </a>
                                         @endif
                                         @if ($item->is_accepted == 0)
@@ -100,21 +87,27 @@
 
         $(".btn-konfirm").on('click', function () {
             var id = $(this).data('id')
-            console.log(`acc: ${id}`);
-            Swal.fire({
-                title: "Konfirmasi",
-                text: "Apakah Anda Yakin Mengonfirmasi Akun Ini?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Ya",
-                cancelButtonText: "Tidak"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $(`#accept-${id}`).submit()
-                }
-            });
+            $("#id-tindak-lanjut").val(id)
+        })
+
+        $("#tindak_lanjut").change(function() {
+            var value = $(this).val();
+            if(value == 'revisi') {
+                $("#revisi-label").removeClass('d-none')
+                $("#revisi").removeClass('d-none')
+                $("#alasan_ditolak-label").addClass('d-none')
+                $("#alasan_ditolak").addClass('d-none')
+            } else if(value == 'ditolak') {
+                $("#alasan_ditolak-label").removeClass('d-none')
+                $("#alasan_ditolak").removeClass('d-none')
+                $("#revisi-label").addClass('d-none')
+                $("#revisi").addClass('d-none')
+            } else {
+                $("#revisi-label").addClass('d-none')
+                $("#revisi").addClass('d-none')
+                $("#alasan_ditolak-label").addClass('d-none')
+                $("#alasan_ditolak").addClass('d-none')
+            }
         })
 
         $(".btn-tolak").on('click', function () {
@@ -135,5 +128,7 @@
                 }
             });
         })
+
+        $("")
     </script>
 @endpush

@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\AlurMagang;
+use Exception;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProposalController extends Controller
 {
@@ -23,10 +26,12 @@ class ProposalController extends Controller
             ->with('kelompok.anggota')
             ->with('kelompok.ketua')
             ->with('kelompok.dospem')
+            ->with('kelompok.ketua.prodi')
+            ->with('kelompok.anggota.prodi')
             ->whereNotNull('alur_magangs.proposal')
             ->orderBy('id', 'desc')
             ->get();
-            
+            // return $this->param;
         return view('backend.proposal.index', $this->param);
     }
 
@@ -43,7 +48,28 @@ class ProposalController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $alurMagang = AlurMagang::findOrFail($request->id);
+            $alurMagang->status_proposal = $request->tindak_lanjut;
+            if($request->revisi != null) {
+                $alurMagang->revisi_proposal = $request->revisi;
+            } 
+            if($request->alasan_ditolak) {
+                $alurMagang->alasan_proposal_ditolak = $request->alasan_ditolak;
+            }
+            $alurMagang->updated_at = now();
+            $alurMagang->save();
+            DB::commit();
+
+            return redirect()->route('proposal.index')->withStatus('Berhasil menambahkan menindaklanjuti proposal.');
+        } catch (Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withError('Terjadi kesalahan. ' . $e->getMessage());
+        } catch (QueryException $e) {
+            DB::rollBack();
+            return redirect()->back()->withError('Terjadi kesalahan. ' . $e->getMessage());
+        }
     }
 
     /**

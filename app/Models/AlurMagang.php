@@ -13,6 +13,9 @@ class AlurMagang extends Model
     protected $fillable = [
         'id_kelompok',
         'proposal',
+        'status_proposal',
+        'revisi_proposal',
+        'alasan_proposal_ditolak',
         'tempat_magang',
         'surat_balasan',
         'status',

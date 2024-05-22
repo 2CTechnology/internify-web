@@ -8,6 +8,12 @@ class LandingController extends Controller
 {
     //
     public function index() {
-        return view('user.landing');
+        return view('user.pages.landing');
+    }
+    public function daftardosen() {
+        return view('user.pages.daftardosen');
+    }
+    public function tempatmagang() {
+        return view('user.pages.tempatmagang');
     }
 }

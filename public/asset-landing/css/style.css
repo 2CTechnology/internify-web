@@ -448,3 +448,113 @@ body{
 .social-media a {
     margin-right: 35px;
 }
+
+/* Section Card Tempat Dosen */
+.container-dosen {
+    width: 1280px;
+    margin: auto;
+    margin-top: 90px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 50px;
+}
+.container-dosen .content-dosen p {
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+.card-parent-dosen {
+    display: flex;
+    /* justify-content: space-between; */
+    width: 300px;
+    margin: auto;
+}
+.card-dosen {
+    width: 300px;
+    box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.20);
+    border-radius: 10px;
+    background-color: #eee;
+    overflow: hidden;
+    margin: 15px;
+    flex: 1;
+}
+.card-dosen .header-dosen {
+    height: 200px;
+    background-color: #5db5fd;
+    display: flex;
+    justify-content: center;
+}
+.card-dosen .content-dosen {
+    text-align: center;
+    padding-bottom: 20px;
+    padding-top: 10px;
+    background-color: #fff;
+    
+}
+.card-dosen .content-dosen button {
+    background-color: #4674DE;
+    width: 205px;
+    height: 40px;
+    border-radius: 10px;
+    font-size: 14px;
+    text-decoration: none;
+    color: #fff;
+    border: none;
+    align-items: center;
+}
+
+/* Section Card Tempat Dosen */
+.container-magang {
+    width: 1280px;
+    margin: auto;
+    margin-top: 90px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 50px;
+}
+.container-magang .content-magang p {
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+.card-parent-magang {
+    display: flex;
+    /* justify-content: space-between; */
+    width: 300px;
+    margin: auto;
+}
+.card-magang {
+    width: 300px;
+    box-shadow: 6px 6px 10px -1px rgba(0, 0, 0, 0.20);
+    border-radius: 10px;
+    background-color: #eee;
+    overflow: hidden;
+    margin: 15px;
+    flex: 1;
+}
+.card-magang .header-magang {
+    height: 200px;
+    background-color: #5db5fd;
+    display: flex;
+    justify-content: center;
+}
+.card-magang .content-magang {
+    text-align: center;
+    padding-bottom: 20px;
+    padding-top: 10px;
+    background-color: #fff;
+    
+}
+.card-magang .content-magang button {
+    background-color: #4674DE;
+    width: 205px;
+    height: 40px;
+    border-radius: 10px;
+    font-size: 14px;
+    text-decoration: none;
+    color: #fff;
+    border: none;
+    align-items: center;
+}

@@ -13,10 +13,17 @@ class AlurMagang extends Model
     protected $fillable = [
         'id_kelompok',
         'proposal',
+        'status_proposal',
+        'revisi_proposal',
+        'alasan_proposal_ditolak',
         'tempat_magang',
         'surat_balasan',
         'status',
         'created_at',
         'updated_at'
     ];
+
+    public function kelompok() {
+        return $this->belongsTo(Kelompok::class, 'id_kelompok');
+    }
 }

@@ -18,4 +18,8 @@ class Anggota extends Model
         'created_at',
         'id_kelompok',
     ];
+    
+    public function prodi () {
+        return $this->belongsTo(Prodi::class, 'id_prodi');
+    }
 }

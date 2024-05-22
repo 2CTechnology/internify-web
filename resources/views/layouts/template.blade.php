@@ -59,7 +59,7 @@
                      <a href="{{ route('akun-mahasiswa.index') }}" class="nav-link">Akun Mahasiswa</a>
                    </li>
                    <li class="nav-item">
-                     <a href="#" class="nav-link">Proposal Magang</a>
+                     <a href="{{ route('proposal.index') }}" class="nav-link">Proposal Magang</a>
                    </li>
                    <li class="nav-item">
                      <a href="#" class="nav-link">Surat Balasan</a>

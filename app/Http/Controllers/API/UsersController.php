@@ -263,4 +263,47 @@ class UsersController extends Controller
             return response()->json($response, $responseCode);
         }
     }
+
+    public function dataUserById (Request $request) {
+        $message = '';
+        $data = null;
+        $responseCode = Response::HTTP_BAD_REQUEST;
+
+        try {
+            $user = User::where('id', $request->get('id_user'))
+            ->where('role', 'Mahasiswa')
+            ->with([
+                'kelompok',
+                'kelompok.anggota'
+            ])->first();
+
+            if($user != null) {
+                $data = $user;
+                $responseCode = Response::HTTP_OK;
+                $message = 'Success Get Data User';
+            } else {
+                $responseCode = Response::HTTP_NOT_FOUND;
+                $message = 'User Not Found';
+                $data = null;
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $message = 'Terjadi kesalahan. ' . $e->getMessage();
+            $data = null;
+        } catch (QueryException $e) {
+            DB::rollBack();
+            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $message = 'Terjadi kesalahan. ' . $e->getMessage();
+            $data = null;
+        } finally {
+            $response = [
+                'status_code' => $responseCode,
+                'message' => $message,
+                'response' => $data
+            ];
+
+            return response()->json($response, $responseCode);
+        }
+    }
 }

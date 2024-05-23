@@ -7,7 +7,7 @@
                 <div class="content-dosen">
                     <p>Latansa Bima Amanta</p>
                     <p>19216801203</p>
-                    <a href="">
+                    <a href="">                   
                         <button>Detail Data</button>
                     </a>
                 </div>

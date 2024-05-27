@@ -7,21 +7,23 @@ use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
-class ProposalController extends Controller
+class SuratBalasanController extends Controller
 {
     private $param;
 
     public function __construct()
     {
-        $this->param['header'] = 'Proposal Magang';
+        $this->param['header'] = 'Surat Balasan';
     }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $this->param['title'] = 'Proposal';
+        $this->param['title'] = 'Surat Balasan';
         $this->param['data'] = AlurMagang::with('kelompok')
             ->with('kelompok.anggota')
             ->with('kelompok.ketua')
@@ -29,10 +31,11 @@ class ProposalController extends Controller
             ->with('kelompok.ketua.prodi')
             ->with('kelompok.anggota.prodi')
             ->whereNotNull('alur_magangs.proposal')
+            ->where('alur_magangs.status_proposal', 'diterima')
             ->orderBy('id', 'desc')
             ->get();
             // return $this->param;
-        return view('backend.proposal.index', $this->param);
+        return view('backend.surat-balasan.index', $this->param);
     }
 
     /**
@@ -48,21 +51,36 @@ class ProposalController extends Controller
      */
     public function store(Request $request)
     {
+        $validated = $request->validate([
+            'surat_pengantar' => 'required'
+        ], [
+            'required' => ':attribute harus diisi.'
+        ], [
+            'surat_pengantar' => 'Surat Pengantar'
+        ]);
+
+        if(!$validated) {
+            return redirect()->back()->withError('Surat Pengantar harus diisi.');
+        }
+
         DB::beginTransaction();
         try {
-            $alurMagang = AlurMagang::findOrFail($request->id);
-            $alurMagang->status_proposal = $request->tindak_lanjut;
-            if($request->revisi != null) {
-                $alurMagang->revisi_proposal = $request->revisi;
-            } 
-            if($request->alasan_ditolak) {
-                $alurMagang->alasan_proposal_ditolak = $request->alasan_ditolak;
+            $id = $request->id;
+            $file = $request->file('surat_pengantar');
+            $filename = $file->getClientOriginalName();
+            $filePath = public_path() . '/upload/surat-pengantar/' . $id;
+            if(!File::isDirectory($filePath)) {
+                File::makeDirectory($filePath, 493, true);
             }
+            $file->move($filePath, $filename);
+
+            $alurMagang = AlurMagang::findOrFail($id);
+            $alurMagang->surat_pengantar = '/upload/surat-pengantar/' . $id . '/' . $filename;
             $alurMagang->updated_at = now();
             $alurMagang->save();
             DB::commit();
 
-            return redirect()->route('proposal.index')->withStatus('Berhasil menambahkan menindaklanjuti proposal.');
+            return redirect()->route('surat-balasan.index')->withStatus('Berhasil menambahkan surat proposal magang');
         } catch (Exception $e) {
             DB::rollBack();
             return redirect()->back()->withError('Terjadi kesalahan. ' . $e->getMessage());

@@ -49,48 +49,45 @@
            <!-- Nav items -->
            <ul class="navbar-nav">
              <li class="nav-item">
-               <a class="nav-link" href="#navbar-manajemen" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-manajemen">
+               <a class="nav-link {{ (request()->segment(1) == 'akun-mahasiswa' || request()->segment(1) == 'proposal' || request()->segment(1) == 'surat-balasan') ? 'active' : '' }}" href="#navbar-manajemen" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-manajemen">
                  <i class="ni ni-shop text-primary"></i>
                  <span class="nav-link-text">Manajemen Magang</span>
                </a>
-               <div class="collapse" id="navbar-manajemen">
+               <div class="collapse {{ (request()->segment(1) == 'akun-mahasiswa' || request()->segment(1) == 'proposal' || request()->segment(1) == 'surat-balasan') ? 'show' : '' }}" id="navbar-manajemen">
                  <ul class="nav nav-sm flex-column">
                    <li class="nav-item">
-                     <a href="{{ route('akun-mahasiswa.index') }}" class="nav-link">Akun Mahasiswa</a>
+                     <a href="{{ route('akun-mahasiswa.index') }}" class="nav-link {{ (request()->segment(1) == 'akun-mahasiswa') ? 'active' : '' }}">Akun Mahasiswa</a>
                    </li>
                    <li class="nav-item">
-                     <a href="{{ route('proposal.index') }}" class="nav-link">Proposal Magang</a>
+                     <a href="{{ route('proposal.index') }}" class="nav-link {{ (request()->segment(1) == 'proposal') ? 'active' : '' }}">Proposal Magang</a>
                    </li>
                    <li class="nav-item">
-                     <a href="#" class="nav-link">Surat Balasan</a>
-                   </li>
-                   <li class="nav-item">
-                     <a href="#" class="nav-link">Surat Pengantar</a>
+                     <a href="{{ route('surat-balasan.index') }}" class="nav-link {{ (request()->segment(1) == 'surat-balasan') ? 'active' : '' }}">Surat Balasan</a>
                    </li>
                  </ul>
                </div>
              </li>
              <li class="nav-item">
-               <a class="nav-link" href="#navbar-master" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-master">
+               <a class="nav-link {{ (request()->segment(1) == 'prodi' || request()->segment(1) == 'file-template' || request()->segment(1) == 'faq' || request()->segment(1) == 'tempat-magang' || request()->segment(1) == 'dospem') ? 'active' : '' }}" href="#navbar-master" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-master">
                  <i class="ni ni-ungroup text-orange"></i>
                  <span class="nav-link-text">Master</span>
                </a>
-               <div class="collapse" id="navbar-master">
+               <div class="collapse  {{ (request()->segment(1) == 'prodi' || request()->segment(1) == 'file-template' || request()->segment(1) == 'faq' || request()->segment(1) == 'tempat-magang' || request()->segment(1) == 'dospem') ? 'show' : '' }}" id="navbar-master">
                  <ul class="nav nav-sm flex-column">
                    <li class="nav-item">
-                     <a href="{{ route('dospem.index') }}" class="nav-link">Dosen</a>
+                     <a href="{{ route('dospem.index') }}" class="nav-link {{ (request()->segment(1) == 'dospem') ? 'active' : '' }}">Dosen</a>
                    </li>
                    <li class="nav-item">
-                     <a href="{{ route('tempat-magang.index') }}" class="nav-link">Tempat Magang</a>
+                     <a href="{{ route('tempat-magang.index') }}" class="nav-link {{ (request()->segment(1) == 'tempat-magang') ? 'active' : '' }}">Tempat Magang</a>
                    </li>
                    <li class="nav-item">
-                     <a href="{{ route('faq.index') }}" class="nav-link">FAQ</a>
+                     <a href="{{ route('faq.index') }}" class="nav-link {{ (request()->segment(1) == 'faq') ? 'active' : '' }}">FAQ</a>
                    </li>
                    <li class="nav-item">
-                     <a href="{{ route('file-template.index') }}" class="nav-link">File Template</a>
+                     <a href="{{ route('file-template.index') }}" class="nav-link {{ (request()->segment(1) == 'file-template') ? 'active' : '' }}">File Template</a>
                    </li>
                    <li class="nav-item">
-                     <a href="{{ route('prodi.index') }}" class="nav-link">Program Studi</a>
+                     <a href="{{ route('prodi.index') }}" class="nav-link {{ (request()->segment(1) == 'prodi') ? 'active' : '' }}">Program Studi</a>
                    </li>
                  </ul>
                </div>

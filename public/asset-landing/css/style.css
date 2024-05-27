@@ -558,3 +558,14 @@ body{
     border: none;
     align-items: center;
 }
+
+/* modals */
+.modal-body thead tr td {
+    text-align: justify;
+}
+.modal-footer button {
+    width: 80px;
+}
+.modal-footer button p {
+    margin: 0 auto;
+}

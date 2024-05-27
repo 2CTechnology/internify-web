@@ -7,9 +7,9 @@
             <div class="content-magang">
                 <p>PT Telekomunikasi (Telkom)</p>
                 <p>Surabaya</p>
-                <a href="">
-                    <button>Detail Data</button>
-                </a>
+                    <button data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        Detail Data
+                    </button>
             </div>
         </div>
     </div>
@@ -77,9 +77,9 @@
             <div class="content-magang">
                 <p>PT Telekomunikasi (Telkom)</p>
                 <p>Surabaya</p>
-                <a href="">
-                    <button>Detail Data</button>
-                </a>
+                    <button>
+                        Detail Data
+                    </button>
             </div>
         </div>
     </div>

@@ -6,10 +6,10 @@
                 </div>
                 <div class="content-dosen">
                     <p>Latansa Bima Amanta</p>
-                    <p>19216801203</p>
-                    <a href="">                   
-                        <button>Detail Data</button>
-                    </a>
+                    <p>19216801203</p>                   
+                        <button data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            Detail Data
+                        </button>
                 </div>
             </div>
         </div>

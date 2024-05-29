@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\KelompokController;
 use App\Http\Controllers\API\PlotingController;
 use App\Http\Controllers\API\ProdiController;
+use App\Http\Controllers\API\TempatMagangController;
 use App\Http\Controllers\API\UsersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -39,4 +40,5 @@ Route::middleware('auth:sanctum')
         Route::post('/upload-proposal/{id}', [KelompokController::class, 'uploadProposal']);
         Route::get('/get-kelompok', [KelompokController::class, 'getKelompokById']);
         Route::post('/upload-surat-balasan/{id}', [KelompokController::class, 'uploadSuratBalasan']);
+        Route::get('/get-tempat-magang', [TempatMagangController::class, 'get']);
     });

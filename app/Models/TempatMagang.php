@@ -13,6 +13,16 @@ class TempatMagang extends Model
         'nama_tempat',
         'daerah',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'deskripsi_pekerjaan',
+        'fasilitas',
+        'deskripsi_perusahaan',
+        'website',
+        'industri',
+        'employee_size',
+        'head_office',
+        'type',
+        'since',
+        'specialization',
     ];
 }

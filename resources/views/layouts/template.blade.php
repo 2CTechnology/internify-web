@@ -29,6 +29,12 @@
    <link rel="stylesheet" href="{{ asset('new-assets/vendor/@fortawesome/fontawesome-free/css/all.min.css')}}" type="text/css">
    <!-- Argon CSS -->
    <link rel="stylesheet" href="{{ asset('new-assets/css/argon.css?v=1.1.0')}}" type="text/css">
+
+   <style>
+    .hidden {
+      display: none;
+    }
+   </style>
  </head>
  
  <body>
@@ -49,11 +55,11 @@
            <!-- Nav items -->
            <ul class="navbar-nav">
              <li class="nav-item">
-               <a class="nav-link {{ (request()->segment(1) == 'akun-mahasiswa' || request()->segment(1) == 'proposal' || request()->segment(1) == 'surat-balasan') ? 'active' : '' }}" href="#navbar-manajemen" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-manajemen">
+               <a class="nav-link {{ (request()->segment(1) == 'akun-mahasiswa' || request()->segment(1) == 'proposal' || request()->segment(1) == 'surat-balasan' || request()->segment(1) == 'ploting-dosen') ? 'active' : '' }}" href="#navbar-manajemen" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-manajemen">
                  <i class="ni ni-shop text-primary"></i>
                  <span class="nav-link-text">Manajemen Magang</span>
                </a>
-               <div class="collapse {{ (request()->segment(1) == 'akun-mahasiswa' || request()->segment(1) == 'proposal' || request()->segment(1) == 'surat-balasan') ? 'show' : '' }}" id="navbar-manajemen">
+               <div class="collapse {{ (request()->segment(1) == 'akun-mahasiswa' || request()->segment(1) == 'proposal' || request()->segment(1) == 'surat-balasan' || request()->segment(1) == 'ploting-dosen') ? 'show' : '' }}" id="navbar-manajemen">
                  <ul class="nav nav-sm flex-column">
                    <li class="nav-item">
                      <a href="{{ route('akun-mahasiswa.index') }}" class="nav-link {{ (request()->segment(1) == 'akun-mahasiswa') ? 'active' : '' }}">Akun Mahasiswa</a>
@@ -63,6 +69,9 @@
                    </li>
                    <li class="nav-item">
                      <a href="{{ route('surat-balasan.index') }}" class="nav-link {{ (request()->segment(1) == 'surat-balasan') ? 'active' : '' }}">Surat Balasan</a>
+                   </li>
+                   <li class="nav-item">
+                     <a href="{{ route('ploting-dosen.ploting-dosen.index') }}" class="nav-link {{ (request()->segment(1) == 'ploting-dosen') ? 'active' : '' }}">Ploting Dosen</a>
                    </li>
                  </ul>
                </div>

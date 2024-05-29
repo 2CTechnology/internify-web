@@ -31,7 +31,7 @@ Route::post('/cek-otp', [UsersController::class, 'cekOTP']);
 Route::post('/reset-password', [UsersController::class, 'resetPassword']);
 
 Route::middleware('auth:sanctum')
-    ->group(function (){
+    ->group(function () {
         Route::post('/get-user', [UsersController::class, 'dataUserById']);
         Route::get('/get-area', [PlotingController::class, 'getArea']);
         Route::get('/get-list-dospem', [PlotingController::class, 'getDosenByArea']);

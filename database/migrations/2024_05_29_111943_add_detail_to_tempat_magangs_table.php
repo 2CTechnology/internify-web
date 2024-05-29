@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::table('tempat_magangs', function (Blueprint $table) {
             $table->string('deskripsi_pekerjaan')->nullable();
-            $table->string('fasilitas')->nullable();
+            $table->string('kriteria')->nullable();
             $table->string('deskripsi_perusahaan')->nullable();
             $table->string('website')->nullable();
             $table->string('industri')->nullable();

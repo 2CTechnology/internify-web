@@ -15,10 +15,8 @@ return new class extends Migration {
             $table->string('kriteria')->nullable();
             $table->string('deskripsi_perusahaan')->nullable();
             $table->string('website')->nullable();
-            $table->string('industri')->nullable();
             $table->integer('employee_size')->nullable();
             $table->string('head_office')->nullable();
-            $table->string('type')->nullable();
             $table->integer('since')->nullable();
             $table->string('specialization')->nullable();
             $table->timestamps();

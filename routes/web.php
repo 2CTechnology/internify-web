@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\FileTemplateController;
+use App\Http\Controllers\PlotingDosenController;
 use App\Http\Controllers\ProposalController;
 use App\Http\Controllers\SuratBalasanController;
 use App\Http\Controllers\TempatMagangController;
@@ -46,6 +47,13 @@ Route::resource('dospem', DospemController::class);
 Route::resource('akun-mahasiswa', AkunMahasiswaController::class);
 Route::resource('proposal', ProposalController::class);
 Route::resource('surat-balasan', SuratBalasanController::class);
+
+Route::prefix('ploting-dosen')->name('ploting-dosen.')->group(function() {
+    Route::resource('ploting-dosen', PlotingDosenController::class);
+    Route::get('/import', [PlotingDosenController::class, 'showImport'])->name('import');
+    Route::post('/post-import', [PlotingDosenController::class, 'storeImport'])->name('store-import');
+    Route::post('/get-dosen-by-nidn', [PlotingDosenController::class, 'getDosenByNIDN'])->name('get-dosen-by-nidn');
+});
 
 Route::get('/template', function () {
     return view('layouts.template');

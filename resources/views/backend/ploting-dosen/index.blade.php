@@ -21,7 +21,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="table-responsive">
-                <table class="table">
+                <table class="table" id="table">
                     <thead>
                         <tr>
                             <th class="text-center">No.</th>
@@ -46,13 +46,15 @@
                                     <a href="{{ route('ploting-dosen.ploting-dosen.edit', $item->id) }}" class="mx-2">
                                         <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-md" data-toggle="tooltip" title="Edit" data-placement="top"><span class="fa fa-pen"></span></button>
                                     </a>
-                                    <button type="button" class="btn btn-danger btn-md btn-hapus" data-id="{{ $item->id }}" data-toggle="tooltip" title="Nonaktifkan" data-placement="top">
-                                        <span class="fa fa-trash"></span>
-                                    </button>
-                                    <form action="{{ route('ploting-dosen.ploting-dosen.destroy', $item->id) }}" method="post" id="hapus-{{ $item->id }}">
-                                        @csrf
-                                        @method('delete')
-                                    </form>
+                                    @if ($item->status)
+                                        <button type="button" class="btn btn-danger btn-md btn-hapus" data-id="{{ $item->id }}" data-toggle="tooltip" title="Nonaktifkan" data-placement="top">
+                                            <span class="fa fa-trash"></span>
+                                        </button>
+                                        <form action="{{ route('ploting-dosen.ploting-dosen.destroy', $item->id) }}" method="post" id="hapus-{{ $item->id }}">
+                                            @csrf
+                                            @method('delete')
+                                        </form>
+                                    @endif
                                 </td>
                             </tr>
                         @empty
@@ -67,8 +69,18 @@
     </div>
 @endsection
 
-@push('custom-sript')
+@push('custom-script')
     <script>
+        $(document).ready( function () {
+            console.log('test');
+            $('#table').DataTable({
+                columnDefs: [{
+                    "defaultContent": "-",
+                    "targets": "_all"
+                }]
+            });
+        });
+
         $(".btn-hapus").on("click", function(){
             var id = $(this).data('id')
             console.log(`dec: ${id}`);

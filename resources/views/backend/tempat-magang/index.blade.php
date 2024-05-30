@@ -20,7 +20,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="table-responsive">
-                <table class="table">
+                <table class="table" id="table">
                     <thead>
                         <tr>
                             <th class="text-center">No.</th>
@@ -85,5 +85,14 @@
                 }
             });
         })
+
+        $(document).ready( function () {
+            $('#table').DataTable({
+                columnDefs: [{
+                    "defaultContent": "-",
+                    "targets": "_all"
+                }]
+            });
+        });
     </script>
 @endpush

@@ -207,6 +207,10 @@
    <script src="{{ asset('new-assets/js/demo.min.js')}}"></script>
    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+   {{-- Datatable --}}
+   <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css" />
+   <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+   
    @stack('custom-script')
  </body>
  

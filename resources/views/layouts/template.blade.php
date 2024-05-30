@@ -116,23 +116,20 @@
                 <li class="nav-item dropdown">
                   <a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <div class="media align-items-center">
-                      <span class="avatar avatar-sm rounded-circle">
-                        <img alt="Image placeholder" src="{{ asset('new-assets/img/theme/team-4.jpg')}}">
-                      </span>
                       <div class="media-body ml-2 d-none d-lg-block">
-                        <span class="mb-0 text-sm  font-weight-bold">John Snow</span>
+                        <span class="mb-0 text-sm  font-weight-bold">{{ Auth::user()->name }}</span>
                       </div>
                     </div>
                   </a>
                   <div class="dropdown-menu dropdown-menu-right">
-                    <form action="{{ route('logout') }}" method="post">
+                    <div class="dropdown-item">
+                      <a href="#" id="btn-logout">
+                        <i class="ni ni-user-run"></i>
+                        Logout
+                      </a>
+                    </div>
+                    <form action="{{ route('logout') }}" method="post" id="logout">
                         @csrf
-                        <div class="dropdown-item">
-                            <button button type="submit" class="border-0">
-                                <i class="ni ni-user-run"></i>
-                                Logout
-                            </button>
-                        </div>
                     </form>
                   </div>
                 </li>
@@ -207,6 +204,31 @@
    <script src="{{ asset('new-assets/js/demo.min.js')}}"></script>
    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+   {{-- Datatable --}}
+   <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css" />
+   <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+
+   <script>
+    $("#btn-logout").on('click', function() {
+      console.log('test');
+      Swal.fire({
+          title: "Konfirmasi",
+          text: "Apakah Anda Yakin Logout?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Ya",
+          cancelButtonText: "Tidak"
+      }).then((result) => {
+          if (result.isConfirmed) {
+              $(`#logout`).submit()
+          }
+      });
+    })
+
+   </script>
+   
    @stack('custom-script')
  </body>
  

@@ -11,8 +11,18 @@ class TempatMagang extends Model
     protected $table = 'tempat_magangs';
     protected $fillable = [
         'nama_tempat',
-        'daerah',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'deskripsi_pekerjaan',
+        'deskripsi_perusahaan',
+        'website',
+        'industri',
+        'employee_size',
+        'head_office',
+        'since',
+        'specialization',
+        'kriteria',
+        'posisi',
+        'alamat',
     ];
 }

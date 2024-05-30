@@ -93,6 +93,8 @@ class UsersController extends Controller
             $user->angkatan = $request->get('angkatan');
             $user->golongan = $request->get('golongan');
             $user->prodi_id = $request->get('prodi_id');
+            $user->no_telp = $request->get('no_telp');
+            $user->jenis_kelamin = strtolower($request->get('gender'));
             $user->is_accepted = 0;
             $user->role = 'Mahasiswa';
             $user->created_at = now();

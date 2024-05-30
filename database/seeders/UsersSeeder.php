@@ -42,5 +42,16 @@ class UsersSeeder extends Seeder
                 'prodi_id' => 1,
                 'angkatan' => '2024'
             ]);
+
+        DB::table('users')
+            ->insert([
+                'name' => 'Rayasya',
+                'no_identitas' => 'd1234',
+                'email' => 'rayasya.dziqi@gmail.com',
+                'password' => Hash::make('admin123'),
+                'role' => 'Mahasiswa',
+                'prodi_id' => 1,
+                'angkatan' => '2022'
+            ]);
     }
 }

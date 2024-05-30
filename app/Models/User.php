@@ -65,6 +65,6 @@ class User extends Authenticatable
     }
 
     public function prodi () {
-        return $this->belongsTo(Prodi::class, 'prodi_id');
+        return $this->belongsTo(Prodi::class);
     }
 }

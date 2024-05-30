@@ -46,12 +46,12 @@
                                     <a href="{{ route('ploting-dosen.ploting-dosen.edit', $item->id) }}" class="mx-2">
                                         <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-md" data-toggle="tooltip" title="Edit" data-placement="top"><span class="fa fa-pen"></span></button>
                                     </a>
-                                    <form action="{{ route('ploting-dosen.ploting-dosen.destroy', $item->id) }}" method="post">
+                                    <button type="button" class="btn btn-danger btn-md btn-hapus" data-id="{{ $item->id }}" data-toggle="tooltip" title="Nonaktifkan" data-placement="top">
+                                        <span class="fa fa-trash"></span>
+                                    </button>
+                                    <form action="{{ route('ploting-dosen.ploting-dosen.destroy', $item->id) }}" method="post" id="hapus-{{ $item->id }}">
                                         @csrf
                                         @method('delete')
-                                        <button type="button" class="btn btn-danger btn-md" data-toggle="tooltip" title="Nonaktifkan" data-placement="top" onclick="confirm('{{ __("Apakah anda yakin ingin menonaktifkan?") }}') ? this.parentElement.submit() : ''">
-                                            <span class="fa fa-trash"></span>
-                                        </button>
                                     </form>
                                 </td>
                             </tr>
@@ -66,3 +66,26 @@
         </div>
     </div>
 @endsection
+
+@push('custom-sript')
+    <script>
+        $(".btn-hapus").on("click", function(){
+            var id = $(this).data('id')
+            console.log(`dec: ${id}`);
+            Swal.fire({
+                title: "Konfirmasi",
+                text: "Apakah Anda Yakin Menonaktifkan Data Ini?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Ya",
+                cancelButtonText: "Tidak"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $(`#hapus-${id}`).submit()
+                }
+            });
+        })
+    </script>
+@endpush

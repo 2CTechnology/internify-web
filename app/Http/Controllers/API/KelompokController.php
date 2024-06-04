@@ -207,7 +207,7 @@ class KelompokController extends Controller
 
             $data = $kelompok;
             $message = 'Berhasil menampilkan kelompok.';
-            Response::HTTP_OK;
+            $responseCode = Response::HTTP_OK;
         } catch (Exception $e) {
             $message = 'Terjadi kesalahan. ' . $e->getMessage();
             $data = null;

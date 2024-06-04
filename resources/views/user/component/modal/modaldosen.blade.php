@@ -1,9 +1,10 @@
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+@forelse ($data as $item)
+<!-- Modal -->
+  <div class="modal fade" id="exampleModal{{$item->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Detail Data</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Detail Dosen {{ $item->name }}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -12,19 +13,16 @@
                 <fieldset disabled>
                     <div class="mb-3">
                       <label for="disabledTextInput" class="form-label">Nama Dosen</label>
-                      <input type="text" id="disabledTextInput" class="form-control">
+                      <input type="text" id="disabledTextInput" class="form-control" value="{{ $item->name ?? '-' }}">
 
                       <label for="disabledTextInput" class="form-label">NIDN</label>
-                      <input type="text" id="disabledTextInput" class="form-control">
+                      <input type="text" id="disabledTextInput" class="form-control" value="{{ $item->no_identitas ?? '-' }}">
 
                       <label for="disabledTextInput" class="form-label">Email</label>
-                      <input type="text" id="disabledTextInput" class="form-control">
+                      <input type="text" id="disabledTextInput" class="form-control" value="{{ $item->email ?? '-' }}">
 
                       <label for="disabledTextInput" class="form-label">No. Telp</label>
-                      <input type="text" id="disabledTextInput" class="form-control">
-
-                      <label for="disabledTextInput" class="form-label">Program Studi</label>
-                      <input type="text" id="disabledTextInput" class="form-control">
+                      <input type="text" id="disabledTextInput" class="form-control" value="{{ $item->no_telp ?? '-' }}">
                     </div>
                   </fieldset>
             </form>
@@ -87,3 +85,6 @@
       </div>
     </div>
   </div>
+@empty
+    
+@endforelse

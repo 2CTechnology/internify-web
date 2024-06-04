@@ -18,5 +18,23 @@ class ProdiSeeder extends Seeder
             'nama_prodi' => 'Teknik Informatika',
             'created_at' => now(),
         ]);
+
+        DB::table('mst_prodi')
+        ->insert([
+            'nama_prodi' => 'Manajemen Informatika',
+            'created_at' => now(),
+        ]);
+
+        DB::table('mst_prodi')
+        ->insert([
+            'nama_prodi' => 'Teknik Komputer',
+            'created_at' => now(),
+        ]);
+
+        DB::table('mst_prodi')
+        ->insert([
+            'nama_prodi' => 'Bisnis Digital',
+            'created_at' => now(),
+        ]);
     }
 }

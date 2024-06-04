@@ -28,6 +28,7 @@ class ProposalController extends Controller
             ->with('kelompok.dospem')
             ->with('kelompok.ketua.prodi')
             ->with('kelompok.anggota.prodi')
+            ->with('tempatMagang')
             ->whereNotNull('alur_magangs.proposal')
             ->orderBy('id', 'desc')
             ->get();

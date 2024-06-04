@@ -1,9 +1,10 @@
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+@foreach ($data as $item)
+<!-- Modal -->
+  <div class="modal fade" id="exampleModal{{$item->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Detail Data</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Detail {{$item->nama_tempat}}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -12,16 +13,37 @@
                 <fieldset disabled>
                     <div class="mb-3">
                       <label for="disabledTextInput" class="form-label">Nama Tempat</label>
-                      <input type="text" id="disabledTextInput" class="form-control">
+                      <input type="text" id="disabledTextInput" class="form-control" value="{{ $item->nama_tempat }}">
 
-                      <label for="disabledTextInput" class="form-label">Kota</label>
-                      <input type="text" id="disabledTextInput" class="form-control">
+                      <label for="disabledTextInput" class="form-label">Head Office</label>
+                      <input type="text" id="disabledTextInput" class="form-control" value="{{ $item->head_office }}">
 
                       <label for="disabledTextInput" class="form-label">Alamat</label>
-                      <input type="text" id="disabledTextInput" class="form-control">
+                      <input type="text" id="disabledTextInput" class="form-control" value="{{ $item->alamat }}">
 
-                      <label for="disabledTextInput" class="form-label">Detail Tempat</label>
-                      <textarea id="disabledTextInput" class="form-control" rows="4"> </textarea>
+                      <label for="disabledTextInput" class="form-label">Deskripsi Perusahaan</label>
+                      <textarea id="disabledTextInput" class="form-control" rows="4">{{ $item->deskripsi_perusahaan }}</textarea>
+
+                      <label for="disabledTextInput" class="form-label">Deskripsi Pekerjaan</label>
+                      <textarea id="disabledTextInput" class="form-control" rows="4">{{ $item->deskripsi_pekerjaan }}</textarea>
+
+                      <label for="disabledTextInput" class="form-label">Website</label>
+                      <input type="text" id="disabledTextInput" class="form-control" value="{{ $item->website }}">
+
+                      <label for="disabledTextInput" class="form-label">Jumlah Karyawan</label>
+                      <input type="text" id="disabledTextInput" class="form-control" value="{{ $item->employee_size }}">
+
+                      <label for="disabledTextInput" class="form-label">Berdiri Sejak</label>
+                      <input type="text" id="disabledTextInput" class="form-control" value="{{ $item->since }}">
+
+                      <label for="disabledTextInput" class="form-label">Spesialisasi</label>
+                      <input type="text" id="disabledTextInput" class="form-control" value="{{ $item->specialization }}">
+
+                      <label for="disabledTextInput" class="form-label">Kriteria</label>
+                      <input type="text" id="disabledTextInput" class="form-control" value="{{ $item->kriteria }}">
+
+                      <label for="disabledTextInput" class="form-label">Posisi</label>
+                      <input type="text" id="disabledTextInput" class="form-control" value="{{ $item->posisi }}">
                     </div>
                   </fieldset>
             </form>
@@ -74,4 +96,5 @@
         </div>
       </div>
     </div>
-  </div>
+</div>
+@endforeach

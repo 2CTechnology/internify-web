@@ -34,7 +34,7 @@ class UsersSeeder extends Seeder
 
         DB::table('users')
             ->insert([
-                'name' => 'Ex Mahasiswa',
+                'name' => 'Hafidz Fadhillah Febrianto',
                 'no_identitas' => 'd1234',
                 'email' => 'hafidzfadhillah606@gmail.com',
                 'password' => Hash::make('12345678'),

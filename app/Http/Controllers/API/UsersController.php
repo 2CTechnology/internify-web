@@ -87,21 +87,20 @@ class UsersController extends Controller
         try {
             $user = new User();
             $user->name = $request->get('nama');
-            $user->no_identitas = $request->get('no_identitas');
+            // $user->no_identitas = $request->get('no_identitas');
             $user->email = $request->get('email');
             $user->password = $request->get('password');
-            $user->angkatan = $request->get('angkatan');
-            $user->golongan = $request->get('golongan');
-            $user->prodi_id = $request->get('prodi_id');
-            $user->no_telp = $request->get('no_telp');
-            $user->jenis_kelamin = strtolower($request->get('gender'));
-            $user->is_accepted = 0;
+            // $user->angkatan = $request->get('angkatan');
+            // $user->golongan = $request->get('golongan');
+            // $user->prodi_id = $request->get('prodi_id');
+            // $user->no_telp = $request->get('no_telp');
+            // $user->jenis_kelamin = strtolower($request->get('gender'));
             $user->role = 'Mahasiswa';
             $user->created_at = now();
             $user->save();
             
             DB::commit();
-            $message = 'Berhasil menambahkan data.';
+            $message = 'Account Successfully Created';
             $responseCode = Response::HTTP_OK;
         } catch (Exception $e) {
             DB::rollBack();
@@ -113,7 +112,8 @@ class UsersController extends Controller
             $message = 'Terjadi kesalahan. ' . $e->getMessage();
         } finally {
             $response = [
-                'message' => $message
+                'status_code' => $responseCode,
+                'message' => $message,
             ];
 
             return response()->json($response, $responseCode);
@@ -276,25 +276,44 @@ class UsersController extends Controller
             ->where('role', 'Mahasiswa')
             ->with([
                 'kelompok',
-                'kelompok.anggota'
+                'kelompok.anggota',
             ])->first();
 
             if($user != null) {
-                $data = $user;
+                $responseUser = [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'no_identitas' => $user->no_identitas,
+                    'email' => $user->email,
+                    'email_verified_at' => $user->email_verified_at,
+                    'role' => $user->role,
+                    'foto' => $user->foto,
+                    'no_telp' => $user->no_telp,
+                    'created_at' => $user->created_at,
+                    'updated_at' => $user->updated_at,
+                    'is_accepted' => $user->is_accepted,
+                    'angkatan' => $user->angkatan,
+                    'golongan' => $user->golongan,
+                    'prodi_id' => $user->prodi_id,
+                    'tanggal_lahir' => $user->tanggal_lahir,
+                    'jenis_kelamin' => $user->jenis_kelamin,
+                    'prodi_name' => $user->prodi ? $user->prodi->nama_prodi : null,
+                    'kelompok' => $user->kelompok
+                ];
+    
+                $data = $responseUser;
                 $responseCode = Response::HTTP_OK;
-                $message = 'Success Get Data User';
+                $message = 'Success';
             } else {
                 $responseCode = Response::HTTP_NOT_FOUND;
                 $message = 'User Not Found';
                 $data = null;
             }
         } catch (Exception $e) {
-            DB::rollBack();
             $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
             $message = 'Terjadi kesalahan. ' . $e->getMessage();
             $data = null;
         } catch (QueryException $e) {
-            DB::rollBack();
             $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
             $message = 'Terjadi kesalahan. ' . $e->getMessage();
             $data = null;
@@ -303,6 +322,52 @@ class UsersController extends Controller
                 'status_code' => $responseCode,
                 'message' => $message,
                 'response' => $data
+            ];
+
+            return response()->json($response, $responseCode);
+        }
+    }
+
+    public function updateUser(Request $request) {
+        $message = '';
+        $responseCode = Response::HTTP_BAD_REQUEST;
+
+        DB::beginTransaction();
+        try {
+            $user = User::where('id', $request->get('id'))
+            ->first();
+            if ($user != null) {
+                DB::table('users')
+                    ->where('id', $request->get('id'))
+                    ->update([
+                        'name' => $request->get('name'),
+                        'no_identitas' => $request->get('nim'),
+                        'email' => $request->get('email'),
+                        'prodi_id' => $request->get('prodi_id'),
+                        'no_telp' => $request->get('no_telp'),
+                        'tanggal_lahir' => $request->get('tanggal_lahir'),
+                        'jenis_kelamin' => strtolower($request->get('gender')),
+                        'updated_at' => now()
+                    ]);
+                DB::commit();
+                $responseCode = Response::HTTP_OK;
+                $message = 'Successfully Update Profile';
+            } else {
+                $responseCode = Response::HTTP_NOT_FOUND;
+                $message = 'User Not Found';
+            }
+        } catch (Exception $e) {
+            DB::rollBack();
+            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $message = 'Terjadi kesalahan. ' . $e->getMessage();
+        } catch (QueryException $e) {
+            DB::rollBack();
+            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+            $message = 'Terjadi kesalahan. ' . $e->getMessage();
+        } finally {
+            $response = [
+                'status_code' => $responseCode,
+                'message' => $message,
             ];
 
             return response()->json($response, $responseCode);

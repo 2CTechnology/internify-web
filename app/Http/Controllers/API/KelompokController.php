@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use stdClass;
 
 class KelompokController extends Controller
 {
@@ -71,13 +72,8 @@ class KelompokController extends Controller
 
         DB::beginTransaction();
         try {
-            $kelompok = Kelompok::find($id);
-            $kelompok->id_dospem = $request->get('id_dospem');
-            $kelompok->updated_at = now();
-            $kelompok->save();
-
             $alurMagang = new AlurMagang();
-            $alurMagang->id_kelompok = $kelompok->id;
+            $alurMagang->id_kelompok = $id;
             $alurMagang->tempat_magang = $request->get('tempat_magang');
             $alurMagang->status = null;
             $alurMagang->created_at = now();
@@ -207,7 +203,7 @@ class KelompokController extends Controller
 
             $data = $kelompok;
             $message = 'Berhasil menampilkan kelompok.';
-            Response::HTTP_OK;
+            $responseCode = Response::HTTP_OK;
         } catch (Exception $e) {
             $message = 'Terjadi kesalahan. ' . $e->getMessage();
             $data = null;
@@ -224,5 +220,110 @@ class KelompokController extends Controller
 
             return response()->json($response, $responseCode);
         } 
+    }
+
+    public function insertDospem($id, Request $request) {
+        $data = null;
+        $message = '';
+        $responseCode = Response::HTTP_BAD_REQUEST;
+
+        DB::beginTransaction();
+        try {
+            $kelompok = Kelompok::find($id);
+            $kelompok->id_dospem = $request->get('id_dospem');
+            $kelompok->updated_at = now();
+            $kelompok->save();
+            DB::commit();
+
+            $message = 'Berhasil menambahkan dospem.';
+            $responseCode = Response::HTTP_OK;
+        } catch (Exception $e) {
+            DB::rollBack();
+            $message = 'Terjadi kesalahan. ' . $e->getMessage();
+            $data = null;
+            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+        } catch (QueryException $e) {
+            DB::rollBack();
+            $message = 'Terjadi kesalahan. ' . $e->getMessage();
+            $data = null;
+            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+        } finally {
+            $response = [
+                'message' => $message,
+            ];
+
+            return response()->json($response, $responseCode);
+        }
+    }
+
+    public function cekStatus() {
+        $data = null;
+        $returnData = new stdClass;
+        $message = '';
+        $responseCode = Response::HTTP_BAD_REQUEST;
+
+        try {
+            $userId = auth()->user()->id;
+            $kelompok = Kelompok::where('id_users', $userId)->first();
+            if(!$kelompok) {
+                $data = null;
+                $message = 'Data kelompok tidak ditemukan.';
+                $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+            }
+            $alurMagang = AlurMagang::where('id_kelompok', $kelompok?->id)->first();
+            if (!$alurMagang) {
+                $returnData->message = 'Kelompok belum melakukan pemilihan tempat magang.';
+                $returnData->dataAlurMagang = $alurMagang;
+            } else if ($alurMagang) {
+                // if ($)
+            }
+        } catch (Exception $e) {
+
+        } catch (QueryException $e) {
+
+        } finally {
+            $response = [
+                'message' => $message,
+                'data' => $data,
+            ];
+
+            return response()->json($response, $responseCode);
+        }
+    }
+
+    public function InsertTempatMagangById ($id, Request $request) {
+        $data = null;
+        $message = '';
+        $responseCode = Response::HTTP_BAD_REQUEST;
+
+        DB::beginTransaction();
+        try {
+            $alurMagang = new AlurMagang();
+            $alurMagang->id_kelompok = $id;
+            $alurMagang->id_tempat_magang = $request->get('id_tempat_magang');
+            $alurMagang->status = null;
+            $alurMagang->created_at = now();
+            $alurMagang->save();
+
+            DB::commit();
+            $message = 'Berhasil menambahkan tempat magang.';
+            $responseCode = Response::HTTP_OK;
+        } catch (Exception $e) {
+            DB::rollBack();
+            $message = 'Terjadi kesalahan. ' . $e->getMessage();
+            $data = null;
+            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+        } catch (QueryException $e) {
+            DB::rollBack();
+            $message = 'Terjadi kesalahan. ' . $e->getMessage();
+            $data = null;
+            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+        } finally {
+            $response = [
+                'message' => $message,
+            ];
+
+            return response()->json($response, $responseCode);
+        }
     }
 }

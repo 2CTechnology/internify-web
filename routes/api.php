@@ -32,13 +32,16 @@ Route::post('/reset-password', [UsersController::class, 'resetPassword']);
 
 Route::middleware('auth:sanctum')
     ->group(function () {
-        Route::post('/get-user', [UsersController::class, 'dataUserById']);
+        Route::get('/get-tempat-magang', [TempatMagangController::class, 'get']);
         Route::get('/get-area', [PlotingController::class, 'getArea']);
         Route::get('/get-list-dospem', [PlotingController::class, 'getDosenByArea']);
+        Route::get('/get-kelompok', [KelompokController::class, 'getKelompokById']);
+        Route::post('/get-user', [UsersController::class, 'dataUserById']);
+        Route::post('/update-user', [UsersController::class, 'updateUser']);
         Route::post('/create-kelompok', [KelompokController::class, 'createKelompok']);
         Route::post('/insert-tempat-magang/{id}', [KelompokController::class, 'insertTempatMagang']);
         Route::post('/upload-proposal/{id}', [KelompokController::class, 'uploadProposal']);
-        Route::get('/get-kelompok', [KelompokController::class, 'getKelompokById']);
         Route::post('/upload-surat-balasan/{id}', [KelompokController::class, 'uploadSuratBalasan']);
-        Route::get('/get-tempat-magang', [TempatMagangController::class, 'get']);
+        Route::post('/insert-dospem/{id}', [KelompokController::class, 'insertDospem']);
+        Route::post('/insert-tempat-magang-by-id/{id}', [KelompokController::class, 'insertTempatMagangById']);
     });

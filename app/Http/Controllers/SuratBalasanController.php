@@ -30,6 +30,7 @@ class SuratBalasanController extends Controller
             ->with('kelompok.dospem')
             ->with('kelompok.ketua.prodi')
             ->with('kelompok.anggota.prodi')
+            ->with('tempatMagang')
             ->whereNotNull('alur_magangs.proposal')
             ->where('alur_magangs.status_proposal', 'diterima')
             ->orderBy('id', 'desc')

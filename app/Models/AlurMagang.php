@@ -27,4 +27,8 @@ class AlurMagang extends Model
     public function kelompok() {
         return $this->belongsTo(Kelompok::class, 'id_kelompok');
     }
+
+    public function tempatMagang () {
+        return $this->belongsTo(TempatMagang::class, 'id_tempat_magang');
+    }
 }

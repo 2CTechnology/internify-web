@@ -57,6 +57,15 @@
                     Login
                 </div>
                 <div class="card-body px-lg-5 py-lg-5">
+      
+                  @if (Session::has('error'))
+                      <div class="alert alert-danger alert-dismissible" role="alert">
+                          <button type="button" class="close" data-dismiss="alert">
+                              <i class="fa fa-times"></i>
+                          </button>
+                          <strong> {{ session('error') }}</strong>
+                      </div>
+                  @endif
                     <form role="form" method="POST" action="{{ route('login') }}" enctype="multipart/form-data">
                             @csrf
                             <div class="form-group mb-3">

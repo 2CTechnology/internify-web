@@ -27,21 +27,23 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::group(['middleware' => 'auth'], function () {
-    Route::resource('faq', FaqController::class);
-    Route::resource('tempat-magang', TempatMagangController::class);
-    Route::resource('file-template', FileTemplateController::class);
-    Route::resource('prodi', ProdiController::class);
-    Route::resource('dospem', DospemController::class);
-    Route::resource('akun-mahasiswa', AkunMahasiswaController::class);
-    Route::resource('proposal', ProposalController::class);
-    Route::resource('surat-balasan', SuratBalasanController::class);
-    
-    Route::prefix('ploting-dosen')->name('ploting-dosen.')->group(function() {
-        Route::resource('ploting-dosen', PlotingDosenController::class);
-        Route::get('/import', [PlotingDosenController::class, 'showImport'])->name('import');
-        Route::post('/post-import', [PlotingDosenController::class, 'storeImport'])->name('store-import');
-        Route::post('/get-dosen-by-nidn', [PlotingDosenController::class, 'getDosenByNIDN'])->name('get-dosen-by-nidn');
-    }); 
+    Route::group(['middleware' => 'checkRole'], function () {
+        Route::resource('faq', FaqController::class);
+        Route::resource('tempat-magang', TempatMagangController::class);
+        Route::resource('file-template', FileTemplateController::class);
+        Route::resource('prodi', ProdiController::class);
+        Route::resource('dospem', DospemController::class);
+        Route::resource('akun-mahasiswa', AkunMahasiswaController::class);
+        Route::resource('proposal', ProposalController::class);
+        Route::resource('surat-balasan', SuratBalasanController::class);
+        
+        Route::prefix('ploting-dosen')->name('ploting-dosen.')->group(function() {
+            Route::resource('ploting-dosen', PlotingDosenController::class);
+            Route::get('/import', [PlotingDosenController::class, 'showImport'])->name('import');
+            Route::post('/post-import', [PlotingDosenController::class, 'storeImport'])->name('store-import');
+            Route::post('/get-dosen-by-nidn', [PlotingDosenController::class, 'getDosenByNIDN'])->name('get-dosen-by-nidn');
+        }); 
+    });
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index']);

@@ -26,7 +26,7 @@ class TempatMagangController extends Controller
             } else if($namaTempat != null) {
                 $data = TempatMagang::where('nama_tempat', 'like', "%$namaTempat%")->get();
             } else if($alamat) {
-                $data = TempatMagang::where('nama_tempat', 'like', "%$alamat%")->get();
+                $data = TempatMagang::where('alamat', 'like', "%$alamat%")->get();
             } else {
                 $data = TempatMagang::orderBy('id', 'desc')
                     ->get();

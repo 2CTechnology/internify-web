@@ -36,6 +36,7 @@ Route::middleware('auth:sanctum')
         Route::get('/get-area', [PlotingController::class, 'getArea']);
         Route::get('/get-list-dospem', [PlotingController::class, 'getDosenByArea']);
         Route::get('/get-kelompok', [KelompokController::class, 'getKelompokById']);
+        Route::get('/get-dosen', [PlotingController::class, 'getDosen']);
         Route::post('/get-user', [UsersController::class, 'dataUserById']);
         Route::post('/update-user', [UsersController::class, 'updateUser']);
         Route::post('/create-kelompok', [KelompokController::class, 'createKelompok']);

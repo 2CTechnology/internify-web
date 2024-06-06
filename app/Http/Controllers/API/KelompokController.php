@@ -25,7 +25,6 @@ class KelompokController extends Controller
         DB::beginTransaction();
         try {
             $kelompok = new Kelompok();
-            $kelompok->nama_kelompok = $request->get('nama_kelompok');
             $kelompok->id_users = auth()->user()->id;
             $kelompok->created_at = now();
             $kelompok->save();
@@ -39,14 +38,19 @@ class KelompokController extends Controller
                     'id_prodi' => $item['id_prodi'],
                     'angkatan' => $item['angkatan'],
                     'golongan' => $item['golongan'],
+                    'no_telp' => $item['no_telp'],
+                    'tanggal_lahir' => $item['tanggal_lahir'],
+                    'jenis_kelamin' => strtolower($item['gender']),
+                    'email' => $item['email'],
                     'created_at' => now(),
                     'id_kelompok' => $kelompokId,
                 ]);
             }
             Anggota::insert($anggotas);
             DB::commit();
-            $message = 'Berhasil menambahkan data.';
+
             $responseCode = Response::HTTP_OK;
+            $message = 'Berhasil menambahkan data';
         } catch (Exception $e) {
             DB::rollBack();
             $message = 'Terjadi kesalahan. ' . $e->getMessage();
@@ -59,6 +63,7 @@ class KelompokController extends Controller
             $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
         } finally {
             $response = [
+                'status_code' => $responseCode,
                 'message' => $message,
             ];
 

@@ -269,30 +269,51 @@ class KelompokController extends Controller
 
     public function cekStatus()
     {
+        // return auth()->user();
         $data = null;
         $returnData = new stdClass;
         $message = '';
         $responseCode = Response::HTTP_BAD_REQUEST;
 
         try {
+            $responseCode = Response::HTTP_OK;
             $userId = auth()->user()->id;
-            $kelompok = Kelompok::where('id_users', $userId)->first();
+            $kelompok = Kelompok::where('id_users', $userId)->orderBy('id', 'desc')->first();
             if (!$kelompok) {
                 $data = null;
                 $message = 'Data kelompok tidak ditemukan.';
-                $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
             }
-            $alurMagang = AlurMagang::where('id_kelompok', $kelompok?->id)->first();
+            $alurMagang = AlurMagang::where('id_kelompok', $kelompok?->id)->orderBy('id', 'desc')->first();
             if (!$alurMagang) {
                 $returnData->message = 'Kelompok belum melakukan pemilihan tempat magang.';
                 $returnData->dataAlurMagang = $alurMagang;
             } else if ($alurMagang) {
-                // if ($)
+                if ($alurMagang?->status_proposal == 'menunggu konfirmasi') {
+                    $returnData->message = 'Proposal menunggu konfirmasi dari admin atau dosen.';
+                    $returnData->dataAlurMagang = $alurMagang;
+                } else if ($alurMagang->status_proposal == 'revisi') {
+                    $returnData->message = 'Terdapat revisi proposal. ' . $alurMagang->revisi_proposal;
+                    $returnData->dataAlurMagang = $alurMagang;
+                } else if ($alurMagang->status_proposal == 'ditolak') {
+                    $returnData->message = 'Proposal ditolak. ' . $alurMagang->alasan_proposal_ditolak;
+                    $returnData->dataAlurMagang = $alurMagang;
+                } else {
+                    $returnData->message = 'Proposal diterima.';
+                    $returnData->dataAlurMagang = $alurMagang;
+                }
             }
+            $message = 'Berhasil menampilkan data alur magang.';
+            $data = $returnData;
         } catch (Exception $e) {
-
+            DB::rollBack();
+            $message = 'Terjadi kesalahan. ' . $e->getMessage();
+            $data = null;
+            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
         } catch (QueryException $e) {
-
+            DB::rollBack();
+            $message = 'Terjadi kesalahan. ' . $e->getMessage();
+            $data = null;
+            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
         } finally {
             $response = [
                 'message' => $message,

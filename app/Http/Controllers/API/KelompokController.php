@@ -195,7 +195,7 @@ class KelompokController extends Controller
         }
     }
 
-    public function getKelompokById()
+    public function getKelompokById(Request $request)
     {
         $data = null;
         $message = '';
@@ -203,7 +203,7 @@ class KelompokController extends Controller
 
         try {
             $kelompok = Kelompok::with('anggota')
-                ->where('id_users', auth()->user()->id)
+                ->where('id_users', $request->get('id'))
                 ->join('users as d', 'd.id', 'kelompoks.id_dospem')
                 ->select(
                     'kelompoks.*',
@@ -211,9 +211,16 @@ class KelompokController extends Controller
                 )
                 ->first();
 
-            $data = $kelompok;
-            $message = 'Berhasil menampilkan kelompok.';
-            $responseCode = Response::HTTP_OK;
+            if ($kelompok != null) {
+                $responseCode = Response::HTTP_OK;
+                $message = 'Berhasil menampilkan kelompok.';
+                $data = $kelompok;
+            } else {
+                $responseCode = Response::HTTP_NOT_FOUND;
+                $data = null;
+                $message = 'Data kelompok tidak ditemukan.';
+            }
+
         } catch (Exception $e) {
             $message = 'Terjadi kesalahan. ' . $e->getMessage();
             $data = null;
@@ -225,7 +232,7 @@ class KelompokController extends Controller
         } finally {
             $response = [
                 'message' => $message,
-                'data' => $data
+                'response' => $data
             ];
 
             return response()->json($response, $responseCode);

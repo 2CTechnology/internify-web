@@ -204,10 +204,10 @@ class KelompokController extends Controller
         try {
             $kelompok = Kelompok::with('anggota')
                 ->where('id_users', $request->get('id'))
-                ->join('users as d', 'd.id', 'kelompoks.id_dospem')
+                ->leftJoin('users as d', 'd.id', 'kelompoks.id_dospem')
                 ->select(
                     'kelompoks.*',
-                    'd.name'
+                    'd.name as nama_dosen'
                 )
                 ->first();
 

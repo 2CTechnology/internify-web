@@ -11,7 +11,8 @@ use Illuminate\Http\Response;
 
 class TempatMagangController extends Controller
 {
-    public function get(Request $request) {
+    public function get(Request $request)
+    {
         // return $request->all();
         $message = '';
         $data = null;
@@ -19,13 +20,13 @@ class TempatMagangController extends Controller
 
         try {
             $id = $request->get('id');
-            $namaTempat = $request->get('nama_tempat');
+            $posisi = $request->get('posisi');
             $alamat = $request->get('alamat');
             if ($id != null) {
                 $data = TempatMagang::findOrFail($id);
-            } else if($namaTempat != null) {
-                $data = TempatMagang::where('nama_tempat', 'like', "%$namaTempat%")->get();
-            } else if($alamat) {
+            } else if ($posisi != null) {
+                $data = TempatMagang::where('posisi', 'like', "%$posisi%")->get();
+            } else if ($alamat) {
                 $data = TempatMagang::where('alamat', 'like', "%$alamat%")->get();
             } else {
                 $data = TempatMagang::orderBy('id', 'desc')

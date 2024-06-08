@@ -289,28 +289,30 @@ class KelompokController extends Controller
             if (!$kelompok) {
                 $data = null;
                 $message = 'Data kelompok tidak ditemukan.';
-            }
-            $alurMagang = AlurMagang::where('id_kelompok', $kelompok?->id)->orderBy('id', 'desc')->first();
-            if (!$alurMagang) {
-                $returnData->message = 'Kelompok belum melakukan pemilihan tempat magang.';
-                $returnData->dataAlurMagang = $alurMagang;
-            } else if ($alurMagang) {
-                if ($alurMagang?->status_proposal == 'menunggu konfirmasi') {
-                    $returnData->message = 'Proposal menunggu konfirmasi dari admin atau dosen.';
+            } else {
+                $alurMagang = AlurMagang::where('id_kelompok', $kelompok?->id)->orderBy('id', 'desc')->first();
+                if (!$alurMagang) {
+                    $returnData->message = 'Kelompok belum melakukan pemilihan tempat magang.';
                     $returnData->dataAlurMagang = $alurMagang;
-                } else if ($alurMagang->status_proposal == 'revisi') {
-                    $returnData->message = 'Terdapat revisi proposal. ' . $alurMagang->revisi_proposal;
-                    $returnData->dataAlurMagang = $alurMagang;
-                } else if ($alurMagang->status_proposal == 'ditolak') {
-                    $returnData->message = 'Proposal ditolak. ' . $alurMagang->alasan_proposal_ditolak;
-                    $returnData->dataAlurMagang = $alurMagang;
-                } else {
-                    $returnData->message = 'Proposal diterima.';
-                    $returnData->dataAlurMagang = $alurMagang;
+                } else if ($alurMagang) {
+                    if ($alurMagang?->status_proposal == 'menunggu konfirmasi') {
+                        $returnData->message = 'Proposal menunggu konfirmasi dari admin atau dosen.';
+                        $returnData->dataAlurMagang = $alurMagang;
+                    } else if ($alurMagang->status_proposal == 'revisi') {
+                        $returnData->message = 'Terdapat revisi proposal. ' . $alurMagang->revisi_proposal;
+                        $returnData->dataAlurMagang = $alurMagang;
+                    } else if ($alurMagang->status_proposal == 'ditolak') {
+                        $returnData->message = 'Proposal ditolak. ' . $alurMagang->alasan_proposal_ditolak;
+                        $returnData->dataAlurMagang = $alurMagang;
+                    } else {
+                        $returnData->message = 'Proposal diterima.';
+                        $returnData->dataAlurMagang = $alurMagang;
+                    }
                 }
+                $message = 'Berhasil menampilkan data alur magang.';
+                $data = $returnData;
             }
-            $message = 'Berhasil menampilkan data alur magang.';
-            $data = $returnData;
+
         } catch (Exception $e) {
             DB::rollBack();
             $message = 'Terjadi kesalahan. ' . $e->getMessage();

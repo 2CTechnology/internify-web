@@ -17,6 +17,10 @@ class Anggota extends Model
         'golongan',
         'created_at',
         'id_kelompok',
+        'tanggal_lahir',
+        'jenis_kelamin',
+        'no_telp',
+        'email'
     ];
     
     public function prodi () {

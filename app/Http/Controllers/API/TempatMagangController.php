@@ -11,15 +11,23 @@ use Illuminate\Http\Response;
 
 class TempatMagangController extends Controller
 {
-    public function get(Request $request) {
+    public function get(Request $request)
+    {
+        // return $request->all();
         $message = '';
         $data = null;
         $responseCode = Response::HTTP_BAD_REQUEST;
 
         try {
             $id = $request->get('id');
+            $posisi = $request->get('posisi');
+            $alamat = $request->get('alamat');
             if ($id != null) {
                 $data = TempatMagang::findOrFail($id);
+            } else if ($posisi != null) {
+                $data = TempatMagang::where('posisi', 'like', "%$posisi%")->get();
+            } else if ($alamat) {
+                $data = TempatMagang::where('alamat', 'like', "%$alamat%")->get();
             } else {
                 $data = TempatMagang::orderBy('id', 'desc')
                     ->get();

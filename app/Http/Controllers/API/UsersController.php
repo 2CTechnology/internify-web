@@ -347,6 +347,8 @@ class UsersController extends Controller
                         'no_telp' => $request->get('no_telp'),
                         'tanggal_lahir' => $request->get('tanggal_lahir'),
                         'jenis_kelamin' => strtolower($request->get('gender')),
+                        'angkatan' => $request->get('angkatan'),
+                        'golongan' => $request->get('golongan'),
                         'updated_at' => now()
                     ]);
                 DB::commit();

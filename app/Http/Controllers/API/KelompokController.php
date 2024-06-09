@@ -16,7 +16,8 @@ use stdClass;
 
 class KelompokController extends Controller
 {
-    public function createKelompok (Request $request) {
+    public function createKelompok(Request $request)
+    {
         $data = null;
         $message = '';
         $responseCode = Response::HTTP_BAD_REQUEST;
@@ -24,28 +25,32 @@ class KelompokController extends Controller
         DB::beginTransaction();
         try {
             $kelompok = new Kelompok();
-            $kelompok->nama_kelompok = $request->get('nama_kelompok');
             $kelompok->id_users = auth()->user()->id;
             $kelompok->created_at = now();
             $kelompok->save();
             $kelompokId = $kelompok->id;
 
             $anggotas = [];
-            foreach($request->get('anggota') as $key => $item) {
+            foreach ($request->get('anggota') as $key => $item) {
                 array_push($anggotas, [
                     'nim' => $item['nim'],
                     'nama' => $item['nama'],
                     'id_prodi' => $item['id_prodi'],
                     'angkatan' => $item['angkatan'],
                     'golongan' => $item['golongan'],
+                    'no_telp' => $item['no_telp'],
+                    'tanggal_lahir' => $item['tanggal_lahir'],
+                    'jenis_kelamin' => strtolower($item['gender']),
+                    'email' => $item['email'],
                     'created_at' => now(),
                     'id_kelompok' => $kelompokId,
                 ]);
             }
             Anggota::insert($anggotas);
             DB::commit();
-            $message = 'Berhasil menambahkan data.';
+
             $responseCode = Response::HTTP_OK;
+            $message = 'Berhasil menambahkan data';
         } catch (Exception $e) {
             DB::rollBack();
             $message = 'Terjadi kesalahan. ' . $e->getMessage();
@@ -58,6 +63,7 @@ class KelompokController extends Controller
             $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
         } finally {
             $response = [
+                'status_code' => $responseCode,
                 'message' => $message,
             ];
 
@@ -65,7 +71,8 @@ class KelompokController extends Controller
         }
     }
 
-    public function InsertTempatMagang ($id, Request $request) {
+    public function InsertTempatMagang($id, Request $request)
+    {
         $data = null;
         $message = '';
         $responseCode = Response::HTTP_BAD_REQUEST;
@@ -100,8 +107,9 @@ class KelompokController extends Controller
             return response()->json($response, $responseCode);
         }
     }
-    
-    public function uploadProposal ($id, Request $request) {
+
+    public function uploadProposal($id, Request $request)
+    {
         $data = null;
         $message = '';
         $responseCode = Response::HTTP_BAD_REQUEST;
@@ -109,11 +117,11 @@ class KelompokController extends Controller
         DB::beginTransaction();
         try {
             $alurMagang = AlurMagang::where('id_kelompok', $id)->first();
-            
+
             $file = $request->file('proposal');
             $filename = $file->getClientOriginalName();
             $filePath = public_path() . '/upload/proposal/' . $id;
-            if(!File::isDirectory($filePath)) {
+            if (!File::isDirectory($filePath)) {
                 File::makeDirectory($filePath, 493, true);
             }
             $file->move($filePath, $filename);
@@ -121,7 +129,7 @@ class KelompokController extends Controller
             $alurMagang->proposal = '/upload/proposal/' . $id . '/' . $filename;
             $alurMagang->updated_at = now();
             $alurMagang->save();
-            
+
             DB::commit();
             $message = 'Berhasil upload proposal.';
             $responseCode = Response::HTTP_OK;
@@ -143,19 +151,20 @@ class KelompokController extends Controller
             return response()->json($response, $responseCode);
         }
     }
-    
-    public function uploadSuratBalasan ($id, Request $request) {
+
+    public function uploadSuratBalasan($id, Request $request)
+    {
         $message = '';
         $responseCode = Response::HTTP_BAD_REQUEST;
 
         DB::beginTransaction();
         try {
             $alurMagang = AlurMagang::where('id_kelompok', $id)->first();
-            
+
             $file = $request->file('surat_balasan');
             $filename = $file->getClientOriginalName();
             $filePath = public_path() . '/upload/surat-balasan/' . $id;
-            if(!File::isDirectory($filePath)) {
+            if (!File::isDirectory($filePath)) {
                 File::makeDirectory($filePath, 493, true);
             }
             $file->move($filePath, $filename);
@@ -163,7 +172,7 @@ class KelompokController extends Controller
             $alurMagang->surat_balasan = '/upload/surat-balasan/' . $id . '/' . $filename;
             $alurMagang->updated_at = now();
             $alurMagang->save();
-            
+
             DB::commit();
             $message = 'Berhasil upload surat balasan.';
             $responseCode = Response::HTTP_OK;
@@ -186,24 +195,32 @@ class KelompokController extends Controller
         }
     }
 
-    public function getKelompokById() {
+    public function getKelompokById(Request $request)
+    {
         $data = null;
         $message = '';
         $responseCode = Response::HTTP_BAD_REQUEST;
 
         try {
             $kelompok = Kelompok::with('anggota')
-                ->where('id_users', auth()->user()->id)
-                ->join('users as d', 'd.id', 'kelompoks.id_dospem')
+                ->where('id_users', $request->get('id'))
+                ->leftJoin('users as d', 'd.id', 'kelompoks.id_dospem')
                 ->select(
                     'kelompoks.*',
-                    'd.name'
+                    'd.name as nama_dosen'
                 )
                 ->first();
 
-            $data = $kelompok;
-            $message = 'Berhasil menampilkan kelompok.';
-            $responseCode = Response::HTTP_OK;
+            if ($kelompok != null) {
+                $responseCode = Response::HTTP_OK;
+                $message = 'Berhasil menampilkan kelompok.';
+                $data = $kelompok;
+            } else {
+                $responseCode = Response::HTTP_NOT_FOUND;
+                $data = null;
+                $message = 'Data kelompok tidak ditemukan.';
+            }
+
         } catch (Exception $e) {
             $message = 'Terjadi kesalahan. ' . $e->getMessage();
             $data = null;
@@ -215,14 +232,15 @@ class KelompokController extends Controller
         } finally {
             $response = [
                 'message' => $message,
-                'data' => $data
+                'response' => $data
             ];
 
             return response()->json($response, $responseCode);
-        } 
+        }
     }
 
-    public function insertDospem($id, Request $request) {
+    public function insertDospem($id, Request $request)
+    {
         $data = null;
         $message = '';
         $responseCode = Response::HTTP_BAD_REQUEST;
@@ -256,31 +274,55 @@ class KelompokController extends Controller
         }
     }
 
-    public function cekStatus() {
+    public function cekStatus()
+    {
+        // return auth()->user();
         $data = null;
         $returnData = new stdClass;
         $message = '';
         $responseCode = Response::HTTP_BAD_REQUEST;
 
         try {
+            $responseCode = Response::HTTP_OK;
             $userId = auth()->user()->id;
-            $kelompok = Kelompok::where('id_users', $userId)->first();
-            if(!$kelompok) {
+            $kelompok = Kelompok::where('id_users', $userId)->orderBy('id', 'desc')->first();
+            if (!$kelompok) {
                 $data = null;
                 $message = 'Data kelompok tidak ditemukan.';
-                $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+            } else {
+                $alurMagang = AlurMagang::where('id_kelompok', $kelompok?->id)->orderBy('id', 'desc')->first();
+                if (!$alurMagang) {
+                    $returnData->message = 'Kelompok belum melakukan pemilihan tempat magang.';
+                    $returnData->dataAlurMagang = $alurMagang;
+                } else if ($alurMagang) {
+                    if ($alurMagang?->status_proposal == 'menunggu konfirmasi') {
+                        $returnData->message = 'Proposal menunggu konfirmasi dari admin atau dosen.';
+                        $returnData->dataAlurMagang = $alurMagang;
+                    } else if ($alurMagang->status_proposal == 'revisi') {
+                        $returnData->message = 'Terdapat revisi proposal. ' . $alurMagang->revisi_proposal;
+                        $returnData->dataAlurMagang = $alurMagang;
+                    } else if ($alurMagang->status_proposal == 'ditolak') {
+                        $returnData->message = 'Proposal ditolak. ' . $alurMagang->alasan_proposal_ditolak;
+                        $returnData->dataAlurMagang = $alurMagang;
+                    } else {
+                        $returnData->message = 'Proposal diterima.';
+                        $returnData->dataAlurMagang = $alurMagang;
+                    }
+                }
+                $message = 'Berhasil menampilkan data alur magang.';
+                $data = $returnData;
             }
-            $alurMagang = AlurMagang::where('id_kelompok', $kelompok?->id)->first();
-            if (!$alurMagang) {
-                $returnData->message = 'Kelompok belum melakukan pemilihan tempat magang.';
-                $returnData->dataAlurMagang = $alurMagang;
-            } else if ($alurMagang) {
-                // if ($)
-            }
+
         } catch (Exception $e) {
-
+            DB::rollBack();
+            $message = 'Terjadi kesalahan. ' . $e->getMessage();
+            $data = null;
+            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
         } catch (QueryException $e) {
-
+            DB::rollBack();
+            $message = 'Terjadi kesalahan. ' . $e->getMessage();
+            $data = null;
+            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
         } finally {
             $response = [
                 'message' => $message,
@@ -291,7 +333,8 @@ class KelompokController extends Controller
         }
     }
 
-    public function InsertTempatMagangById ($id, Request $request) {
+    public function InsertTempatMagangById($id, Request $request)
+    {
         $data = null;
         $message = '';
         $responseCode = Response::HTTP_BAD_REQUEST;
@@ -300,7 +343,7 @@ class KelompokController extends Controller
         try {
             $alurMagang = new AlurMagang();
             $alurMagang->id_kelompok = $id;
-            $alurMagang->id_tempat_magang = $request->get('id_tempat_magang');
+            $alurMagang->tempat_magang = $request->get('id_tempat_magang');
             $alurMagang->status = null;
             $alurMagang->created_at = now();
             $alurMagang->save();

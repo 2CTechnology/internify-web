@@ -24,17 +24,34 @@ class SuratBalasanController extends Controller
     public function index()
     {
         $this->param['title'] = 'Surat Balasan';
-        $this->param['data'] = AlurMagang::with('kelompok')
-            ->with('kelompok.anggota')
-            ->with('kelompok.ketua')
-            ->with('kelompok.dospem')
-            ->with('kelompok.ketua.prodi')
-            ->with('kelompok.anggota.prodi')
-            ->with('tempatMagang')
-            ->whereNotNull('alur_magangs.proposal')
-            ->where('alur_magangs.status_proposal', 'diterima')
-            ->orderBy('id', 'desc')
-            ->get();
+        if(auth()->user()->role == 'Admin') {
+            $data = AlurMagang::with('kelompok')
+                ->with('kelompok.anggota')
+                ->with('kelompok.ketua')
+                ->with('kelompok.dospem')
+                ->with('kelompok.ketua.prodi')
+                ->with('kelompok.anggota.prodi')
+                ->with('tempatMagang')
+                ->whereNotNull('alur_magangs.proposal')
+                ->where('alur_magangs.status_proposal', 'diterima')
+                ->orderBy('id', 'desc')
+                ->get();
+        } else if(auth()->user()->role == 'Dosen') {
+            $data = AlurMagang::with('tempatMagang')
+                ->withWhereHas('kelompok', function($q) {
+                    return $q->where('id_dospem', auth()->user()->id);
+                })
+                ->with('kelompok.anggota')
+                ->with('kelompok.ketua')
+                ->with('kelompok.dospem')
+                ->with('kelompok.ketua.prodi')
+                ->with('kelompok.anggota.prodi')
+                ->whereNotNull('alur_magangs.proposal')
+                ->where('alur_magangs.status_proposal', 'diterima')
+                ->orderBy('id', 'desc')
+                ->get();
+        }
+        $this->param['data'] = $data;
             // return $this->param;
         return view('backend.surat-balasan.index', $this->param);
     }

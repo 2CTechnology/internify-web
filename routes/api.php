@@ -35,7 +35,9 @@ Route::middleware('auth:sanctum')
         Route::get('/get-tempat-magang', [TempatMagangController::class, 'get']);
         Route::get('/get-area', [PlotingController::class, 'getArea']);
         Route::get('/get-list-dospem', [PlotingController::class, 'getDosenByArea']);
-        Route::get('/get-kelompok', [KelompokController::class, 'getKelompokById']);
+        Route::post('/get-kelompok', [KelompokController::class, 'getKelompokById']);
+        Route::get('/get-dosen', [PlotingController::class, 'getDosen']);
+        Route::get('/get-alur-magang', [KelompokController::class, 'cekStatus']);
         Route::post('/get-user', [UsersController::class, 'dataUserById']);
         Route::post('/update-user', [UsersController::class, 'updateUser']);
         Route::post('/create-kelompok', [KelompokController::class, 'createKelompok']);

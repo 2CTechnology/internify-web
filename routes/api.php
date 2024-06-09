@@ -41,6 +41,7 @@ Route::middleware('auth:sanctum')
         Route::post('/get-user', [UsersController::class, 'dataUserById']);
         Route::post('/update-user', [UsersController::class, 'updateUser']);
         Route::post('/create-kelompok', [KelompokController::class, 'createKelompok']);
+        Route::post('/update-kelompok', [KelompokController::class, 'updateKelompok']);
         Route::post('/insert-tempat-magang/{id}', [KelompokController::class, 'insertTempatMagang']);
         Route::post('/upload-proposal/{id}', [KelompokController::class, 'uploadProposal']);
         Route::post('/upload-surat-balasan/{id}', [KelompokController::class, 'uploadSuratBalasan']);

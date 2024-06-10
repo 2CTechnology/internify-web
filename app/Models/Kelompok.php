@@ -14,7 +14,8 @@ class Kelompok extends Model
         'id_users',
         'id_dospem',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'nama_kelompok'
     ];
 
     public function anggota() {

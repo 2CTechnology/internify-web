@@ -27,6 +27,7 @@ class KelompokController extends Controller
         try {
             $kelompok = new Kelompok();
             $kelompok->id_users = auth()->user()->id;
+            $kelompok->nama_kelompok = $request->get('nama_kelompok');
             $kelompok->created_at = now();
             $kelompok->save();
             $kelompokId = $kelompok->id;
@@ -80,6 +81,7 @@ class KelompokController extends Controller
         DB::beginTransaction();
         try {
             $kelompok = Kelompok::findOrFail($request->get('id'));
+            $kelompok->nama_kelompok = $request->get('nama_kelompok');
             $kelompok->updated_at = now();
             $kelompok->save();
 

@@ -17,6 +17,7 @@ class AlurMagang extends Model
         'revisi_proposal',
         'alasan_proposal_ditolak',
         'tempat_magang',
+        'nama_posisi',
         'id_tempat_magang',
         'surat_balasan',
         'status',

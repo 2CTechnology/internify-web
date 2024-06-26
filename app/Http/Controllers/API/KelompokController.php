@@ -8,6 +8,7 @@ use App\Models\Anggota;
 use App\Models\Kelompok;
 use Exception;
 use Illuminate\Database\QueryException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -26,6 +27,7 @@ class KelompokController extends Controller
         try {
             $kelompok = new Kelompok();
             $kelompok->id_users = auth()->user()->id;
+            $kelompok->nama_kelompok = $request->get('nama_kelompok');
             $kelompok->created_at = now();
             $kelompok->save();
             $kelompokId = $kelompok->id;
@@ -71,6 +73,65 @@ class KelompokController extends Controller
         }
     }
 
+    public function updateKelompok(Request $request){
+        $data = null;
+        $message = '';
+        $responseCode = Response::HTTP_BAD_REQUEST;
+
+        DB::beginTransaction();
+        try {
+            $kelompok = Kelompok::findOrFail($request->get('id'));
+            $kelompok->nama_kelompok = $request->get('nama_kelompok');
+            $kelompok->updated_at = now();
+            $kelompok->save();
+
+            // Delete existing anggotas related to the kelompok
+            Anggota::where('id_kelompok', $request->get('id'))->delete();
+
+            // Add updated anggotas
+            $anggotas = [];
+            foreach ($request->get('anggota') as $key => $item) {
+                array_push($anggotas, [
+                    'nim' => $item['nim'],
+                    'nama' => $item['nama'],
+                    'id_prodi' => $item['id_prodi'],
+                    'angkatan' => $item['angkatan'],
+                    'golongan' => $item['golongan'],
+                    'no_telp' => $item['no_telp'],
+                    'tanggal_lahir' => $item['tanggal_lahir'],
+                    'jenis_kelamin' => strtolower($item['gender']),
+                    'email' => $item['email'],
+                    'updated_at' => now(),
+                    'id_kelompok' => $kelompok->id,
+                ]); 
+            }
+            Anggota::insert($anggotas);
+            DB::commit();
+
+            $responseCode = Response::HTTP_OK;
+            $message = 'Berhasil memperbarui data';
+        } catch (ModelNotFoundException $e) {
+            DB::rollBack();
+            $message = 'Kelompok tidak ditemukan. ' . $e->getMessage();
+            $responseCode = Response::HTTP_NOT_FOUND;
+        } catch (Exception $e) {
+            DB::rollBack();
+            $message = 'Terjadi kesalahan. ' . $e->getMessage();
+            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+        } catch (QueryException $e) {
+            DB::rollBack();
+            $message = 'Terjadi kesalahan. ' . $e->getMessage();
+            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+        } finally {
+            $response = [
+                'status_code' => $responseCode,
+                'message' => $message,
+            ];
+
+            return response()->json($response, $responseCode);
+        }
+    }
+
     public function InsertTempatMagang($id, Request $request)
     {
         $data = null;
@@ -82,6 +143,7 @@ class KelompokController extends Controller
             $alurMagang = new AlurMagang();
             $alurMagang->id_kelompok = $id;
             $alurMagang->tempat_magang = $request->get('tempat_magang');
+            $alurMagang->nama_posisi = $request->get('nama_posisi');
             $alurMagang->status = null;
             $alurMagang->created_at = now();
             $alurMagang->save();
@@ -343,7 +405,7 @@ class KelompokController extends Controller
         try {
             $alurMagang = new AlurMagang();
             $alurMagang->id_kelompok = $id;
-            $alurMagang->tempat_magang = $request->get('id_tempat_magang');
+            $alurMagang->id_tempat_magang = $request->get('id_tempat_magang');
             $alurMagang->status = null;
             $alurMagang->created_at = now();
             $alurMagang->save();

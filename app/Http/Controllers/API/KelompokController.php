@@ -143,6 +143,7 @@ class KelompokController extends Controller
             $alurMagang = new AlurMagang();
             $alurMagang->id_kelompok = $id;
             $alurMagang->tempat_magang = $request->get('tempat_magang');
+            $alurMagang->nama_posisi = $request->get('nama_posisi');
             $alurMagang->status = null;
             $alurMagang->created_at = now();
             $alurMagang->save();
@@ -404,7 +405,7 @@ class KelompokController extends Controller
         try {
             $alurMagang = new AlurMagang();
             $alurMagang->id_kelompok = $id;
-            $alurMagang->tempat_magang = $request->get('id_tempat_magang');
+            $alurMagang->id_tempat_magang = $request->get('id_tempat_magang');
             $alurMagang->status = null;
             $alurMagang->created_at = now();
             $alurMagang->save();

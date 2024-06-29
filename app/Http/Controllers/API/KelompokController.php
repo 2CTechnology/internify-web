@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Response as FacadesResponse;
 use stdClass;
 
 class KelompokController extends Controller
@@ -429,6 +430,25 @@ class KelompokController extends Controller
             ];
 
             return response()->json($response, $responseCode);
+        }
+    }
+
+    public function downloadSuratPengantar(Request $request) {
+        $idKelompok = $request->get('id_kelompok');
+        $alurMagang = AlurMagang::where('id_kelompok', $idKelompok)->first();
+        if($alurMagang->surat_pengantar != null) {
+            $file = public_path() . $alurMagang->surat_pengantar;
+            $headers = [
+                'Content-Type' => 'application/pdf',
+             ];
+            return response()->download($file, 'surat-pengantar.pdf');
+            // return FacadesResponse::download($file, 'surat-pengantar.pdf', $headers);
+        } else {
+            $response = [
+                'message' => 'Surat pengantar belum diupload.',
+            ];
+
+            return response()->json($response, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

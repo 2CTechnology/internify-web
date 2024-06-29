@@ -146,7 +146,6 @@ class KelompokController extends Controller
             $alurMagang->id_kelompok = $id;
             $alurMagang->tempat_magang = $request->get('tempat_magang');
             $alurMagang->nama_posisi = $request->get('nama_posisi');
-            $alurMagang->status_proposal = "menunggu konfirmasi";
             $alurMagang->status = null;
             $alurMagang->updated_at = now();
             $alurMagang->save();
@@ -192,6 +191,7 @@ class KelompokController extends Controller
             $file->move($filePath, $filename);
 
             $alurMagang->proposal = '/upload/proposal/' . $id . '/' . $filename;
+            $alurMagang->status_proposal = "menunggu konfirmasi";
             $alurMagang->updated_at = now();
             $alurMagang->save();
 
@@ -442,8 +442,9 @@ class KelompokController extends Controller
             $file = public_path() . $alurMagang->surat_pengantar;
             $headers = [
                 'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="surat-pengantar.pdf"',
              ];
-            return response()->download($file, 'surat-pengantar.pdf');
+            return response()->download($file, 'surat-pengantar.pdf', $headers);
             // return FacadesResponse::download($file, 'surat-pengantar.pdf', $headers);
         } else {
             $response = [

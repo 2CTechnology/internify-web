@@ -47,4 +47,5 @@ Route::middleware('auth:sanctum')
         Route::post('/upload-surat-balasan/{id}', [KelompokController::class, 'uploadSuratBalasan']);
         Route::post('/insert-dospem/{id}', [KelompokController::class, 'insertDospem']);
         Route::post('/insert-tempat-magang-by-id/{id}', [KelompokController::class, 'insertTempatMagangById']);
+        Route::post('/download-surat-pengantar', [KelompokController::class, 'downloadSuratPengantar']);
     });

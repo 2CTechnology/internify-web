@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Response as FacadesResponse;
 use stdClass;
 
 class KelompokController extends Controller
@@ -73,7 +74,8 @@ class KelompokController extends Controller
         }
     }
 
-    public function updateKelompok(Request $request){
+    public function updateKelompok(Request $request)
+    {
         $data = null;
         $message = '';
         $responseCode = Response::HTTP_BAD_REQUEST;
@@ -103,7 +105,7 @@ class KelompokController extends Controller
                     'email' => $item['email'],
                     'updated_at' => now(),
                     'id_kelompok' => $kelompok->id,
-                ]); 
+                ]);
             }
             Anggota::insert($anggotas);
             DB::commit();
@@ -140,12 +142,13 @@ class KelompokController extends Controller
 
         DB::beginTransaction();
         try {
-            $alurMagang = new AlurMagang();
+            $alurMagang = AlurMagang::where('id_kelompok', $id)->first();
             $alurMagang->id_kelompok = $id;
             $alurMagang->tempat_magang = $request->get('tempat_magang');
             $alurMagang->nama_posisi = $request->get('nama_posisi');
+            $alurMagang->status_proposal = "menunggu konfirmasi";
             $alurMagang->status = null;
-            $alurMagang->created_at = now();
+            $alurMagang->updated_at = now();
             $alurMagang->save();
 
             DB::commit();
@@ -429,6 +432,25 @@ class KelompokController extends Controller
             ];
 
             return response()->json($response, $responseCode);
+        }
+    }
+
+    public function downloadSuratPengantar(Request $request) {
+        $idKelompok = $request->get('id_kelompok');
+        $alurMagang = AlurMagang::where('id_kelompok', $idKelompok)->first();
+        if($alurMagang->surat_pengantar != null) {
+            $file = public_path() . $alurMagang->surat_pengantar;
+            $headers = [
+                'Content-Type' => 'application/pdf',
+             ];
+            return response()->download($file, 'surat-pengantar.pdf');
+            // return FacadesResponse::download($file, 'surat-pengantar.pdf', $headers);
+        } else {
+            $response = [
+                'message' => 'Surat pengantar belum diupload.',
+            ];
+
+            return response()->json($response, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

@@ -357,20 +357,20 @@ class KelompokController extends Controller
             } else {
                 $alurMagang = AlurMagang::where('id_kelompok', $kelompok?->id)->orderBy('id', 'desc')->first();
                 if (!$alurMagang) {
-                    $returnData->message = 'Kelompok belum melakukan pemilihan tempat magang.';
+                    $returnData->message = 'Not Yet Selected an Internship.';
                     $returnData->dataAlurMagang = $alurMagang;
                 } else if ($alurMagang) {
                     if ($alurMagang?->status_proposal == 'menunggu konfirmasi') {
-                        $returnData->message = 'Proposal menunggu konfirmasi dari admin atau dosen.';
+                        $returnData->message = 'Proposal awaiting confirmation from the admin or lecturer.';
                         $returnData->dataAlurMagang = $alurMagang;
                     } else if ($alurMagang->status_proposal == 'revisi') {
-                        $returnData->message = 'Terdapat revisi proposal. ' . $alurMagang->revisi_proposal;
+                        $returnData->message = 'There are revisions to the proposal. ' . $alurMagang->revisi_proposal;
                         $returnData->dataAlurMagang = $alurMagang;
                     } else if ($alurMagang->status_proposal == 'ditolak') {
-                        $returnData->message = 'Proposal ditolak. ' . $alurMagang->alasan_proposal_ditolak;
+                        $returnData->message = 'Proposal rejected. ' . $alurMagang->alasan_proposal_ditolak;
                         $returnData->dataAlurMagang = $alurMagang;
                     } else {
-                        $returnData->message = 'Proposal diterima.';
+                        $returnData->message = 'Proposal Accepted.';
                         $returnData->dataAlurMagang = $alurMagang;
                     }
                 }

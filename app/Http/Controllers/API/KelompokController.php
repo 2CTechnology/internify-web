@@ -73,7 +73,8 @@ class KelompokController extends Controller
         }
     }
 
-    public function updateKelompok(Request $request){
+    public function updateKelompok(Request $request)
+    {
         $data = null;
         $message = '';
         $responseCode = Response::HTTP_BAD_REQUEST;
@@ -103,7 +104,7 @@ class KelompokController extends Controller
                     'email' => $item['email'],
                     'updated_at' => now(),
                     'id_kelompok' => $kelompok->id,
-                ]); 
+                ]);
             }
             Anggota::insert($anggotas);
             DB::commit();
@@ -140,12 +141,13 @@ class KelompokController extends Controller
 
         DB::beginTransaction();
         try {
-            $alurMagang = new AlurMagang();
+            $alurMagang = AlurMagang::where('id_kelompok', $id)->first();
             $alurMagang->id_kelompok = $id;
             $alurMagang->tempat_magang = $request->get('tempat_magang');
             $alurMagang->nama_posisi = $request->get('nama_posisi');
+            $alurMagang->status_proposal = "menunggu konfirmasi";
             $alurMagang->status = null;
-            $alurMagang->created_at = now();
+            $alurMagang->updated_at = now();
             $alurMagang->save();
 
             DB::commit();

@@ -26,11 +26,19 @@ class KelompokController extends Controller
 
         DB::beginTransaction();
         try {
+            // Table Kelompok
             $kelompok = new Kelompok();
             $kelompok->id_users = auth()->user()->id;
             $kelompok->nama_kelompok = $request->get('nama_kelompok');
             $kelompok->created_at = now();
             $kelompok->save();
+
+            // Table Alur Magang
+            $alur_magang = new AlurMagang();
+            $alur_magang->id_kelompok = $kelompok->id;
+            $alur_magang->created_at = now();
+            $alur_magang->save();
+
             $kelompokId = $kelompok->id;
 
             $anggotas = [];
@@ -82,6 +90,7 @@ class KelompokController extends Controller
 
         DB::beginTransaction();
         try {
+            // Table Kelompok
             $kelompok = Kelompok::findOrFail($request->get('id'));
             $kelompok->nama_kelompok = $request->get('nama_kelompok');
             $kelompok->updated_at = now();

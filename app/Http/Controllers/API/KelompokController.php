@@ -369,6 +369,9 @@ class KelompokController extends Controller
                     } else if ($alurMagang->status_proposal == 'ditolak') {
                         $returnData->message = 'Proposal rejected. ' . $alurMagang->alasan_proposal_ditolak;
                         $returnData->dataAlurMagang = $alurMagang;
+                    } else if ($alurMagang->status_proposal == 'belum ada') {
+                        $returnData->message = 'No internship proposal uploaded yet.';
+                        $returnData->dataAlurMagang = $alurMagang;
                     } else {
                         $returnData->message = 'Proposal Accepted.';
                         $returnData->dataAlurMagang = $alurMagang;
@@ -435,15 +438,16 @@ class KelompokController extends Controller
         }
     }
 
-    public function downloadSuratPengantar(Request $request) {
+    public function downloadSuratPengantar(Request $request)
+    {
         $idKelompok = $request->get('id_kelompok');
         $alurMagang = AlurMagang::where('id_kelompok', $idKelompok)->first();
-        if($alurMagang->surat_pengantar != null) {
+        if ($alurMagang->surat_pengantar != null) {
             $file = public_path() . $alurMagang->surat_pengantar;
             $headers = [
                 'Content-Type' => 'application/pdf',
                 'Content-Disposition' => 'attachment; filename="surat-pengantar.pdf"',
-             ];
+            ];
             return response()->download($file, 'surat-pengantar.pdf', $headers);
             // return FacadesResponse::download($file, 'surat-pengantar.pdf', $headers);
         } else {

@@ -43,6 +43,11 @@ Route::group(['middleware' => 'auth'], function () {
             Route::post('/post-import', [PlotingDosenController::class, 'storeImport'])->name('store-import');
             Route::post('/get-dosen-by-nidn', [PlotingDosenController::class, 'getDosenByNIDN'])->name('get-dosen-by-nidn');
         }); 
+
+        Route::prefix('download')->name('download.')->group(function() {
+            Route::get('proposal/{id}', [ProposalController::class, 'download'])->name('proposal');
+            Route::get('surat-balasan/{id}', [SuratBalasanController::class, 'download'])->name('surat-balasan');
+        });
     });
 });
 

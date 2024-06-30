@@ -50,6 +50,9 @@
                                 </td>
                                 <td class="text-center d-flex justify-content-center">
                                     {{-- <div class="form-inline text-center"> --}}
+                                        <a href="{{ route('download.surat-balasan', $item->id) }}" class="mr-2" download>
+                                            <button type="button" id="PopoverCustomT-1" class="btn btn-secondary btn-md" data-toggle="tooltip" title="Download" data-placement="top"><span class="fa fa-download"></span></button>    
+                                        </a>
                                         <a href="#">
                                             <button data-toggle="modal" data-target="#exampleModal{{ $item->id }}" data-prodi="{{ $item->prodi->nama_prodi ?? '-' }}" data-golongan="{{ $item->golongan }}" data-email="{{ $item->email }}" data-angkatan="{{ $item->angkatan }}" type="button" id="PopoverCustomT-1" class="btn btn-warning btn-md btn-show-modal" data-toggle="tooltip" title="Detail" data-placement="top"><span class="fa fa-eye"></span></button>    
                                         </a>

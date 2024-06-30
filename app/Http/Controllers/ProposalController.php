@@ -119,4 +119,11 @@ class ProposalController extends Controller
     {
         //
     }
+
+    public function download($id) {
+        $proposal = AlurMagang::find($id);
+        $file = public_path() . $proposal->proposal;
+        
+        return response()->download($file);
+    }
 }

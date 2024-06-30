@@ -33,6 +33,7 @@ class SuratBalasanController extends Controller
                 ->with('kelompok.anggota.prodi')
                 ->with('tempatMagang')
                 ->whereNotNull('alur_magangs.proposal')
+                ->whereNotNull('alur_magangs.surat_balasan')
                 ->where('alur_magangs.status_proposal', 'diterima')
                 ->orderBy('id', 'desc')
                 ->get();
@@ -47,6 +48,7 @@ class SuratBalasanController extends Controller
                 ->with('kelompok.ketua.prodi')
                 ->with('kelompok.anggota.prodi')
                 ->whereNotNull('alur_magangs.proposal')
+                ->whereNotNull('alur_magangs.surat_balasan')
                 ->where('alur_magangs.status_proposal', 'diterima')
                 ->orderBy('id', 'desc')
                 ->get();
@@ -138,5 +140,12 @@ class SuratBalasanController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function download($id) {
+        $suratBalasan = AlurMagang::find($id);
+        $file = public_path() . $suratBalasan->surat_balasan;
+        
+        return response()->download($file);
     }
 }

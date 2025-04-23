@@ -37,6 +37,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('proposal', ProposalController::class);
         Route::resource('surat-balasan', SuratBalasanController::class);
         
+        
         Route::prefix('ploting-dosen')->name('ploting-dosen.')->group(function() {
             Route::resource('ploting-dosen', PlotingDosenController::class);
             Route::get('/import', [PlotingDosenController::class, 'showImport'])->name('import');

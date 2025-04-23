@@ -65,16 +65,26 @@
                   <li class="nav-item">
                     <a href="{{ route('akun-mahasiswa.index') }}" class="nav-link {{ (request()->segment(1) == 'akun-mahasiswa') ? 'active' : '' }}">Akun Mahasiswa</a>
                   </li>
-                  @endif
                    <li class="nav-item">
                      <a href="{{ route('proposal.index') }}" class="nav-link {{ (request()->segment(1) == 'proposal') ? 'active' : '' }}">Proposal Magang</a>
                    </li>
                    <li class="nav-item">
                      <a href="{{ route('surat-balasan.index') }}" class="nav-link {{ (request()->segment(1) == 'surat-balasan') ? 'active' : '' }}">Surat Balasan</a>
                    </li>
-                   @if (auth()->user()->role == 'Admin')
                    <li class="nav-item">
                      <a href="{{ route('ploting-dosen.ploting-dosen.index') }}" class="nav-link {{ (request()->segment(1) == 'ploting-dosen') ? 'active' : '' }}">Ploting Dosen</a>
+                   </li>
+                   @endif
+                    <!-- punya dosen -->
+                    @if (auth()->user()->role == 'Dosen')
+                   <li class="nav-item">
+                     <a href="{{ route('berita-acara.index') }}" class="nav-link {{ (request()->segment(1) == 'proposal') ? 'active' : '' }}">berita acara</a>
+                   </li>
+                   <li class="nav-item">
+                     <a href="{{ route('bimbingan.index') }}" class="nav-link {{ (request()->segment(1) == 'proposal') ? 'active' : '' }}">bimbingan</a>
+                   </li>
+                   <li class="nav-item">
+                     <a href="{{ route('evaluasi-magang.index') }}" class="nav-link {{ (request()->segment(1) == 'proposal') ? 'active' : '' }}">evaluasi tempat magang</a>
                    </li>
                    @endif
                  </ul>

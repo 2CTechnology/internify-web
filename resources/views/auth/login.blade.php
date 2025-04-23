@@ -111,6 +111,7 @@
                <a href="{{ route('password.request') }}" class="text-light"><small>Forgot password?</small></a>
              </div>
            </div>
+
          </div>
        </div>
      </div>

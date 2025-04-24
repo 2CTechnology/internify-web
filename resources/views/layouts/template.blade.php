@@ -78,13 +78,13 @@
                     <!-- punya dosen -->
                     @if (auth()->user()->role == 'Dosen')
                    <li class="nav-item">
-                     <a href="{{ route('berita-acara.index') }}" class="nav-link {{ (request()->segment(1) == 'proposal') ? 'active' : '' }}">berita acara</a>
+                     <a href="{{ route('berita-acara.index') }}" class="nav-link {{ (request()->segment(1) == 'berita-acara') ? 'active' : '' }}">berita acara</a>
                    </li>
                    <li class="nav-item">
-                     <a href="{{ route('bimbingan.index') }}" class="nav-link {{ (request()->segment(1) == 'proposal') ? 'active' : '' }}">bimbingan</a>
+                     <a href="{{ route('bimbingan.index') }}" class="nav-link {{ (request()->segment(1) == 'bimbingan') ? 'active' : '' }}">bimbingan</a>
                    </li>
                    <li class="nav-item">
-                     <a href="{{ route('evaluasi-magang.index') }}" class="nav-link {{ (request()->segment(1) == 'proposal') ? 'active' : '' }}">evaluasi tempat magang</a>
+                     <a href="{{ route('evaluasi-magang.index') }}" class="nav-link {{ (request()->segment(1) == 'evaluasi-magang') ? 'active' : '' }}">evaluasi tempat magang</a>
                    </li>
                    @endif
                  </ul>

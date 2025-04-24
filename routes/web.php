@@ -12,6 +12,9 @@ use App\Http\Controllers\PlotingDosenController;
 use App\Http\Controllers\ProposalController;
 use App\Http\Controllers\SuratBalasanController;
 use App\Http\Controllers\TempatMagangController;
+use App\Http\Controllers\BimbinganController;
+use App\Http\Controllers\BeritaAcaraController;
+use App\Http\Controllers\EvaluasiMagangController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,6 +28,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/berita-acara', [BeritaAcaraController::class, 'index'])->name('berita-acara.index');
+Route::get('/bimbingan', [BimbinganController::class, 'index'])->name('bimbingan.index');
+Route::get('/evaluasi-magang', [EvaluasiMagangController::class, 'index'])->name('evaluasi-magang.index');
 
 Route::group(['middleware' => 'auth'], function () {
     Route::group(['middleware' => 'checkRole'], function () {

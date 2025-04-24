@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AkunMahasiswaController;
+use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DospemController;
@@ -70,3 +71,9 @@ Route::get('/template', function () {
 Route::get('/', [LandingController::class, 'index']);
 Route::get('/daftardosen', [LandingController::class, 'daftardosen']);
 Route::get('/tempatmagang', [LandingController::class, 'tempatmagang']);
+
+// Route::get('/chatbot', [ChatbotController::class, 'index']);
+
+Route::get('/chatbot', function () {
+    return view('user.pages.chatbot');
+})->name('chatbot');

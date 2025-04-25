@@ -7,14 +7,14 @@
         <ul>
             <li><a href="#beranda">Beranda</a></li>
             <li><a href="#sub-judul-2">Informasi</a></li>
-            <li><a href="#sub-judul-3">FAQ</a></li>
+            <li><a href="#alur-magang">Alur Magang</a></li>
             <li><a href="#sub-judul-4">Buku Panduan</a></li>
         </ul>
         @else
         <ul>
             <li><a href="/#beranda">Beranda</a></li>
             <li><a href="/#sub-judul-2">Informasi</a></li>
-            <li><a href="/#sub-judul-3">FAQ</a></li>
+            <li><a href="/#alur-magang">Alur Magang</a></li>
             <li><a href="/#sub-judul-4">Buku Panduan</a></li>
         </ul>
         @endif

@@ -291,8 +291,9 @@ body{
 }
 
 /* Section 4 */
-#sub-judul-3 {
+#alur-magang {
     margin-top: -150px;
+    margin-bottom: 50px;
 }
 .container-lima {
     width: 1280px;

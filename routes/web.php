@@ -16,6 +16,8 @@ use App\Http\Controllers\TempatMagangController;
 use App\Http\Controllers\BimbinganController;
 use App\Http\Controllers\BeritaAcaraController;
 use App\Http\Controllers\EvaluasiMagangController;
+use App\Http\Controllers\DataMahasiswaController;
+
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,6 +30,8 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+Route::get('/data-mahasiswa', [DataMahasiswaController::class, 'index'])->name('data-mahasiswa.index');
 
 Route::get('/berita-acara', [BeritaAcaraController::class, 'index'])->name('berita-acara.index');
 Route::get('/bimbingan', [BimbinganController::class, 'index'])->name('bimbingan.index');

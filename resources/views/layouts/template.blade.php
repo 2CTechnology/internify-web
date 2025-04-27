@@ -79,13 +79,13 @@
                     <!-- punya dosen -->
                     @if (auth()->user()->role == 'Dosen')
                    <li class="nav-item">
-                     <a href="{{ route('berita-acara.index') }}" class="nav-link {{ (request()->segment(1) == 'berita-acara') ? 'active' : '' }}">berita acara</a>
+                     <a href="{{ route('berita-acara.index') }}" class="nav-link {{ (request()->segment(1) == 'berita-acara') ? 'active' : '' }}">Berita Acara</a>
                    </li>
                    <li class="nav-item">
-                     <a href="{{ route('bimbingan.index') }}" class="nav-link {{ (request()->segment(1) == 'bimbingan') ? 'active' : '' }}">bimbingan</a>
+                     <a href="{{ route('bimbingan.index') }}" class="nav-link {{ (request()->segment(1) == 'bimbingan') ? 'active' : '' }}">Bimbingan</a>
                    </li>
                    <li class="nav-item">
-                     <a href="{{ route('evaluasi-magang.index') }}" class="nav-link {{ (request()->segment(1) == 'evaluasi-magang') ? 'active' : '' }}">evaluasi tempat magang</a>
+                     <a href="{{ route('evaluasi-magang.index') }}" class="nav-link {{ (request()->segment(1) == 'evaluasi-magang') ? 'active' : '' }}">Evaluasi Tempat Magang</a>
                    </li>
                    @endif
 
@@ -93,9 +93,11 @@
                    <!-- punya Prodi -->
                    @if (auth()->user()->role == 'Prodi')
                    <li class="nav-item">
-                     <a href="{{ route('data-mahasiswa.index') }}" class="nav-link {{ (request()->segment(1) == 'data-mahasiswa') ? 'active' : '' }}">data mahasiswa</a>
+                     <a href="{{ route('data-mahasiswa.index') }}" class="nav-link {{ (request()->segment(1) == 'data-mahasiswa') ? 'active' : '' }}">Data Mahasiswa</a>
                    </li>
-  
+                   <li class="nav-item">
+                     <a href="{{ route('surat-pelaksanaan.index') }}" class="nav-link {{ (request()->segment(1) == 'surat-pelaksanaan') ? 'active' : '' }}">Surat Pelaksanaan</a>
+                   </li>
                    @endif
                  </ul>
                </div>

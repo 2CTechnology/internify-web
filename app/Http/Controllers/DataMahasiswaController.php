@@ -11,7 +11,7 @@ class DataMahasiswaController extends Controller
     {
         $data = []; // bisa kamu isi nanti kalau sudah ada datanya
         $param['title'] = 'Data Mahasiswa';
-        $param['header'] = 'Daftar Data mahasiswa ';
+        $param['header'] = 'Daftar Data Mahasiswa Yang Diterima ';
         $param['data'] = $data;
 
         return view('backend.data-mahasiswa.index', $param);

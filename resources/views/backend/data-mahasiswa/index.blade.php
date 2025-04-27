@@ -9,33 +9,46 @@
 @endpush
 
 @section('content')
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-10"> {{-- Perbesar card untuk tampilan lebih luas --}}
-            <div class="card shadow-lg border-0 rounded-4"> {{-- Tambahkan shadow dan rounded corner --}}
-                <div class="card-header bg-primary text-white rounded-top-4">
-                    
-                </div>
-                <div class="card-body p-4">
-                    <form>
-                        <div class="form-group mb-4">
-                            <label for="tanggal" class="form-label">Tanggal Acara</label>
-                            <input type="date" class="form-control form-control-lg" id="tanggal" name="tanggal" required>
-                        </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table class="table" id="table">
+                    <thead>
+                        <tr>
+                            <th class="text-center">No.</th>
+                            <th class="text-center">Nama</th>
+                            <th class="text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-center">1</td>
+                            <td class="text-center">Nama Ketua</td>
+                            <td class="text-center d-flex justify-content-center">
 
-                        <div class="form-group mb-4">
-                            <label for="keterangan" class="form-label">Keterangan</label>
-                            <textarea class="form-control form-control-lg" id="keterangan" name="keterangan" rows="6" placeholder="Tulis keterangan berita acara di sini..." required></textarea>
-                        </div>
+                                <a href="#" class="mx-2">
+                                    <button type="button" class="btn btn-success btn-md" title="Simpan"
+                                        data-toggle="tooltip" data-placement="top">
+                                        <span class="fa fa-save"></span>
+                                    </button>
+                                </a>
+                                <a href="#">
+                                    <button type="button" class="btn btn-warning btn-md" title="Detail"
+                                        data-toggle="tooltip" data-placement="top">
+                                        <span class="fa fa-eye"></span>
+                                    </button>
+                                </a>
 
-                        <div class="d-flex justify-content-end">
-                            <button type="submit" class="btn btn-success btn-lg">Kirim</button>
-                            <button type="reset" class="btn btn-outline-secondary btn-lg ms-3">Reset</button>
-                        </div>
-                    </form>
-                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="text-center">Tidak Ada Data Tersedia.</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-</div>
+
+
 @endsection

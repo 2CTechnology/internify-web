@@ -18,7 +18,7 @@ use App\Http\Controllers\BeritaAcaraController;
 use App\Http\Controllers\EvaluasiMagangController;
 use App\Http\Controllers\DataMahasiswaController;
 use App\Http\Controllers\SuratPelaksanaanController;
-
+use App\Http\Controllers\TemplateSuratController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -83,3 +83,6 @@ Route::get('/tempatmagang', [LandingController::class, 'tempatmagang']);
 Route::get('/chatbot', function () {
     return view('user.pages.chatbot');
 })->name('chatbot');
+
+Route::get('/preview-berita-acara', [TemplateSuratController::class, 'previewBeritaAcara']);
+Route::get('/preview-rekomendasi', [TemplateSuratController::class, 'previewRekomendasi']);

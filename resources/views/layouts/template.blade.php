@@ -75,21 +75,34 @@
                      <a href="{{ route('ploting-dosen.ploting-dosen.index') }}" class="nav-link {{ (request()->segment(1) == 'ploting-dosen') ? 'active' : '' }}">Ploting Dosen</a>
                    </li>
                    @endif
+
                     <!-- punya dosen -->
                     @if (auth()->user()->role == 'Dosen')
                    <li class="nav-item">
-                     <a href="{{ route('berita-acara.index') }}" class="nav-link {{ (request()->segment(1) == 'proposal') ? 'active' : '' }}">berita acara</a>
+                     <a href="{{ route('berita-acara.index') }}" class="nav-link {{ (request()->segment(1) == 'berita-acara') ? 'active' : '' }}">Berita Acara</a>
                    </li>
                    <li class="nav-item">
-                     <a href="{{ route('bimbingan.index') }}" class="nav-link {{ (request()->segment(1) == 'proposal') ? 'active' : '' }}">bimbingan</a>
+                     <a href="{{ route('bimbingan.index') }}" class="nav-link {{ (request()->segment(1) == 'bimbingan') ? 'active' : '' }}">Bimbingan</a>
                    </li>
                    <li class="nav-item">
-                     <a href="{{ route('evaluasi-magang.index') }}" class="nav-link {{ (request()->segment(1) == 'proposal') ? 'active' : '' }}">evaluasi tempat magang</a>
+                     <a href="{{ route('evaluasi-magang.index') }}" class="nav-link {{ (request()->segment(1) == 'evaluasi-magang') ? 'active' : '' }}">Evaluasi Tempat Magang</a>
+                   </li>
+                   @endif
+
+
+                   <!-- punya Prodi -->
+                   @if (auth()->user()->role == 'Prodi')
+                   <li class="nav-item">
+                     <a href="{{ route('data-mahasiswa.index') }}" class="nav-link {{ (request()->segment(1) == 'data-mahasiswa') ? 'active' : '' }}">Data Mahasiswa</a>
+                   </li>
+                   <li class="nav-item">
+                     <a href="{{ route('surat-pelaksanaan.index') }}" class="nav-link {{ (request()->segment(1) == 'surat-pelaksanaan') ? 'active' : '' }}">Surat Pelaksanaan</a>
                    </li>
                    @endif
                  </ul>
                </div>
              </li>
+
              @if (auth()->user()->role == 'Admin')
               <li class="nav-item">
                 <a class="nav-link {{ (request()->segment(1) == 'prodi' || request()->segment(1) == 'file-template' || request()->segment(1) == 'faq' || request()->segment(1) == 'tempat-magang' || request()->segment(1) == 'dospem') ? 'active' : '' }}" href="#navbar-master" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-master">

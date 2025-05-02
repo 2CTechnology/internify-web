@@ -32,6 +32,15 @@ class UsersSeeder extends Seeder
                 'role' => 'Admin'
             ]);
 
+            DB::table('users')
+            ->insert([
+                'name' => ' Admin Prodi',
+                'no_identitas' => 'd1234',
+                'email' => 'adminprodi123@mail.com',
+                'password' => Hash::make('12345678'),
+                'role' => 'Prodi'
+            ]);
+
         DB::table('users')
             ->insert([
                 'name' => 'Hafidz Fadhillah Febrianto',

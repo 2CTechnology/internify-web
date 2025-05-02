@@ -22,7 +22,8 @@ class ProposalController extends Controller
     public function index()
     {
         $this->param['title'] = 'Proposal';
-        if(auth()->user()->role == 'Admin') {
+    
+        if (auth()->user()->role == 'Admin') {
             $data = AlurMagang::with('kelompok')
                 ->with('kelompok.anggota')
                 ->with('kelompok.ketua')
@@ -46,11 +47,23 @@ class ProposalController extends Controller
                 ->whereNotNull('alur_magangs.proposal')
                 ->orderBy('id', 'desc')
                 ->get();
+        } else if (auth()->user()->role == 'Prodi') {
+            $data = AlurMagang::with('kelompok')
+                ->with('kelompok.anggota')
+                ->with('kelompok.ketua')
+                ->with('kelompok.dospem')
+                ->with('kelompok.ketua.prodi')
+                ->with('kelompok.anggota.prodi')
+                ->with('tempatMagang')
+                ->whereNotNull('alur_magangs.proposal')
+                ->orderBy('id', 'desc')
+                ->get();
         }
+    
         $this->param['data'] = $data;
         return view('backend.proposal.index', $this->param);
     }
-
+    
     /**
      * Show the form for creating a new resource.
      */

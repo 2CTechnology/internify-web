@@ -291,8 +291,9 @@ body{
 }
 
 /* Section 4 */
-#sub-judul-3 {
-    margin-top: -150px;
+#alur-magang {
+    margin-top: 230px;
+    margin-bottom: 320px;
 }
 .container-lima {
     width: 1280px;
@@ -568,4 +569,30 @@ body{
 }
 .modal-footer button p {
     margin: 0 auto;
+}
+
+.floating-icon {
+    position: fixed;
+    bottom: 20px;
+    right: -10px;
+    z-index: 1000;
+    background-color: #007bff;
+    color: white;
+    padding: 15px;
+    border-radius: 50%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 3px solid white; /* Border putih */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px; /* Ukuran tombol */
+    height: 60px;
+}
+.floating-icon:hover {
+    background-color: #0056b3;
+}
+.floating-icon svg {
+    width: 30px; /* Ukuran ikon */
+    height: 30px;
+    fill: white; /* Warna ikon */
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AkunMahasiswaController;
+use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DospemController;
@@ -12,6 +13,12 @@ use App\Http\Controllers\PlotingDosenController;
 use App\Http\Controllers\ProposalController;
 use App\Http\Controllers\SuratBalasanController;
 use App\Http\Controllers\TempatMagangController;
+use App\Http\Controllers\BimbinganController;
+use App\Http\Controllers\BeritaAcaraController;
+use App\Http\Controllers\EvaluasiMagangController;
+use App\Http\Controllers\DataMahasiswaController;
+use App\Http\Controllers\SuratPelaksanaanController;
+use App\Http\Controllers\TemplateSuratController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,6 +32,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/data-mahasiswa', [DataMahasiswaController::class, 'index'])->name('data-mahasiswa.index');
+Route::get('/surat-pelaksanaan', [SuratPelaksanaanController::class, 'index'])->name('surat-pelaksanaan.index');
+
+Route::get('/berita-acara', [BeritaAcaraController::class, 'index'])->name('berita-acara.index');
+Route::get('/bimbingan', [BimbinganController::class, 'index'])->name('bimbingan.index');
+Route::get('/evaluasi-magang', [EvaluasiMagangController::class, 'index'])->name('evaluasi-magang.index');
 
 Route::group(['middleware' => 'auth'], function () {
     Route::group(['middleware' => 'checkRole'], function () {
@@ -64,3 +77,12 @@ Route::get('/template', function () {
 Route::get('/', [LandingController::class, 'index']);
 Route::get('/daftardosen', [LandingController::class, 'daftardosen']);
 Route::get('/tempatmagang', [LandingController::class, 'tempatmagang']);
+
+// Route::get('/chatbot', [ChatbotController::class, 'index']);
+
+Route::get('/chatbot', function () {
+    return view('user.pages.chatbot');
+})->name('chatbot');
+
+Route::get('/preview-berita-acara', [TemplateSuratController::class, 'previewBeritaAcara']);
+Route::get('/preview-rekomendasi', [TemplateSuratController::class, 'previewRekomendasi']);

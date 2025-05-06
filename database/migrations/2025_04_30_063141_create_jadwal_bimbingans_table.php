@@ -13,15 +13,15 @@ return new class extends Migration
     {
         Schema::create('jadwal_bimbingans', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_kelompok'); // Kolom id_kelompok yang mengacu ke tabel anggotas
+            $table->unsignedBigInteger('id_kelompok'); // Relasi ke tabel kelompoks
             $table->dateTime('jadwal')->nullable();    // Kolom jadwal
             $table->text('catatan')->nullable();       // Kolom catatan
             $table->timestamps();
 
-            // Relasi dengan tabel anggotas
+            // Relasi ke tabel kelompoks
             $table->foreign('id_kelompok')
-                ->references('id_kelompok')
-                ->on('anggotas')
+                ->references('id')
+                ->on('kelompoks')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
         });

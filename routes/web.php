@@ -88,3 +88,5 @@ Route::get('/chatbot', function () {
 
 Route::get('/preview-berita-acara', [TemplateSuratController::class, 'previewBeritaAcara']);
 Route::get('/preview-rekomendasi', [TemplateSuratController::class, 'previewRekomendasi']);
+
+Route::put('/surat-pelaksanaan/update', [SuratPelaksanaanController::class, 'update'])->name('surat-pelaksanaan.update');

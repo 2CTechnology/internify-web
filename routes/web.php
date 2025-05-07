@@ -37,7 +37,9 @@ Route::get('/surat-pelaksanaan', [SuratPelaksanaanController::class, 'index'])->
 
 Route::get('/berita-acara', [BeritaAcaraController::class, 'index'])->name('berita-acara.index');
 Route::get('/bimbingan', [BimbinganController::class, 'index'])->name('bimbingan.index');
+Route::post('/bimbingan', [BimbinganController::class, 'store'])->name('bimbingan.store');
 Route::get('/evaluasi-magang', [EvaluasiMagangController::class, 'index'])->name('evaluasi-magang.index');
+
 
 Route::group(['middleware' => 'auth'], function () {
     Route::group(['middleware' => 'checkRole'], function () {

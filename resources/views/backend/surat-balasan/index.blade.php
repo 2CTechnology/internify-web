@@ -23,6 +23,7 @@
                             <th class="text-center">Nama Ketua</th>
                             <th class="text-center">Tempat Magang</th>
                             <th class="text-center">Status</th>
+                            <th class="text-center">Surat Balasan</th> {{-- Tambahan --}}
                             <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
@@ -48,20 +49,27 @@
                                         Belum Upload
                                     @endif    
                                 </td>
+                                <td class="text-center">
+                                    @if ($item->surat_balasan)
+                                        <a href="{{ asset('storage/' . $item->surat_balasan) }}" target="_blank" class="btn btn-success btn-sm" title="Preview Surat Balasan">
+                                            <i class="fa fa-file-pdf-o"></i> Preview
+                                        </a>
+                                    @else
+                                        <span class="text-muted">Belum Ada</span>
+                                    @endif
+                                </td>
                                 <td class="text-center d-flex justify-content-center">
-                                    {{-- <div class="form-inline text-center"> --}}
-                                        <a href="#">
-                                            <button data-toggle="modal" data-target="#exampleModal{{ $item->id }}" data-prodi="{{ $item->prodi->nama_prodi ?? '-' }}" data-golongan="{{ $item->golongan }}" data-email="{{ $item->email }}" data-angkatan="{{ $item->angkatan }}" type="button" id="PopoverCustomT-1" class="btn btn-warning btn-md btn-show-modal" data-toggle="tooltip" title="Detail" data-placement="top"><span class="fa fa-eye"></span></button>    
-                                        </a>
-                                        <a href="#" class="mx-2">
-                                            <button data-toggle="modal" data-target="#modalUpload" type="button" id="PopoverCustomT-1" class="btn btn-primary btn-md btn-upload" data-id="{{ $item->id }}" data-toggle="tooltip" title="Tindak Lanjut" data-placement="top"><span class="fa fa-pen"></span></button>
-                                        </a>
-                                    {{-- </div> --}}
+                                    <a href="#">
+                                        <button data-toggle="modal" data-target="#exampleModal{{ $item->id }}" data-prodi="{{ $item->prodi->nama_prodi ?? '-' }}" data-golongan="{{ $item->golongan }}" data-email="{{ $item->email }}" data-angkatan="{{ $item->angkatan }}" type="button" id="PopoverCustomT-1" class="btn btn-warning btn-md btn-show-modal" data-toggle="tooltip" title="Detail" data-placement="top"><span class="fa fa-eye"></span></button>    
+                                    </a>
+                                    <a href="#" class="mx-2">
+                                        <button data-toggle="modal" data-target="#modalUpload" type="button" id="PopoverCustomT-1" class="btn btn-primary btn-md btn-upload" data-id="{{ $item->id }}" data-toggle="tooltip" title="Tindak Lanjut" data-placement="top"><span class="fa fa-pen"></span></button>
+                                    </a>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center">Tidak Ada Data Tersedia.</td>
+                                <td colspan="7" class="text-center">Tidak Ada Data Tersedia.</td>
                             </tr>
                         @endforelse
                     </tbody>

@@ -8,69 +8,123 @@
     {{ $header }}
 @endpush
 
+@include('backend.surat-balasan.modal.detail')
+@include('backend.surat-pelaksanaan.modal.update')
+
 @section('content')
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-12"> {{-- Perbesar card ke 12 kolom supaya cukup dua kolom form --}}
-            <div class="card shadow-lg border-0 rounded-4">
-                <div class="card-header bg-primary text-white rounded-top-4">
-                    {{-- Bisa kasih judul di sini kalau mau --}}
-                    <h5 class="mb-0">Form Berita Acara</h5>
-                </div>
-                <div class="card-body p-4">
-                    <form>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group mb-4">
-                                    <label for="textarea1" class="form-label">Nomor Induk Mahasiswa</label>
-                                    <textarea class="form-control form-control-lg" id="textarea1" name="textarea1" rows="1" placeholder="" required></textarea>
-                                </div>
-
-                                <div class="form-group mb-4">
-                                    <label for="textarea2" class="form-label">Nama Mahasiswa</label>
-                                    <textarea class="form-control form-control-lg" id="textarea2" name="textarea2" rows="1" placeholder="" required></textarea>
-                                </div>
-
-                                <div class="form-group mb-4">
-                                    <label for="textarea3" class="form-label">Nama Kelompok</label>
-                                    <textarea class="form-control form-control-lg" id="textarea3" name="textarea3" rows="1" placeholder="" required></textarea>
-                                </div>
-
-                                <div class="form-group mb-4">
-                                    <label for="textarea4" class="form-label">Dosen Pembimbing</label>
-                                    <textarea class="form-control form-control-lg" id="textarea4" name="" rows="1" placeholder="" required></textarea>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group mb-4">
-                                    <label for="textarea5" class="form-label">Nama Tempat Magang</label>
-                                    <textarea class="form-control form-control-lg" id="textarea5" name="" rows="1" placeholder="" required></textarea>
-                                </div>
-
-                                <div class="form-group mb-4">
-                                    <label for="textarea6" class="form-label">Alamat Tempat Magang</label>
-                                    <textarea class="form-control form-control-lg" id="textarea6" name="" rows="1" placeholder="" required></textarea>
-                                </div>
-
-                                <div class="form-group mb-4">
-                                    <label for="textarea7" class="form-label">Lama Magang</label>
-                                    <textarea class="form-control form-control-lg" id="textarea7" name="" rows="1" placeholder="" required></textarea>
-                                </div>
-
-                               
-                            </div>
-                        </div>
-
-                        <div class="d-flex justify-content-end mt-4">
-                            <button type="submit" class="btn btn-success btn-lg">Generate Surat</button>
-                            <button type="reset" class="btn btn-outline-secondary btn-lg ms-3">Reset</button>
-                        </div>
-                    </form>
-                </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table class="table" id="table">
+                    <thead>
+                        <tr>
+                            <th class="text-center">No.</th>
+                            <th class="text-center">NIM</th>
+                            <th class="text-center">Nama Ketua</th>
+                            <th class="text-center">Tempat Magang</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center">Surat Balasan</th> {{-- Tambahan --}}
+                            <th class="text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($data as $item)
+                            <tr>
+                                <td class="text-center">{{ $loop->iteration }}</td>
+                                <td class="text-center">{{ $item?->kelompok?->ketua?->no_identitas ?? '-' }}</td>
+                                <td class="text-center">{{ $item?->kelompok?->ketua?->name ?? '-' }}</td>
+                                <td class="text-center">
+                                    @if ($item->tempatMagang)
+                                        {{ strtoupper($item->tempatMagang->nama_tempat) }}
+                                    @elseif($item?->tempat_magang)
+                                        {{ strtoupper($item->tempat_magang) }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    @if ($item?->surat_pengantar)
+                                        Sudah Upload
+                                    @else
+                                        Belum Upload
+                                    @endif    
+                                </td>
+                                <td class="text-center">
+                                    @if ($item->surat_balasan)
+                                        <a href="{{ asset('storage/' . $item->surat_balasan) }}" target="_blank" class="btn btn-success btn-sm" title="Preview Surat Balasan">
+                                            <i class="fa fa-file-pdf-o"></i> Preview
+                                        </a>
+                                    @else
+                                        <span class="text-muted">Belum Ada</span>
+                                    @endif
+                                </td>
+                                <td class="text-center d-flex justify-content-center">
+                                    {{-- <a href="#">
+                                        <button data-toggle="modal" data-target="#exampleModal{{ $item->id }}" data-prodi="{{ $item->prodi->nama_prodi ?? '-' }}" data-golongan="{{ $item->golongan }}" data-email="{{ $item->email }}" data-angkatan="{{ $item->angkatan }}" type="button" id="PopoverCustomT-1" class="btn btn-warning btn-md btn-show-modal" data-toggle="tooltip" title="Detail" data-placement="top"><span class="fa fa-eye"></span></button>    
+                                    </a> --}}
+                                    <a href="#" class="mx-2">
+                                        <button data-toggle="modal" data-target="#modalUpload" type="button" id="PopoverCustomT-1" class="btn btn-primary btn-md btn-upload" data-id="{{ $item->id }}" data-toggle="tooltip" title="Tindak Lanjut" data-placement="top"><span class="fa fa-pen"></span></button>
+                                    </a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="text-center">Tidak Ada Data Tersedia.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-</div>
-
 @endsection
+
+@push('custom-script')
+    <script>
+        $(".btn-show-modal").on('click', function() {
+            var angkatan = $(this).data('angkatan');
+            var golongan = $(this).data('golongan');
+            var prodi = $(this).data('prodi');
+            var email = $(this).data('email');
+            console.log(angkatan);
+
+            $("#angkatan-modal").val(angkatan);
+            $("#golongan-modal").val(golongan);
+            $("#prodi-modal").val(prodi);
+            $("#email-modal").val(email);
+        })
+
+        $(".btn-upload").on('click', function () {
+            var id = $(this).data('id')
+            $("#id-upload").val(id)
+        })
+
+        $(".btn-tolak").on('click', function () {
+            var id = $(this).data('id')
+            console.log(`dec: ${id}`);
+            Swal.fire({
+                title: "Konfirmasi",
+                text: "Apakah Anda Yakin Menolak Akun Ini?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Ya",
+                cancelButtonText: "Tidak"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $(`#decline-${id}`).submit()
+                }
+            });
+        })
+
+        $(document).ready( function () {
+            $('#table').DataTable({
+                columnDefs: [{
+                    "defaultContent": "-",
+                    "targets": "_all"
+                }]
+            });
+        });
+    </script>
+@endpush

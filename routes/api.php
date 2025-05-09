@@ -5,6 +5,7 @@ use App\Http\Controllers\API\PlotingController;
 use App\Http\Controllers\API\ProdiController;
 use App\Http\Controllers\API\TempatMagangController;
 use App\Http\Controllers\API\UsersController;
+use App\Http\Controllers\API\CounselingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -29,6 +30,8 @@ Route::get('/get-prodi', [ProdiController::class, 'get']);
 Route::post('/lupa-password', [UsersController::class, 'lupaPassword']);
 Route::post('/cek-otp', [UsersController::class, 'cekOTP']);
 Route::post('/reset-password', [UsersController::class, 'resetPassword']);
+
+Route::get('/jadwal-bimbingan', [CounselingController::class, 'getBimbingan']);
 
 Route::middleware('auth:sanctum')
     ->group(function () {

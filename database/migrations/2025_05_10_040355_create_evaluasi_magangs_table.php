@@ -13,16 +13,16 @@ return new class extends Migration
     {
         Schema::create('evaluasi_magangs', function (Blueprint $table) {
             $table->id(); // id utama
-            $table->text('evaluasi'); // Kolom untuk evaluasi
+            $table->unsignedBigInteger('tempat_magang_id'); // Foreign Key ke tempat_magang
             $table->date('tanggal'); // Tanggal evaluasi
             $table->text('keterangan')->nullable(); // Keterangan tambahan
             $table->timestamps(); // created_at dan updated_at
+
+            // Menambahkan foreign key constraint
+            $table->foreign('tempat_magang_id')->references('id')->on('tempat_magangs')->onDelete('cascade');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('evaluasi_magangs');

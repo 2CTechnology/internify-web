@@ -16,6 +16,12 @@
                     <div class="card-header bg-primary text-white rounded-top-4">
                     </div>
                     <div class="card-body p-4">
+                        <!-- Menampilkan notifikasi jika ada -->
+                        @if (session('success'))
+                            <div class="alert alert-success">
+                                {{ session('success') }}
+                            </div>
+                        @endif
 
                         <form action="{{ route('berita-acara.store') }}" method="POST">
                             @csrf
@@ -117,3 +123,12 @@
         </div>
     </div>
 @endsection
+
+<script>
+    // Cek jika ada notifikasi sukses
+    @if(session('success'))
+        setTimeout(function () {
+            document.getElementById('success-alert').style.display = 'none'; // Menyembunyikan notifikasi setelah 3 detik
+        }, 3000); // Ganti angka 3000 sesuai dengan keinginan Anda (3 detik)
+    @endif
+</script>

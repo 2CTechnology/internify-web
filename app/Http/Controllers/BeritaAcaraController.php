@@ -5,31 +5,28 @@ namespace App\Http\Controllers;
 use App\Models\BeritaAcara;
 use App\Models\TempatMagang;
 use App\Models\Prodi;
+use Barryvdh\DomPDF\Facade\Pdf; // ✅ Gunakan namespace yang benar
 use Illuminate\Http\Request;
 
 class BeritaAcaraController extends Controller
 {
     public function index()
     {
-        // Mengambil semua data berita acara
-        $data = BeritaAcara::with('tempatMagang')->get(); // Mengambil berita acara beserta data tempat magangnya
+        $data = BeritaAcara::with('tempatMagang')->get();
         $tempatMagangs = TempatMagang::all();
         $prodis = Prodi::all();
 
-        // Menyiapkan parameter untuk view
         $param['title'] = 'Berita Acara';
         $param['header'] = 'Daftar Berita Acara';
         $param['data'] = $data;
         $param['tempat_magangs'] = $tempatMagangs;
         $param['mst_prodi'] = $prodis;
 
-        // Mengembalikan tampilan dengan parameter
         return view('backend.berita-acara.index', $param);
     }
 
     public function store(Request $request)
     {
-        // Validasi data input
         $validated = $request->validate([
             'jadwal' => 'required|date',
             'tempat_magang_id' => 'required|exists:tempat_magangs,id',
@@ -37,21 +34,31 @@ class BeritaAcaraController extends Controller
             'jurusan' => 'required',
             'alamat' => 'required',
             'keterangan' => 'required',
-            'catatan' => 'nullable|string',  // Memastikan catatan bisa kosong
+            'catatan' => 'nullable|string',
         ]);
 
-        // Membuat dan menyimpan data berita acara
-        BeritaAcara::create([
+        $berita = BeritaAcara::create([
             'jadwal' => $validated['jadwal'],
             'tempat_magang_id' => $validated['tempat_magang_id'],
             'prodi' => $validated['prodi'],
             'jurusan' => $validated['jurusan'],
             'alamat' => $validated['alamat'],
             'keterangan' => $validated['keterangan'],
-            'catatan' => $validated['catatan'] ?? '', // Jika tidak ada, set ke string kosong
+            'catatan' => $validated['catatan'] ?? '',
         ]);
 
-        // Redirect setelah berhasil menyimpan
-        return redirect()->route('berita-acara.index')->with('success', 'Data berhasil disimpan');
+        return redirect()
+            ->route('berita-acara.index')
+            ->with('success', 'Data berhasil disimpan')
+            ->with('last_id', $berita->id); // Mengirim ID yang baru saja disimpan
+    }
+
+    public function generatePDF($id)
+    {
+        $data = BeritaAcara::with('tempatMagang')->findOrFail($id);
+
+        $pdf = Pdf::loadView('backend.berita-acara.pdf', compact('data'));
+
+        return $pdf->download('berita_acara_' . $data->id . '.pdf');
     }
 }

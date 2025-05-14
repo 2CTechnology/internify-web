@@ -115,8 +115,16 @@
                             <div class="d-flex justify-content-end">
                                 <button type="submit" class="btn btn-success btn-lg">Simpan</button>
                                 <button type="reset" class="btn btn-outline-secondary btn-lg ms-3">Reset</button>
+                               
+
                             </div>
                         </form>
+                        @if (session('last_id'))
+    <a href="{{ route('berita-acara.pdf', session('last_id')) }}" target="_blank" class="btn btn-primary btn-lg ms-3">
+        <i class="bi bi-download"></i> Download PDF
+    </a>
+@endif
+
                     </div>
                 </div>
             </div>

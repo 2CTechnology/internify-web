@@ -26,4 +26,10 @@ class Anggota extends Model
     public function prodi () {
         return $this->belongsTo(Prodi::class, 'id_prodi');
     }
+
+    public function laporanMagang()
+    {
+        return $this->hasMany(LaporanMagang::class, 'id_kelompok');
+    }
+
 }

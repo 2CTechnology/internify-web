@@ -35,6 +35,21 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
+                            <div class="form-group mb-4">
+    <label for="kelompok_id" class="form-label">Kelompok</label>
+    <select name="kelompok_id" id="kelompok_id" class="form-control form-control-lg @error('kelompok_id') is-invalid @enderror" required>
+        <option value="">-- Pilih Kelompok --</option>
+        @foreach($kelompoks as $kelompok)
+            <option value="{{ $kelompok->id }}" {{ old('kelompok_id') == $kelompok->id ? 'selected' : '' }}>
+                {{ $kelompok->nama_kelompok }}
+            </option>
+        @endforeach
+    </select>
+    @error('kelompok_id')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
+
                             
                             <div class="form-group mb-4">
                                 <label for="tempat_magang_id" class="form-label">Tempat Magang</label>

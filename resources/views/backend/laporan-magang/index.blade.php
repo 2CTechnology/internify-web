@@ -17,8 +17,10 @@
                         <tr>
                             <th class="text-center">No.</th>
                             <th class="text-center">ID Kelompok</th>
-                            <th class="text-center">Laporan</th>
+                            <th class="text-center">Detail</th>
                             <th class="text-center">Status Laporan</th>
+                            <th class="text-center">aksi</th>
+                            <th class="text-center">Nama Kelompok</th>
                         </tr>
                     </thead>
                     <tbody>

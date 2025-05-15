@@ -25,7 +25,6 @@ class LaporanMagangController extends Controller
     {
         $this->param['title'] = 'Laporan';
 
-        
         if (auth()->user()->role == 'Dosen') {
             $data = LaporanMagang::select('id_kelompok','laporan', 'status_laporan')
                 ->orderBy('id','desc')

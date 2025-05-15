@@ -182,36 +182,40 @@ public function uploadProposal($id, Request $request)
 
     DB::beginTransaction();
     try {
-        $alurMagang = AlurMagang::where('id_kelompok', $id)->first();
+        // Cari kelompok dengan id
+        $kelompok = Kelompok::find($id);
+        if (!$kelompok) {
+            return response()->json(['message' => 'Kelompok tidak ditemukan.'], Response::HTTP_NOT_FOUND);
+        }
+
+        // Cari alur magang yang berkaitan dengan id_kelompok (yang merujuk ke kelompok.id)
+        $alurMagang = AlurMagang::where('id_kelompok', $kelompok->id)->first();
         if (!$alurMagang) {
-            return response()->json(['message' => 'Data kelompok magang tidak ditemukan.'], Response::HTTP_NOT_FOUND);
+            return response()->json(['message' => 'Data alur magang tidak ditemukan untuk kelompok ini.'], Response::HTTP_NOT_FOUND);
         }
 
         if (!$request->hasFile('proposal')) {
             return response()->json(['message' => 'File proposal tidak ditemukan di request.'], Response::HTTP_BAD_REQUEST);
         }
 
-        // Bersihkan id dan nama file
-        $id = trim($id);
-        $id = str_replace(["\n", "\r"], '', $id);
-
         $file = $request->file('proposal');
         $originalName = trim($file->getClientOriginalName());
         $originalName = str_replace(["\n", "\r"], '', $originalName);
 
-        $ext = $file->getClientOriginalExtension();
-        $safeName = Str::slug(pathinfo($originalName, PATHINFO_FILENAME)) . '.' . $ext;
+        $safeName = time() . '-' . $originalName;
 
-        // Simpan file di storage/app/public/uploads/proposal/{id}/
-        $path = $file->storeAs('public/uploads/proposal/' . $id, $safeName);
+        $path = public_path('uploads/proposal/' . $kelompok->id);
+        if (!File::isDirectory($path)) {
+            File::makeDirectory($path, 0755, true);
+        }
 
-        // Simpan URL akses file
-        $alurMagang->proposal = Storage::url($path);
+        $file->move($path, $safeName);
+
+        $alurMagang->proposal = '/uploads/proposal/' . $kelompok->id . '/' . $safeName;
         $alurMagang->updated_at = now();
         $alurMagang->save();
 
         DB::commit();
-
         $message = 'Berhasil upload proposal.';
         $responseCode = Response::HTTP_OK;
     } catch (QueryException $e) {
@@ -226,6 +230,7 @@ public function uploadProposal($id, Request $request)
 
     return response()->json(['message' => $message], $responseCode);
 }
+
 
     public function uploadSuratBalasan($id, Request $request)
     {

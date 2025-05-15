@@ -42,4 +42,4 @@ jobs:
               echo "No existing container"
             fi
             # Jalankan docker-compose
-            docker-compose -f var/www/internify-web/docker-compose.yml up -d --build
+            docker-compose -f /var/www/internify-web/docker-compose.yml up -d --build

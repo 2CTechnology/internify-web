@@ -34,5 +34,12 @@ jobs:
           key: ${{ secrets.VPS_KEY }}
           script: |
             docker pull ${{ secrets.DOCKER_USERNAME }}/internify-web:latest
-            docker stop internify-app || true && docker rm internify-app || true
-            docker-compose -f ../docker-compose.yml up -d
+            # Cek dan hapus container jika ada
+            if [ "$(docker ps -a -q -f name=internify-app)" ]; then
+              docker stop internify-app
+              docker rm internify-app
+            else
+              echo "No existing container"
+            fi
+            # Jalankan docker-compose
+            docker-compose -f var/www/internify-web/docker-compose.yml up -d --build

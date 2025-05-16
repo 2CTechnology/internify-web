@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Login DockerHub
+      - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -24,7 +24,19 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/internify-web:latest
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/internify-web:latest
+            ${{ secrets.DOCKER_USERNAME }}/internify-web:${{ github.sha }}
+
+      - name: Sync docker-compose.yml to VPS
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_KEY }}
+          source: "docker-compose.yml"
+          target: "/var/www/internify-web"
+
 
       - name: Deploy to VPS via SSH
         uses: appleboy/ssh-action@master
@@ -33,16 +45,17 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_KEY }}
           script: |
+            echo "[1] Pulling latest image from Docker Hub"
             docker pull ${{ secrets.DOCKER_USERNAME }}/internify-web:latest
-            if [ "$(docker ps -a -q -f name=internify-app)" ]; then
-              docker stop internify-app
-              docker rm internify-app
-            else
-              echo "No existing container"
-            fi
-            docker-compose down -v
-            docker volume rm internifyweb_mysql-data
-            docker-compose -f /var/www/internify-web/docker-compose.yml up -d --build
-            docker-compose exec app php artisan config:clear
-            docker exec -it internify-app php artisan migrate --force
-            docker exec -it internify-app php artisan db:seed
+
+            echo "[2] Stopping and removing existing Laravel container (if any)"
+            docker stop internify-app || true
+            docker rm internify-app || true
+
+            echo "[3] Recreate Laravel container with updated image"
+            docker-compose -f /var/www/internify-web/docker-compose.yml up -d
+
+            echo "[4] Running Laravel optimize + migrate + seed"
+            docker exec internify-app php artisan config:clear
+            docker exec internify-app php artisan migrate --force
+            docker exec internify-app php artisan db:seed

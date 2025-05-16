@@ -2,8 +2,7 @@ version: '3.8'
 
 services:
   app:
-    build: .
-    image: latansabima/internify-web
+    image: latansabima/internify-web:latest  # pastikan ini sesuai tag dari Docker Hub
     container_name: internify-app
     restart: always
     ports:
@@ -16,8 +15,6 @@ services:
       DB_DATABASE: internifyweb
       DB_USERNAME: root
       DB_PASSWORD: root
-    volumes:
-      - .:/var/www
 
   mysql:
     image: mysql:8.0

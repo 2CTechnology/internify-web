@@ -25,9 +25,9 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: internify
-      MYSQL_USER: internify
-      MYSQL_PASSWORD: 123
+      MYSQL_DATABASE: internifyweb
+      MYSQL_USER: root
+      MYSQL_PASSWORD:
     ports:
       - "3306:3306"
     volumes:

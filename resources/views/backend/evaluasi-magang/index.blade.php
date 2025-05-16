@@ -11,15 +11,15 @@
 @section('content')
     <div class="container mt-5">
         <div class="row justify-content-center">
-            <div class="col-md-10"> {{-- Perbesar card untuk tampilan lebih luas --}}
-                <div class="card shadow-lg border-0 rounded-4"> {{-- Tambahkan shadow dan rounded corner --}}
+            <div class="col-md-10">
+                <div class="card shadow-lg border-0 rounded-4">
                     <div class="card-header bg-primary text-white rounded-top-4">
-                        {{-- Header bisa ditambahkan sesuai kebutuhan --}}
+                        {{-- Tambahkan header jika diperlukan --}}
                     </div>
                     <div class="card-body p-4">
                         <!-- Menampilkan notifikasi jika ada -->
                         @if (session('success'))
-                            <div class="alert alert-success">
+                            <div class="alert alert-success" id="success-alert">
                                 {{ session('success') }}
                             </div>
                         @endif
@@ -54,25 +54,27 @@
                                 <button type="reset" class="btn btn-outline-secondary btn-lg ms-3">Reset</button>
                             </div>
                         </form>
-
                     </div>
+
+                    @if(session('last_id'))
+                        <div class="card-footer text-end bg-white border-top-0">
+                            <a href="{{ route('evaluasi-magang.pdf', session('last_id')) }}" target="_blank" class="btn btn-primary btn-lg">
+                                <i class="bi bi-download me-2"></i>Download PDF
+                            </a>
+                        </div>
+                    @endif
+
                 </div>
             </div>
-            @if(session('last_id'))
-    <a href="{{ route('evaluasi-magang.pdf', session('last_id')) }}" target="_blank" class="btn btn-primary">
-    Download PDF
-</a>
-@endif
-
         </div>
     </div>
 @endsection
 
 <script>
-    // Cek jika ada notifikasi sukses
     @if(session('success'))
         setTimeout(function () {
-            document.getElementById('success-alert').style.display = 'none'; // Menyembunyikan notifikasi setelah 3 detik
-        }, 3000); // Ganti angka 3000 sesuai dengan keinginan Anda (3 detik)
+            const alertBox = document.getElementById('success-alert');
+            if (alertBox) alertBox.style.display = 'none';
+        }, 3000);
     @endif
 </script>

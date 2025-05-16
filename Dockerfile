@@ -18,6 +18,8 @@ RUN chown -R www-data:www-data /var/www && chmod -R 775 storage bootstrap/cache
 COPY default.conf /etc/nginx/sites-available/default
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+RUN composer dump-autoload
+
 EXPOSE 80
 
 CMD ["/usr/bin/supervisord"]

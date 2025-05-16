@@ -38,6 +38,10 @@ Route::get('/surat-pelaksanaan', [SuratPelaksanaanController::class, 'index'])->
 
 Route::get('/berita-acara', [BeritaAcaraController::class, 'index'])->name('berita-acara.index');
 Route::post('/berita-acara', [BeritaAcaraController::class, 'store'])->name('berita-acara.store');
+Route::get('/berita-acara/{id}/pdf', [BeritaAcaraController::class, 'generatePDF'])->name('berita-acara.pdf');
+Route::get('berita-acara/kelompok/{namaKelompok}', [BeritaAcaraController::class, 'showKelompokAnggota'])->name('berita-acara.kelompok');
+
+
 Route::get('/bimbingan', [BimbinganController::class, 'index'])->name('bimbingan.index');
 Route::post('/bimbingan', [BimbinganController::class, 'store'])->name('bimbingan.store');
 Route::get('/evaluasi-magang', [EvaluasiMagangController::class, 'index'])->name('evaluasi-magang.index');

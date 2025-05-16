@@ -35,6 +35,21 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
+                            <div class="form-group mb-4">
+    <label for="kelompok_id" class="form-label">Kelompok</label>
+    <select name="kelompok_id" id="kelompok_id" class="form-control form-control-lg @error('kelompok_id') is-invalid @enderror" required>
+        <option value="">-- Pilih Kelompok --</option>
+        @foreach($kelompoks as $kelompok)
+            <option value="{{ $kelompok->id }}" {{ old('kelompok_id') == $kelompok->id ? 'selected' : '' }}>
+                {{ $kelompok->nama_kelompok }}
+            </option>
+        @endforeach
+    </select>
+    @error('kelompok_id')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
+
                             
                             <div class="form-group mb-4">
                                 <label for="tempat_magang_id" class="form-label">Tempat Magang</label>
@@ -115,8 +130,16 @@
                             <div class="d-flex justify-content-end">
                                 <button type="submit" class="btn btn-success btn-lg">Simpan</button>
                                 <button type="reset" class="btn btn-outline-secondary btn-lg ms-3">Reset</button>
+                               
+
                             </div>
                         </form>
+                        @if (session('last_id'))
+    <a href="{{ route('berita-acara.pdf', session('last_id')) }}" target="_blank" class="btn btn-primary btn-lg ms-3">
+        <i class="bi bi-download"></i> Download PDF
+    </a>
+@endif
+
                     </div>
                 </div>
             </div>

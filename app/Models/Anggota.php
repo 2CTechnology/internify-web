@@ -34,9 +34,17 @@ class Anggota extends Model
         return $this->belongsTo(Prodi::class, 'id_prodi');
     }
 
-    // Relasi ke Kelompok
-    public function kelompok()
-    {
-        return $this->belongsTo(Kelompok::class, 'id_kelompok');
-    }
+// <<<<<<< main
+//     // Relasi ke Kelompok
+//     public function kelompok()
+//     {
+//         return $this->belongsTo(Kelompok::class, 'id_kelompok');
+//     }
+// =======
+//     public function laporanMagang()
+//     {
+//         return $this->hasMany(LaporanMagang::class, 'id_kelompok');
+//     }
+
+// >>>>>>> feat/laporan-magang
 }

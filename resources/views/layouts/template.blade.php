@@ -87,6 +87,9 @@
                    <li class="nav-item">
                      <a href="{{ route('evaluasi-magang.index') }}" class="nav-link {{ (request()->segment(1) == 'evaluasi-magang') ? 'active' : '' }}">Evaluasi Tempat Magang</a>
                    </li>
+                   <li class="nav-item">
+                     <a href="{{ route('laporan-magang.index') }}" class="nav-link {{ (request()->segment(1) == 'laporan-magang') ? 'active' : '' }}">Laporan Magang</a>
+                   </li>
                    @endif
 
 

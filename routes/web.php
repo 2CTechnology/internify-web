@@ -17,6 +17,7 @@ use App\Http\Controllers\BimbinganController;
 use App\Http\Controllers\BeritaAcaraController;
 use App\Http\Controllers\EvaluasiMagangController;
 use App\Http\Controllers\DataMahasiswaController;
+use App\Http\Controllers\LaporanMagangController;
 use App\Http\Controllers\SuratPelaksanaanController;
 use App\Http\Controllers\TemplateSuratController;
 use Illuminate\Support\Facades\Route;
@@ -46,7 +47,7 @@ Route::post('/bimbingan', [BimbinganController::class, 'store'])->name('bimbinga
 Route::get('/evaluasi-magang', [EvaluasiMagangController::class, 'index'])->name('evaluasi-magang.index');
 Route::post('/evaluasi-magang', [EvaluasiMagangController::class, 'store'])->name('evaluasi-magang.store');
 
-
+Route::resource('laporan-magang', LaporanMagangController::class);
 
 Route::group(['middleware' => 'auth'], function () {
     Route::group(['middleware' => 'checkRole'], function () {

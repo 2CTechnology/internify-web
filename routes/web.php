@@ -45,6 +45,7 @@ Route::get('/bimbingan', [BimbinganController::class, 'index'])->name('bimbingan
 Route::post('/bimbingan', [BimbinganController::class, 'store'])->name('bimbingan.store');
 Route::get('/evaluasi-magang', [EvaluasiMagangController::class, 'index'])->name('evaluasi-magang.index');
 Route::post('/evaluasi-magang', [EvaluasiMagangController::class, 'store'])->name('evaluasi-magang.store');
+Route::get('/evaluasi-magang/{id}/pdf', [EvaluasiMagangController::class, 'generatePdf'])->name('evaluasi-magang.pdf');
 
 
 

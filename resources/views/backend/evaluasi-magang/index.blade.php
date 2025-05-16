@@ -58,6 +58,12 @@
                     </div>
                 </div>
             </div>
+            @if(session('last_id'))
+    <a href="{{ route('evaluasi-magang.pdf', session('last_id')) }}" target="_blank" class="btn btn-primary">
+    Download PDF
+</a>
+@endif
+
         </div>
     </div>
 @endsection

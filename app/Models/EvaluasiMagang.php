@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,4 +14,10 @@ class EvaluasiMagang extends Model
         'tanggal',
         'keterangan',
     ];
+
+    // Relasi ke model TempatMagang
+    public function tempatMagang()
+    {
+        return $this->belongsTo(TempatMagang::class, 'tempat_magang_id');
+    }
 }

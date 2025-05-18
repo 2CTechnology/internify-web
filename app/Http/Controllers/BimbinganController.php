@@ -7,6 +7,13 @@ use Illuminate\Http\Request;
 
 class BimbinganController extends Controller
 {
+
+    private $param;
+
+    public function __construct()
+    {
+        $this->param['header'] = 'Akun Mahasiswa';
+    }
     // Method untuk menampilkan halaman Bimbingan
     public function index()
     {
@@ -23,6 +30,18 @@ class BimbinganController extends Controller
         
         return view('backend.bimbingan.index', $param);
     }
+
+    public function create()
+    {
+    $this->param['title'] = 'Jadwal Bimbingan - Tambah';
+    $this->param['header'] = 'Tambah Bimbingan';
+
+    // Ambil semua data kelompok untuk dropdown
+    $this->param['kelompoks'] = Kelompok::all();
+
+    return view('backend.bimbingan.modal.add-bimbingan', $this->param);
+    }
+
 
     public function store(Request $request)
     {

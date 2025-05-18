@@ -8,85 +8,70 @@
     {{ $header }}
 @endpush
 
+@push('add-button')
+    <a href="{{ route('bimbingan.create') }}">
+        <button class="btn btn-success">Tambah Jadwal Bimbingan</button>
+    </a>
+@endpush
+
 @section('content')
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-10">
-                <div class="card shadow-lg border-0 rounded-4">
-                    <div class="card-header bg-primary text-white rounded-top-4">
-                        <h4>Tambah Jadwal Bimbingan</h4>
-                    </div>
-                    <div class="card-body p-4">
-
-                        <!-- Menampilkan error validasi -->
-                        @if ($errors->any())
-                            <div class="alert alert-danger">
-                                <ul class="mb-0">
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
-
-                        <!-- Menampilkan pesan sukses jika ada -->
-                        @if(session('success'))
-                            <div class="alert alert-success">
-                                {{ session('success') }}
-                            </div>
-                        @endif
-
-                        <!-- Form untuk menambah jadwal bimbingan -->
-                        <form method="POST" action="{{ route('bimbingan.store') }}">
-                            @csrf
-
-                            <div class="form-group mb-4">
-                                <label for="id_kelompok" class="form-label">Nama Kelompok</label>
-                                <select class="form-control form-control-lg @error('id_kelompok') is-invalid @enderror"
-                                    name="id_kelompok" required>
-                                    <option value="">-- Pilih Nama Kelompok --</option>
-                                    @foreach ($kelompoks as $kelompok)
-                                        <option value="{{ $kelompok->id }}" {{ old('id_kelompok') == $kelompok->id ? 'selected' : '' }}>
-                                            {{ $kelompok->nama_kelompok }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('id_kelompok')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <!-- Input Tanggal -->
-                            <div class="form-group mb-4">
-                                <label for="tanggal" class="form-label">Tanggal Acara</label>
-                                <input type="date"
-                                    class="form-control form-control-lg @error('jadwal') is-invalid @enderror" id="tanggal"
-                                    name="jadwal" value="{{ old('jadwal') }}" required>
-                                @error('jadwal')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <!-- Input Catatan -->
-                            <div class="form-group mb-4">
-                                <label for="keterangan" class="form-label">Keterangan</label>
-                                <textarea class="form-control form-control-lg @error('catatan') is-invalid @enderror"
-                                    id="keterangan" name="catatan" rows="6"
-                                    placeholder="Tulis keterangan berita acara di sini...">{{ old('catatan') }}</textarea>
-                                @error('catatan')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
-                            <!-- Tombol -->
-                            <div class="d-flex justify-content-end">
-                                <button type="submit" class="btn btn-success btn-lg">Kirim</button>
-                                <button type="reset" class="btn btn-outline-secondary btn-lg ms-3">Reset</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table id="table" class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th class="text-center">No.</th>
+                            <th class="text-center">Tanggal</th>
+                            <th class="text-center">Catatan</th>
+                            <th class="text-center">Nama Kelompok</th>
+                            <th class="text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($data as $item)
+                            <tr>
+                                <td class="text-center">{{ $loop->iteration }}</td>
+                                <td class="text-center">
+                                    {{ \Carbon\Carbon::parse($item->jadwal)->format('d M Y') }}
+                                </td>
+                                <td>{{ $item->catatan ?? '-' }}</td>
+                                <td class="text-center">
+                                    {{ $item->kelompok->nama_kelompok ?? '-' }}
+                                </td>
+                                <td class="text-center">
+                                    <a href="#" class="btn btn-sm btn-primary">Detail</a>
+                                    <a href="#" class="btn btn-sm btn-success">Done</a>
+                                    {{-- Tambahan opsi lain jika diperlukan --}}
+                                    {{-- <a href="#" class="btn btn-sm btn-warning">Edit</a>
+                                    <form action="#" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
+                                    </form> --}}
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="text-center">Tidak ada data.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 @endsection
+
+@push('custom-script')
+    <script>
+        $(document).ready(function () {
+            $('#table').DataTable({
+                columnDefs: [{
+                    defaultContent: '-',
+                    targets: '_all'
+                }]
+            });
+        });
+    </script>
+@endpush

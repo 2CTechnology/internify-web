@@ -14,6 +14,8 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response as FacadesResponse;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use stdClass;
 
 class KelompokController extends Controller
@@ -173,49 +175,62 @@ class KelompokController extends Controller
         }
     }
 
-    public function uploadProposal($id, Request $request)
-    {
-        $data = null;
-        $message = '';
-        $responseCode = Response::HTTP_BAD_REQUEST;
+public function uploadProposal($id, Request $request)
+{
+    $message = '';
+    $responseCode = Response::HTTP_BAD_REQUEST;
 
-        DB::beginTransaction();
-        try {
-            $alurMagang = AlurMagang::where('id_kelompok', $id)->first();
-
-            $file = $request->file('proposal');
-            $filename = $file->getClientOriginalName();
-            $filePath = public_path() . '/upload/proposal/' . $id;
-            if (!File::isDirectory($filePath)) {
-                File::makeDirectory($filePath, 493, true);
-            }
-            $file->move($filePath, $filename);
-
-            $alurMagang->proposal = '/upload/proposal/' . $id . '/' . $filename;
-            $alurMagang->updated_at = now();
-            $alurMagang->save();
-
-            DB::commit();
-            $message = 'Berhasil upload proposal.';
-            $responseCode = Response::HTTP_OK;
-        } catch (Exception $e) {
-            DB::rollBack();
-            $message = 'Terjadi kesalahan. ' . $e->getMessage();
-            $data = null;
-            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
-        } catch (QueryException $e) {
-            DB::rollBack();
-            $message = 'Terjadi kesalahan. ' . $e->getMessage();
-            $data = null;
-            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
-        } finally {
-            $response = [
-                'message' => $message
-            ];
-
-            return response()->json($response, $responseCode);
+    DB::beginTransaction();
+    try {
+        // Cari kelompok dengan id
+        $kelompok = Kelompok::find($id);
+        if (!$kelompok) {
+            return response()->json(['message' => 'Kelompok tidak ditemukan.'], Response::HTTP_NOT_FOUND);
         }
+
+        // Cari alur magang yang berkaitan dengan id_kelompok (yang merujuk ke kelompok.id)
+        $alurMagang = AlurMagang::where('id_kelompok', $kelompok->id)->first();
+        if (!$alurMagang) {
+            return response()->json(['message' => 'Data alur magang tidak ditemukan untuk kelompok ini.'], Response::HTTP_NOT_FOUND);
+        }
+
+        if (!$request->hasFile('proposal')) {
+            return response()->json(['message' => 'File proposal tidak ditemukan di request.'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $file = $request->file('proposal');
+        $originalName = trim($file->getClientOriginalName());
+        $originalName = str_replace(["\n", "\r"], '', $originalName);
+
+        $safeName = time() . '-' . $originalName;
+
+        $path = public_path('uploads/proposal/' . $kelompok->id);
+        if (!File::isDirectory($path)) {
+            File::makeDirectory($path, 0755, true);
+        }
+
+        $file->move($path, $safeName);
+
+        $alurMagang->proposal = '/uploads/proposal/' . $kelompok->id . '/' . $safeName;
+        $alurMagang->updated_at = now();
+        $alurMagang->save();
+
+        DB::commit();
+        $message = 'Berhasil upload proposal.';
+        $responseCode = Response::HTTP_OK;
+    } catch (QueryException $e) {
+        DB::rollBack();
+        $message = 'Terjadi kesalahan Query: ' . $e->getMessage();
+        $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+    } catch (Exception $e) {
+        DB::rollBack();
+        $message = 'Terjadi kesalahan: ' . $e->getMessage();
+        $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
     }
+
+    return response()->json(['message' => $message], $responseCode);
+}
+
 
     public function uploadSuratBalasan($id, Request $request)
     {

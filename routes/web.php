@@ -17,6 +17,7 @@ use App\Http\Controllers\BimbinganController;
 use App\Http\Controllers\BeritaAcaraController;
 use App\Http\Controllers\EvaluasiMagangController;
 use App\Http\Controllers\DataMahasiswaController;
+use App\Http\Controllers\LaporanMagangController;
 use App\Http\Controllers\SuratPelaksanaanController;
 use App\Http\Controllers\TemplateSuratController;
 use Illuminate\Support\Facades\Route;
@@ -43,11 +44,12 @@ Route::get('berita-acara/kelompok/{namaKelompok}', [BeritaAcaraController::class
 
 Route::get('/bimbingan', [BimbinganController::class, 'index'])->name('bimbingan.index');
 Route::post('/bimbingan', [BimbinganController::class, 'store'])->name('bimbingan.store');
+Route::get('/bimbingan-create', [BimbinganController::class, 'create'])->name('bimbingan.create');
 Route::get('/evaluasi-magang', [EvaluasiMagangController::class, 'index'])->name('evaluasi-magang.index');
 Route::post('/evaluasi-magang', [EvaluasiMagangController::class, 'store'])->name('evaluasi-magang.store');
 Route::get('/evaluasi-magang/{id}/pdf', [EvaluasiMagangController::class, 'generatePdf'])->name('evaluasi-magang.pdf');
 
-
+Route::resource('laporan-magang', LaporanMagangController::class);
 
 Route::group(['middleware' => 'auth'], function () {
     Route::group(['middleware' => 'checkRole'], function () {

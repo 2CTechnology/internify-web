@@ -2,65 +2,60 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UsersSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        DB::table('users')
-            ->insert([
-                'name' => 'Ex Dosen',
-                'no_identitas' => 'd1234',
+        $users = [
+            [
                 'email' => 'dosen123@mail.com',
-                'password' => Hash::make('12345678'),
-                'role' => 'Dosen'
-            ]);
-
-        DB::table('users')
-            ->insert([
-                'name' => 'Ex Admin',
-                'no_identitas' => 'd1234',
+                'name' => 'Ex Dosen',
+                'role' => 'Dosen',
+            ],
+            [
                 'email' => 'admin123@mail.com',
-                'password' => Hash::make('12345678'),
-                'role' => 'Admin'
-            ]);
-
-            DB::table('users')
-            ->insert([
-                'name' => ' Admin Prodi',
-                'no_identitas' => 'd1234',
+                'name' => 'Ex Admin',
+                'role' => 'Admin',
+            ],
+            [
                 'email' => 'adminprodi123@mail.com',
-                'password' => Hash::make('12345678'),
-                'role' => 'Prodi'
-            ]);
-
-        DB::table('users')
-            ->insert([
-                'name' => 'Hafidz Fadhillah Febrianto',
-                'no_identitas' => 'd1234',
+                'name' => 'Admin Prodi',
+                'role' => 'Prodi',
+            ],
+            [
                 'email' => 'hafidzfadhillah606@gmail.com',
-                'password' => Hash::make('12345678'),
+                'name' => 'Hafidz Fadhillah Febrianto',
                 'role' => 'Mahasiswa',
                 'prodi_id' => 1,
                 'angkatan' => '2024'
-            ]);
-
-        DB::table('users')
-            ->insert([
-                'name' => 'Rayasya',
-                'no_identitas' => 'd1234',
+            ],
+            [
                 'email' => 'rayasya.dziqi@gmail.com',
-                'password' => Hash::make('admin123'),
+                'name' => 'Rayasya',
                 'role' => 'Mahasiswa',
                 'prodi_id' => 1,
                 'angkatan' => '2022'
-            ]);
+            ],
+        ];
+
+        foreach ($users as $user) {
+            DB::table('users')->updateOrInsert(
+                ['email' => $user['email']],
+                array_merge(
+                    [
+                        'name' => $user['name'],
+                        'no_identitas' => 'd1234',
+                        'password' => Hash::make('12345678'),
+                        'role' => $user['role'],
+                    ],
+                    isset($user['prodi_id']) ? ['prodi_id' => $user['prodi_id']] : [],
+                    isset($user['angkatan']) ? ['angkatan' => $user['angkatan']] : []
+                )
+            );
+        }
     }
 }

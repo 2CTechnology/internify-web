@@ -10,22 +10,68 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v3
-    
-      - name: Login DockerHub
+
+      - name: Create .env file for Docker
+        run: |
+          echo "APP_NAME=${{ secrets.APP_NAME }}" >> .env
+          echo "APP_ENV=local" >> .env
+          echo "APP_KEY=${{ secrets.APP_KEY }}" >> .env
+          echo "APP_DEBUG=true" >> .env
+          echo "APP_URL=http://localhost" >> .env
+
+          echo "LOG_CHANNEL=stack" >> .env
+          echo "LOG_LEVEL=debug" >> .env
+
+          echo "DB_CONNECTION=mysql" >> .env
+          echo "DB_HOST=mysql" >> .env
+          echo "DB_PORT=3306" >> .env
+          echo "DB_DATABASE=${{ secrets.DB_DATABASE }}" >> .env
+          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+
+          echo "BROADCAST_DRIVER=log" >> .env
+          echo "CACHE_DRIVER=file" >> .env
+          echo "FILESYSTEM_DISK=local" >> .env
+          echo "QUEUE_CONNECTION=sync" >> .env
+          echo "SESSION_DRIVER=file" >> .env
+          echo "SESSION_LIFETIME=120" >> .env
+
+          echo "MAIL_MAILER=smtp" >> .env
+          echo "MAIL_HOST=mailpit" >> .env
+          echo "MAIL_PORT=1025" >> .env
+          echo "MAIL_USERNAME=null" >> .env
+          echo "MAIL_PASSWORD=null" >> .env
+          echo "MAIL_ENCRYPTION=null" >> .env
+          echo "MAIL_FROM_ADDRESS=hello@example.com" >> .env
+          echo "MAIL_FROM_NAME=${{ secrets.APP_NAME }}" >> .env
+
+      - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      
+
       - name: Build & Push Docker Image
         uses: docker/build-push-action@v4
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/internify-web:latest
-      
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/internify-web:latest
+            ${{ secrets.DOCKER_USERNAME }}/internify-web:${{ github.sha }}
+
+      - name: Sync docker-compose.yml to VPS
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_KEY }}
+          source: "docker-compose.yml"
+          target: "/var/www/internify-web"
+
+
       - name: Deploy to VPS via SSH
         uses: appleboy/ssh-action@master
         with:
@@ -33,13 +79,17 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_KEY }}
           script: |
+            echo "[1] Pulling latest image from Docker Hub"
             docker pull ${{ secrets.DOCKER_USERNAME }}/internify-web:latest
-            # Cek dan hapus container jika ada
-            if [ "$(docker ps -a -q -f name=internify-app)" ]; then
-              docker stop internify-app
-              docker rm internify-app
-            else
-              echo "No existing container"
-            fi
-            # Jalankan docker-compose
-            docker-compose -f /var/www/internify-web/docker-compose.yml up -d --build
+
+            echo "[2] Stopping and removing existing Laravel container (if any)"
+            docker stop internify-app || true
+            docker rm internify-app || true
+
+            echo "[3] Recreate Laravel container with updated image"
+            docker-compose -f /var/www/internify-web/docker-compose.yml up -d
+
+            echo "[4] Running Laravel optimize + migrate + seed"
+            docker exec internify-app php artisan config:clear
+            docker exec internify-app php artisan migrate --force
+            docker exec internify-app php artisan db:seed --force

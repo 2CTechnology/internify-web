@@ -35,6 +35,13 @@ class KelompokController extends Controller
             $kelompok->save();
             $kelompokId = $kelompok->id;
 
+            // create entry alur_magang
+            $alur = new AlurMagang();
+            $alur->id_kelompok = $kelompokId;
+            $alur->created_at = now();
+            $alur->updated_at = now();
+            $alur->save();
+
             $anggotas = [];
             foreach ($request->get('anggota') as $key => $item) {
                 array_push($anggotas, [
@@ -175,61 +182,69 @@ class KelompokController extends Controller
         }
     }
 
-public function uploadProposal($id, Request $request)
-{
-    $message = '';
-    $responseCode = Response::HTTP_BAD_REQUEST;
+    public function uploadProposal($id, Request $request)
+    {
+        $message = '';
+        $responseCode = Response::HTTP_BAD_REQUEST;
 
-    DB::beginTransaction();
-    try {
-        // Cari kelompok dengan id
-        $kelompok = Kelompok::find($id);
-        if (!$kelompok) {
-            return response()->json(['message' => 'Kelompok tidak ditemukan.'], Response::HTTP_NOT_FOUND);
+        DB::beginTransaction();
+        try {
+            // Cari kelompok dengan id
+            $kelompok = Kelompok::find($id);
+            if (!$kelompok) {
+                return response()->json(['message' => 'Kelompok tidak ditemukan.'], Response::HTTP_NOT_FOUND);
+            }
+
+            // Cari alur magang yang berkaitan dengan id_kelompok (yang merujuk ke kelompok.id)
+            $alurMagang = AlurMagang::where('id_kelompok', $kelompok->id)->first();
+            if (!$alurMagang) {
+                return response()->json(['message' => 'Data alur magang tidak ditemukan untuk kelompok ini.'], Response::HTTP_NOT_FOUND);
+            }
+
+            if (!$request->hasFile('proposal')) {
+                return response()->json(['message' => 'File proposal tidak ditemukan di request.'], Response::HTTP_BAD_REQUEST);
+            }
+
+            $file = $request->file('proposal');
+            $originalName = trim($file->getClientOriginalName());
+            $originalName = str_replace(["\n", "\r"], '', $originalName);
+
+            $safeName = time() . '-' . $originalName;
+
+            $path = public_path('uploads/proposal/' . $kelompok->id);
+            if (!File::isDirectory($path)) {
+                File::makeDirectory($path, 0755, true);
+            }
+
+            // upload revised proposal
+            $file->move($path, $safeName);
+            $filePath = '/uploads/proposal/' . $kelompok->id . '/' . $safeName;
+
+            if ($alurMagang->status_proposal == 'revisi') {
+                $alurMagang->revisi_proposal = $filePath;
+            } else {
+                $alurMagang->revisi_proposal = $filePath;
+            }
+
+            $alurMagang->status_proposal = 'menunggu konfirmasi';
+            $alurMagang->updated_at = now();
+            $alurMagang->save();
+
+            DB::commit();
+            $message = 'Berhasil upload proposal.';
+            $responseCode = Response::HTTP_OK;
+        } catch (QueryException $e) {
+            DB::rollBack();
+            $message = 'Terjadi kesalahan Query: ' . $e->getMessage();
+            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+        } catch (Exception $e) {
+            DB::rollBack();
+            $message = 'Terjadi kesalahan: ' . $e->getMessage();
+            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
         }
 
-        // Cari alur magang yang berkaitan dengan id_kelompok (yang merujuk ke kelompok.id)
-        $alurMagang = AlurMagang::where('id_kelompok', $kelompok->id)->first();
-        if (!$alurMagang) {
-            return response()->json(['message' => 'Data alur magang tidak ditemukan untuk kelompok ini.'], Response::HTTP_NOT_FOUND);
-        }
-
-        if (!$request->hasFile('proposal')) {
-            return response()->json(['message' => 'File proposal tidak ditemukan di request.'], Response::HTTP_BAD_REQUEST);
-        }
-
-        $file = $request->file('proposal');
-        $originalName = trim($file->getClientOriginalName());
-        $originalName = str_replace(["\n", "\r"], '', $originalName);
-
-        $safeName = time() . '-' . $originalName;
-
-        $path = public_path('uploads/proposal/' . $kelompok->id);
-        if (!File::isDirectory($path)) {
-            File::makeDirectory($path, 0755, true);
-        }
-
-        $file->move($path, $safeName);
-
-        $alurMagang->proposal = '/uploads/proposal/' . $kelompok->id . '/' . $safeName;
-        $alurMagang->updated_at = now();
-        $alurMagang->save();
-
-        DB::commit();
-        $message = 'Berhasil upload proposal.';
-        $responseCode = Response::HTTP_OK;
-    } catch (QueryException $e) {
-        DB::rollBack();
-        $message = 'Terjadi kesalahan Query: ' . $e->getMessage();
-        $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
-    } catch (Exception $e) {
-        DB::rollBack();
-        $message = 'Terjadi kesalahan: ' . $e->getMessage();
-        $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+        return response()->json(['message' => $message], $responseCode);
     }
-
-    return response()->json(['message' => $message], $responseCode);
-}
 
 
     public function uploadSuratBalasan($id, Request $request)
@@ -300,7 +315,6 @@ public function uploadProposal($id, Request $request)
                 $data = null;
                 $message = 'Data kelompok tidak ditemukan.';
             }
-
         } catch (Exception $e) {
             $message = 'Terjadi kesalahan. ' . $e->getMessage();
             $data = null;
@@ -392,7 +406,6 @@ public function uploadProposal($id, Request $request)
                 $message = 'Berhasil menampilkan data alur magang.';
                 $data = $returnData;
             }
-
         } catch (Exception $e) {
             DB::rollBack();
             $message = 'Terjadi kesalahan. ' . $e->getMessage();
@@ -450,14 +463,15 @@ public function uploadProposal($id, Request $request)
         }
     }
 
-    public function downloadSuratPengantar(Request $request) {
+    public function downloadSuratPengantar(Request $request)
+    {
         $idKelompok = $request->get('id_kelompok');
         $alurMagang = AlurMagang::where('id_kelompok', $idKelompok)->first();
-        if($alurMagang->surat_pengantar != null) {
+        if ($alurMagang->surat_pengantar != null) {
             $file = public_path() . $alurMagang->surat_pengantar;
             $headers = [
                 'Content-Type' => 'application/pdf',
-             ];
+            ];
             return response()->download($file, 'surat-pengantar.pdf');
             // return FacadesResponse::download($file, 'surat-pengantar.pdf', $headers);
         } else {

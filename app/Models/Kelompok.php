@@ -36,4 +36,10 @@ class Kelompok extends Model
     {
         return $this->belongsTo(User::class, 'id_users');
     }
+
+    // relasi kelompok ke laporan magang
+    public function laporanMagang()
+{
+    return $this->hasMany(LaporanMagang::class, 'id_kelompok');
+}
 }

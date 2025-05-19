@@ -15,4 +15,10 @@ class JadwalBimbingan extends Model
         'jadwal',
         'catatan',
     ];
+
+    public function kelompok()
+{
+    return $this->belongsTo(Kelompok::class, 'id_kelompok');
+}
+
 }

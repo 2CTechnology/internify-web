@@ -18,7 +18,7 @@ class BimbinganController extends Controller
     public function index()
     {
         // Ambil data jadwal bimbingan dari database (jika ada)
-        $data = JadwalBimbingan::all(); // Mengambil semua data jadwal bimbingan
+        $data = JadwalBimbingan::with('kelompok')->get(); 
 
         // Ambil semua data kelompok untuk dropdown
         $kelompoks = Kelompok::all(); // Ambil semua data kelompok

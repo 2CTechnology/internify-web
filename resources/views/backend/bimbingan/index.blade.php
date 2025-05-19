@@ -23,9 +23,11 @@
                         <tr>
                             <th class="text-center">No.</th>
                             <th class="text-center">Tanggal</th>
-                            <th class="text-center">Catatan</th>
+                            {{-- <th class="text-center">Catatan</th> --}}
                             <th class="text-center">Nama Kelompok</th>
+                            <th class="text-center">Status</th>
                             <th class="text-center">Aksi</th>
+                            
                         </tr>
                     </thead>
                     <tbody>
@@ -35,20 +37,35 @@
                                 <td class="text-center">
                                     {{ \Carbon\Carbon::parse($item->jadwal)->format('d M Y') }}
                                 </td>
-                                <td>{{ $item->catatan ?? '-' }}</td>
+                                {{-- <td>{{ $item->catatan ?? '-' }}</td> --}}
                                 <td class="text-center">
                                     {{ $item->kelompok->nama_kelompok ?? '-' }}
                                 </td>
                                 <td class="text-center">
-                                    <a href="#" class="btn btn-sm btn-primary">Detail</a>
-                                    <a href="#" class="btn btn-sm btn-success">Done</a>
-                                    {{-- Tambahan opsi lain jika diperlukan --}}
-                                    {{-- <a href="#" class="btn btn-sm btn-warning">Edit</a>
-                                    <form action="#" method="POST" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger">Hapus</button>
-                                    </form> --}}
+                                    {{ $item->status ?? '-' }}
+                                </td>
+                                <td class="text-center d-flex justify-content-center">
+                                    {{-- <div class="form-inline text-center"> --}}
+                                        <a href="#">
+                                            <button data-toggle="modal" data-target="#exampleModal{{ $item->id }}" data-prodi="{{ $item->prodi->nama_prodi ?? '-' }}" data-golongan="{{ $item->golongan }}" data-email="{{ $item->email }}" data-angkatan="{{ $item->angkatan }}" type="button" id="PopoverCustomT-1" class="btn btn-warning btn-md btn-show-modal" data-toggle="tooltip" title="Detail" data-placement="top"><span class="fa fa-eye"></span></button>    
+                                        </a>
+                                        @if ($item->is_accepted == 0)
+                                            <a href="#" class="mx-2">
+                                                <button data-toggle="modal" data-target="#modalTindakLanjut" type="button" id="PopoverCustomT-1" class="btn btn-primary btn-md btn-konfirm" data-id="{{ $item->id }}" data-toggle="tooltip" title="Tindak Lanjut" data-placement="top"><span class="fa fa-pen"></span></button>
+                                            </a>
+                                        @endif
+                                        @if ($item->is_accepted == 0)
+                                            <a href="#">
+                                                <button type="button" class="btn btn-danger btn-md btn-tolak" data-toggle="tooltip" title="Tolak" data-placement="top" data-id="{{ $item->id }}">
+                                                    <span class="fa fa-trash"></span>
+                                                </button>
+                                            </a>
+                                            <form action="{{ route('akun-mahasiswa.destroy', $item->id) }}" method="post" id="decline-{{ $item->id }}">
+                                                @csrf
+                                                @method('delete')
+                                            </form>
+                                        @endif
+                                    {{-- </div> --}}
                                 </td>
                             </tr>
                         @empty

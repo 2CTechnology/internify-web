@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_kelompok'); // Relasi ke tabel kelompoks
             $table->dateTime('jadwal')->nullable();    // Kolom jadwal
             $table->text('catatan')->nullable();       // Kolom catatan
+            $table->string('status')->default('pending'); // Status bimbingan
             $table->timestamps();
 
             // Relasi ke tabel kelompoks

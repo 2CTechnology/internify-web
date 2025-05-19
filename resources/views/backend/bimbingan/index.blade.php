@@ -42,7 +42,7 @@
                                     {{ $item->kelompok->nama_kelompok ?? '-' }}
                                 </td>
                                 <td class="text-center">
-                                    {{ $item->kelompok->nama_kelompok ?? '-' }}
+                                    {{ $item->status ?? '-' }}
                                 </td>
                                 <td class="text-center d-flex justify-content-center">
                                     {{-- <div class="form-inline text-center"> --}}

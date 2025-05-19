@@ -23,17 +23,20 @@ class LaporanMagangController extends Controller
     
     public function index()
     {
-        $this->param['title'] = 'Laporan';
+    $this->param['title'] = 'Laporan';
 
-        if (auth()->user()->role == 'Dosen') {
-            $data = LaporanMagang::select('id_kelompok','laporan', 'status_laporan')
-                ->orderBy('id','desc')
-                ->get();
-        }
-    
-        $this->param['data'] = $data;
-        return view('backend.laporan-magang.index', $this->param);
+    if (auth()->user()->role == 'Dosen') {
+        $data = LaporanMagang::with('kelompok:id,nama_kelompok') // eager load relasi
+            ->select('id', 'id_kelompok', 'laporan', 'status_laporan')
+            ->orderBy('id', 'desc')
+            ->get();
     }
+
+    $this->param['data'] = $data;
+
+    return view('backend.laporan-magang.index', $this->param);
+    }
+
 
     /**
      * Show the form for creating a new resource.

@@ -32,6 +32,8 @@ Route::post('/cek-otp', [UsersController::class, 'cekOTP']);
 Route::post('/reset-password', [UsersController::class, 'resetPassword']);
 
 Route::get('/jadwal-bimbingan', [CounselingController::class, 'getBimbingan']);
+// Post laporan magang
+Route::post('/laporan', [CounselingController::class, 'postLaporan']);
 
 Route::middleware('auth:sanctum')
     ->group(function () {

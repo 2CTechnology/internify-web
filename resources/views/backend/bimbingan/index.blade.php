@@ -82,25 +82,41 @@
 @endsection
 
 @push('custom-script')
-    <script>
-        $(function () {
-            /* DataTable */
-            $('#table').DataTable({
-                columnDefs: [{
-                    defaultContent: '-',
-                    targets: '_all'
-                }]
-            });
+<script>
+$(function () {
+    // Inisialisasi DataTable
+    $('#table').DataTable({
+        columnDefs: [{ defaultContent: '-', targets: '_all' }]
+    });
 
-            // Saat tombol Ubah Status diklik
+    // Fungsi isi modal ubah status
     $('body').on('click', '.btn-konfirm', function () {
-        const id     = $(this).data('id');     // id jadwal_bimbingans
-        const status = $(this).data('status'); // 'pending' | 'selesai' | null
-
-        // Isi hidden input dan select di modal
-        $('#hidden-id-status').val(id);        // ganti id sesuai modal baru
+        const id = $(this).data('id');
+        const status = $(this).data('status');
+        $('#hidden-id-status').val(id);
         $('#select-status').val(status);
     });
+
+    // Fungsi tombol hapus (dengan SweetAlert)
+    $(".btn-tolak").on('click', function () {
+        var id = $(this).data('id');
+        console.log(`dec: ${id}`);
+
+        Swal.fire({
+            title: "Konfirmasi",
+            text: "Apakah Anda yakin ingin menolak/menghapus akun ini?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Ya",
+            cancelButtonText: "Tidak"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $(`#decline-${id}`).submit();
+            }
         });
-    </script>
+    });
+});
+</script>
 @endpush

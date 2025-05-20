@@ -62,4 +62,23 @@ class BimbinganController extends Controller
         // Redirect kembali dengan pesan sukses
         return redirect()->route('bimbingan.index')->with('success', 'Jadwal bimbingan berhasil ditambahkan.');
     }
+
+     public function edit(Request $request)
+    {
+        // Validasi input
+        $request->validate([
+            'id' => 'required|exists:jadwal_bimbingans,id',
+            'ubah_status' => 'required|in:pending,selesai',
+        ]);
+
+        // Ambil data berdasarkan ID
+        $bimbingan = JadwalBimbingan::find($request->id);
+
+        // Update status
+        $bimbingan->status = $request->ubah_status;
+        $bimbingan->save();
+
+        // Redirect kembali dengan pesan sukses
+        return redirect()->back()->with('success', 'Status berhasil diperbarui.');
+    }
 }

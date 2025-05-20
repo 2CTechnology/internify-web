@@ -13,6 +13,7 @@
         <button class="btn btn-success">Tambah Jadwal Bimbingan</button>
     </a>
 @endpush
+@include('backend.bimbingan.modal.ubah-status')
 
 @section('content')
     <div class="row">
@@ -51,7 +52,7 @@
                                         </a>
                                         @if ($item->is_accepted == 0)
                                             <a href="#" class="mx-2">
-                                                <button data-toggle="modal" data-target="#modalTindakLanjut" type="button" id="PopoverCustomT-1" class="btn btn-primary btn-md btn-konfirm" data-id="{{ $item->id }}" data-toggle="tooltip" title="Tindak Lanjut" data-placement="top"><span class="fa fa-pen"></span></button>
+                                                <button data-toggle="modal" data-target="#modal-ubah-status" type="button" id="PopoverCustomT-1" class="btn btn-primary btn-md btn-konfirm" data-id="{{ $item->id }}" data-status="{{ $item->status }}" data-toggle="tooltip" title="Ubah Status" data-placement="top"><span class="fa fa-pen"></span></button>
                                             </a>
                                         @endif
                                         @if ($item->is_accepted == 0)
@@ -82,13 +83,24 @@
 
 @push('custom-script')
     <script>
-        $(document).ready(function () {
+        $(function () {
+            /* DataTable */
             $('#table').DataTable({
                 columnDefs: [{
                     defaultContent: '-',
                     targets: '_all'
                 }]
             });
+
+            // Saat tombol Ubah Status diklik
+    $('body').on('click', '.btn-konfirm', function () {
+        const id     = $(this).data('id');     // id jadwal_bimbingans
+        const status = $(this).data('status'); // 'pending' | 'selesai' | null
+
+        // Isi hidden input dan select di modal
+        $('#hidden-id-status').val(id);        // ganti id sesuai modal baru
+        $('#select-status').val(status);
+    });
         });
     </script>
 @endpush

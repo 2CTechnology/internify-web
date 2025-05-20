@@ -61,7 +61,7 @@
                                                     <span class="fa fa-trash"></span>
                                                 </button>
                                             </a>
-                                            <form action="{{ route('akun-mahasiswa.destroy', $item->id) }}" method="post" id="decline-{{ $item->id }}">
+                                            <form action="{{ route('bimbingan.destroy', $item->id) }}" method="post" id="decline-{{ $item->id }}">
                                                 @csrf
                                                 @method('delete')
                                             </form>

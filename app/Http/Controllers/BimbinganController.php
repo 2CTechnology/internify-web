@@ -81,4 +81,20 @@ class BimbinganController extends Controller
         // Redirect kembali dengan pesan sukses
         return redirect()->back()->with('success', 'Status berhasil diperbarui.');
     }
+
+    public function destroy($id)
+{
+    // Cari data
+    $bimbingan = JadwalBimbingan::find($id);
+
+    if (!$bimbingan) {
+        return redirect()->back()->with('error', 'Data tidak ditemukan.');
+    }
+
+    // Hapus data
+    $bimbingan->delete();
+
+    // Redirect dengan pesan
+    return redirect()->route('bimbingan.index')->with('success', 'Jadwal bimbingan berhasil dihapus.');
+}
 }

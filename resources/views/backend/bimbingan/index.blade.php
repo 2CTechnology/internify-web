@@ -13,6 +13,7 @@
         <button class="btn btn-success">Tambah Jadwal Bimbingan</button>
     </a>
 @endpush
+@include('backend.bimbingan.modal.ubah-status')
 
 @section('content')
     <div class="row">
@@ -51,7 +52,7 @@
                                         </a>
                                         @if ($item->is_accepted == 0)
                                             <a href="#" class="mx-2">
-                                                <button data-toggle="modal" data-target="#modalTindakLanjut" type="button" id="PopoverCustomT-1" class="btn btn-primary btn-md btn-konfirm" data-id="{{ $item->id }}" data-toggle="tooltip" title="Tindak Lanjut" data-placement="top"><span class="fa fa-pen"></span></button>
+                                                <button data-toggle="modal" data-target="#modal-ubah-status" type="button" id="PopoverCustomT-1" class="btn btn-primary btn-md btn-konfirm" data-id="{{ $item->id }}" data-status="{{ $item->status }}" data-toggle="tooltip" title="Ubah Status" data-placement="top"><span class="fa fa-pen"></span></button>
                                             </a>
                                         @endif
                                         @if ($item->is_accepted == 0)
@@ -60,7 +61,7 @@
                                                     <span class="fa fa-trash"></span>
                                                 </button>
                                             </a>
-                                            <form action="{{ route('akun-mahasiswa.destroy', $item->id) }}" method="post" id="decline-{{ $item->id }}">
+                                            <form action="{{ route('bimbingan.destroy', $item->id) }}" method="post" id="decline-{{ $item->id }}">
                                                 @csrf
                                                 @method('delete')
                                             </form>
@@ -81,14 +82,41 @@
 @endsection
 
 @push('custom-script')
-    <script>
-        $(document).ready(function () {
-            $('#table').DataTable({
-                columnDefs: [{
-                    defaultContent: '-',
-                    targets: '_all'
-                }]
-            });
+<script>
+$(function () {
+    // Inisialisasi DataTable
+    $('#table').DataTable({
+        columnDefs: [{ defaultContent: '-', targets: '_all' }]
+    });
+
+    // Fungsi isi modal ubah status
+    $('body').on('click', '.btn-konfirm', function () {
+        const id = $(this).data('id');
+        const status = $(this).data('status');
+        $('#hidden-id-status').val(id);
+        $('#select-status').val(status);
+    });
+
+    // Fungsi tombol hapus (dengan SweetAlert)
+    $(".btn-tolak").on('click', function () {
+        var id = $(this).data('id');
+        console.log(`dec: ${id}`);
+
+        Swal.fire({
+            title: "Konfirmasi",
+            text: "Apakah Anda yakin ingin menolak/menghapus akun ini?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Ya",
+            cancelButtonText: "Tidak"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $(`#decline-${id}`).submit();
+            }
         });
-    </script>
+    });
+});
+</script>
 @endpush

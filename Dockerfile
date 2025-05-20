@@ -12,11 +12,15 @@ WORKDIR /var/www
 
 COPY . .
 
+COPY .env .env
+
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 RUN chown -R www-data:www-data /var/www && chmod -R 775 storage bootstrap/cache
 
 COPY default.conf /etc/nginx/sites-available/default
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+RUN composer dump-autoload
 
 EXPOSE 80
 

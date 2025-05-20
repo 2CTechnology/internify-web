@@ -44,9 +44,12 @@ Route::get('berita-acara/kelompok/{namaKelompok}', [BeritaAcaraController::class
 
 Route::get('/bimbingan', [BimbinganController::class, 'index'])->name('bimbingan.index');
 Route::post('/bimbingan', [BimbinganController::class, 'store'])->name('bimbingan.store');
+Route::post('/status-bimbingan/edit', [BimbinganController::class, 'edit'])->name('status-bimbingan.edit');
+Route::delete('/bimbingan/{id}', [BimbinganController::class, 'destroy'])->name('bimbingan.destroy');
 Route::get('/bimbingan-create', [BimbinganController::class, 'create'])->name('bimbingan.create');
 Route::get('/evaluasi-magang', [EvaluasiMagangController::class, 'index'])->name('evaluasi-magang.index');
 Route::post('/evaluasi-magang', [EvaluasiMagangController::class, 'store'])->name('evaluasi-magang.store');
+Route::get('/evaluasi-magang/{id}/pdf', [EvaluasiMagangController::class, 'generatePdf'])->name('evaluasi-magang.pdf');
 
 Route::resource('laporan-magang', LaporanMagangController::class);
 

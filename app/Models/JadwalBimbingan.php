@@ -14,6 +14,7 @@ class JadwalBimbingan extends Model
         'id_kelompok',
         'jadwal',
         'catatan',
+        'status',
     ];
 
     public function kelompok()

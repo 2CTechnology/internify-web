@@ -7,7 +7,6 @@
         <p>Gedung JTI. Jl. Mastrip PO BOX 164, Jember</p>
         <p>+62 822-6495-8427</p>
         <p>bima.iris758@gmail.com</p>
-        <p>bima testing github action ke-2 kali</p>
     </div>
     <div class="social-media">
         <h5>Follow Us</h5>

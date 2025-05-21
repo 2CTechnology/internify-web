@@ -58,7 +58,7 @@ Route::post('/surat-balasan/tindak-lanjut', [SuratBalasanController::class, 'tin
 
 Route::group(['middleware' => 'auth'], function () {
     Route::group(['middleware' => 'checkRole'], function () {
-        Route::resource('faq', FaqController::class);
+        // Route::resource('faq', FaqController::class);
         Route::resource('tempat-magang', TempatMagangController::class);
         Route::resource('file-template', FileTemplateController::class);
         Route::resource('prodi', ProdiController::class);

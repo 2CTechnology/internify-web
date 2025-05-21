@@ -15,6 +15,7 @@ class LaporanMagang extends Model
         'id_kelompok',
         'laporan',
         'catatan',
+        'status_laporan',
     ];
 
     public function kelompok()

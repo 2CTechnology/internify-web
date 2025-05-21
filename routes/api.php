@@ -32,8 +32,7 @@ Route::post('/cek-otp', [UsersController::class, 'cekOTP']);
 Route::post('/reset-password', [UsersController::class, 'resetPassword']);
 
 Route::get('/jadwal-bimbingan', [CounselingController::class, 'getBimbingan']);
-// Post laporan magang
-Route::post('/laporan', [CounselingController::class, 'postLaporan']);
+
 
 Route::middleware('auth:sanctum')
     ->group(function () {
@@ -53,4 +52,6 @@ Route::middleware('auth:sanctum')
         Route::post('/insert-dospem/{id}', [KelompokController::class, 'insertDospem']);
         Route::post('/insert-tempat-magang-by-id/{id}', [KelompokController::class, 'insertTempatMagangById']);
         Route::post('/download-surat-pengantar', [KelompokController::class, 'downloadSuratPengantar']);
+        // Post laporan magang
+Route::post('/post-laporan/{id}', [CounselingController::class, 'postLaporan']);
     });

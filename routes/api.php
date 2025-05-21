@@ -33,7 +33,7 @@ Route::post('/reset-password', [UsersController::class, 'resetPassword']);
 
 Route::get('/jadwal-bimbingan', [CounselingController::class, 'getBimbingan']);
 // Post laporan magang
-Route::post('/laporan', [CounselingController::class, 'postLaporan']);
+Route::post('/laporan/{id}', [CounselingController::class, 'postLaporan']);
 
 Route::middleware('auth:sanctum')
     ->group(function () {

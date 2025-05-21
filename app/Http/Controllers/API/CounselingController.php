@@ -19,7 +19,7 @@ class CounselingController extends Controller
     public function getBimbingan($id)
 {
     $jadwalBimbingan = JadwalBimbingan::where('id_kelompok', $id)
-                        ->select('jadwal', 'catatan', 'id_kelompok')
+                        ->select('jadwal', 'catatan', 'id_kelompok', 'status')
                         ->get();
 
     return response()->json([

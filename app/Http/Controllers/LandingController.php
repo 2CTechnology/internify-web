@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Faq;
 use App\Models\FileTemplate;
 use App\Models\TempatMagang;
 use App\Models\User;
@@ -12,9 +11,8 @@ class LandingController extends Controller
 {
     //
     public function index() {
-        // $faq = Faq::get();
         $fileTemplate = FileTemplate::get();
-        return view('user.pages.landing', compact('faq', 'fileTemplate'));
+        return view('user.pages.landing', compact('fileTemplate'));
     }
     public function daftardosen() {
         $data = User::where('role', 'Dosen')

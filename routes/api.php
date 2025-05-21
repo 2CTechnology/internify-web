@@ -31,7 +31,7 @@ Route::post('/lupa-password', [UsersController::class, 'lupaPassword']);
 Route::post('/cek-otp', [UsersController::class, 'cekOTP']);
 Route::post('/reset-password', [UsersController::class, 'resetPassword']);
 
-Route::get('/jadwal-bimbingan', [CounselingController::class, 'getBimbingan']);
+
 
 
 Route::middleware('auth:sanctum')
@@ -53,5 +53,6 @@ Route::middleware('auth:sanctum')
         Route::post('/insert-tempat-magang-by-id/{id}', [KelompokController::class, 'insertTempatMagangById']);
         Route::post('/download-surat-pengantar', [KelompokController::class, 'downloadSuratPengantar']);
         // Post laporan magang
-Route::post('/post-laporan/{id}', [CounselingController::class, 'postLaporan']);
+        Route::post('/post-laporan/{id}', [CounselingController::class, 'postLaporan']);
+        Route::get('/jadwal-bimbingan/{id}', [CounselingController::class, 'getBimbingan']);
     });

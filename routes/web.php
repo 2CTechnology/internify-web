@@ -53,6 +53,9 @@ Route::get('/evaluasi-magang/{id}/pdf', [EvaluasiMagangController::class, 'gener
 
 Route::resource('laporan-magang', LaporanMagangController::class);
 
+Route::post('/surat-balasan/tindak-lanjut', [SuratBalasanController::class, 'tindakLanjut'])->name('surat-balasan.tindak-lanjut');
+
+
 Route::group(['middleware' => 'auth'], function () {
     Route::group(['middleware' => 'checkRole'], function () {
         Route::resource('faq', FaqController::class);

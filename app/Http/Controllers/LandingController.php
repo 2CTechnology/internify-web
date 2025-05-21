@@ -12,7 +12,7 @@ class LandingController extends Controller
 {
     //
     public function index() {
-        $faq = Faq::get();
+        // $faq = Faq::get();
         $fileTemplate = FileTemplate::get();
         return view('user.pages.landing', compact('faq', 'fileTemplate'));
     }

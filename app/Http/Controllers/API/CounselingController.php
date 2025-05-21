@@ -16,16 +16,18 @@ use Illuminate\Http\Response;
 
 class CounselingController extends Controller
 {
-    public function getBimbingan()
-    {
-        $jadwalBimbingan = JadwalBimbingan::select('jadwal', 'catatan', 'id_kelompok')->get();
+    public function getBimbingan($id)
+{
+    $jadwalBimbingan = JadwalBimbingan::where('id_kelompok', $id)
+                        ->select('jadwal', 'catatan', 'id_kelompok')
+                        ->get();
 
     return response()->json([
         'success' => true,
         'data' => $jadwalBimbingan
     ]);
-    
-    }
+}
+
 
 public function postLaporan($id, Request $request)
 {

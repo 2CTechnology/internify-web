@@ -46,7 +46,7 @@ public function postLaporan($id, Request $request)
             ['id_kelompok' => $kelompok->id],
             [
                 'laporan'        => $filePath,
-                'status_laporan' => 'dikirim',
+                'status_laporan' => 'Belum Direview',
                 'catatan'        => null,
             ]
         );

@@ -43,12 +43,15 @@
                                     @endif
                                 </td>
                                 <td class="text-center">
-                                    @if ($item?->surat_pengantar)
-                                        Sudah Upload
-                                    @else
-                                        Belum Upload
-                                    @endif    
-                                </td>
+    @if ($item->status === 1)
+        Diterima
+    @elseif ($item->status === 0)
+        Mengulang
+    @else
+        Belum Ditindaklanjuti
+    @endif
+</td>
+
                                 <td class="text-center">
                                     @if ($item->surat_balasan)
                                         <a href="{{ asset('storage/' . $item->surat_balasan) }}" target="_blank" class="btn btn-success btn-sm" title="Preview Surat Balasan">
@@ -63,7 +66,7 @@
                                         <button data-toggle="modal" data-target="#exampleModal{{ $item->id }}" data-prodi="{{ $item->prodi->nama_prodi ?? '-' }}" data-golongan="{{ $item->golongan }}" data-email="{{ $item->email }}" data-angkatan="{{ $item->angkatan }}" type="button" id="PopoverCustomT-1" class="btn btn-warning btn-md btn-show-modal" data-toggle="tooltip" title="Detail" data-placement="top"><span class="fa fa-eye"></span></button>    
                                     </a>
                                     <a href="#" class="mx-2">
-                                        <button data-toggle="modal" data-target="#modalUpload" type="button" id="PopoverCustomT-1" class="btn btn-primary btn-md btn-upload" data-id="{{ $item->id }}" data-toggle="tooltip" title="Tindak Lanjut" data-placement="top"><span class="fa fa-pen"></span></button>
+                                        <button data-toggle="modal" data-target="#modalUpload" type="button" id="PopoverCustomT-1" class="btn btn-primary btn-md btn-upload" data-id="{{ $item->id }}" data-status="{{ $item->status }}"  data-toggle="tooltip" title="Tindak Lanjut" data-placement="top"><span class="fa fa-pen"></span></button>
                                     </a>
                                 </td>
                             </tr>
@@ -94,10 +97,24 @@
             $("#email-modal").val(email);
         })
 
-        $(".btn-upload").on('click', function () {
-            var id = $(this).data('id')
-            $("#id-upload").val(id)
-        })
+        // ketika tombol "Tindak Lanjut" diklik
+$(document).on('click', '.btn-upload', function () {
+    var id     = $(this).data('id');
+    var status = $(this).data('status');     // 1 atau 0
+
+    // isi hidden input id
+    $('#hidden-id-status').val(id);
+
+    // preset dropdown status (konversi angka → string)
+    if (status === 1 || status === '1') {
+        $('#select-status').val('diterima');
+    } else if (status === 0 || status === '0') {
+        $('#select-status').val('mengulang');
+    } else {
+        $('#select-status').val('');
+    }
+});
+
 
         $(".btn-tolak").on('click', function () {
             var id = $(this).data('id')

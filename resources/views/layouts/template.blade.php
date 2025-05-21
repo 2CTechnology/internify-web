@@ -121,9 +121,6 @@
                       <a href="{{ route('tempat-magang.index') }}" class="nav-link {{ (request()->segment(1) == 'tempat-magang') ? 'active' : '' }}">Tempat Magang</a>
                     </li>
                     <li class="nav-item">
-                      <a href="{{ route('faq.index') }}" class="nav-link {{ (request()->segment(1) == 'faq') ? 'active' : '' }}">FAQ</a>
-                    </li>
-                    <li class="nav-item">
                       <a href="{{ route('file-template.index') }}" class="nav-link {{ (request()->segment(1) == 'file-template') ? 'active' : '' }}">File Template</a>
                     </li>
                     <li class="nav-item">

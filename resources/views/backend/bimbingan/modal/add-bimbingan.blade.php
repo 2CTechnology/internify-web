@@ -63,7 +63,7 @@
                                 <input type="datetime-local"
                                     class="form-control form-control-lg @error('jadwal') is-invalid @enderror"
                                     id="tanggal" name="jadwal" value="{{ old('jadwal', now()->format('Y-m-d\TH:i')) }}"
-                                    {{-- default: sekarang --}} required>
+                                    required>
 
                                 @error('jadwal')
                                     <div class="invalid-feedback">{{ $message }}</div>

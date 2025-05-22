@@ -1,28 +1,21 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::table('alur_magangs', function (Blueprint $table) {
-            $table->renameColumn('status', 'status_surat_balasan');
-        });
+        // Ubah nama kolom 'status' ke 'status_surat_balasan' secara manual (asumsikan VARCHAR(50))
+        DB::statement("ALTER TABLE `alur_magangs` CHANGE `status` `status_surat_balasan` VARCHAR(50) NULL");
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::table('alur_magangs', function (Blueprint $table) {
-            $table->renameColumn('status_surat_balasan', 'status');
-        });
+        // Balikkan nama kolom jika rollback
+        DB::statement("ALTER TABLE `alur_magangs` CHANGE `status_surat_balasan` `status` VARCHAR(50) NULL");
     }
 };

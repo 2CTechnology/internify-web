@@ -388,6 +388,7 @@ class KelompokController extends Controller
             $responseCode = Response::HTTP_OK;
             $userId = auth()->user()->id;
             $kelompok = Kelompok::where('id_users', $userId)->orderBy('id', 'desc')->first();
+
             if (!$kelompok) {
                 $data = null;
                 $message = 'Data kelompok tidak ditemukan.';
@@ -395,22 +396,42 @@ class KelompokController extends Controller
                 $alurMagang = AlurMagang::where('id_kelompok', $kelompok?->id)->orderBy('id', 'desc')->first();
                 if (!$alurMagang) {
                     $returnData->message = 'Kelompok belum melakukan pemilihan tempat magang.';
-                    $returnData->dataAlurMagang = $alurMagang;
-                } else if ($alurMagang) {
-                    if ($alurMagang?->status_proposal == 'menunggu konfirmasi') {
-                        $returnData->message = 'Proposal menunggu konfirmasi dari admin atau dosen.';
-                        $returnData->dataAlurMagang = $alurMagang;
-                    } else if ($alurMagang->status_proposal == 'revisi') {
-                        $returnData->message = 'Terdapat revisi proposal. ' . $alurMagang->revisi_proposal;
-                        $returnData->dataAlurMagang = $alurMagang;
-                    } else if ($alurMagang->status_proposal == 'ditolak') {
-                        $returnData->message = 'Proposal ditolak. ' . $alurMagang->alasan_proposal_ditolak;
-                        $returnData->dataAlurMagang = $alurMagang;
-                    } else {
-                        $returnData->message = 'Proposal diterima.';
-                        $returnData->dataAlurMagang = $alurMagang;
+                    // $returnData->dataAlurMagang = $alurMagang;
+                } else {
+                    switch ($alurMagang->status_proposal) {
+                        case 'menunggu konfirmasi':
+                            $returnData->message = 'Proposal menunggu konfirmasi dari admin atau dosen.';
+                            break;
+                        case 'revisi':
+                            $returnData->message = 'Terdapat revisi proposal. ' . $alurMagang->revisi_proposal;
+                            break;
+                        case 'ditolak':
+                            $returnData->message = 'Proposal ditolak. ' . $alurMagang->alasan_proposal_ditolak;
+                            break;
+                        case 'diterima':
+                            $returnData->message = 'Proposal diterima.';
+                            break;
+                        default:
+                            $returnData->message = 'Status proposal belum tersedia.';
                     }
+
+                    switch ($alurMagang->status) {
+                        case 'menunggu konfirmasi':
+                            $returnData->message = 'Surat balasan menunggu konfirmasi.';
+                            break;
+                        case 'mengulang':
+                            $returnData->message = 'Surat balasan diterima & mengulang. ';
+                            break;
+                        case 'diterima':
+                            $returnData->message = 'Surat balasan diterima. Tunggu proses surat pengantar.';
+                            break;
+                        default:
+                            $returnData->message = 'Surat balasan belum diunggah.';
+                    }
+
+                    $returnData->dataAlurMagang = $alurMagang;
                 }
+
                 $message = 'Berhasil menampilkan data alur magang.';
                 $data = $returnData;
             }

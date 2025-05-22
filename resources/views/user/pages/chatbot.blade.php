@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Internify.AI Prompt</title>
@@ -66,22 +67,21 @@
         }
     </style>
 </head>
+
 <body>
 
     <!-- Tampilan Awal -->
     <div class="center-container" id="startContainer">
         <div class="logo">
             <img src="{{ asset('asset-landing/img/logo.png') }}" alt="Logo" class="logo-img me-2">
-        </div>        
+        </div>
         <div class="welcome-text">Selamat Datang di Internify.AI</div>
-        <form id="startForm">
-            <div class="input-group mx-auto" style="max-width: 600px;">
-                <input type="text" id="startInput" class="form-control" placeholder="Mau cari informasi seputar magang ?" autocomplete="off">
-                <span class="input-group-text" onclick="handleInput()">
-                    <i class="bi bi-send-fill"></i>
-                </span>
-            </div>
-        </form>
+        <div class="center-container" id="chatbotContainer" style="width: 100%; height: 85vh;">
+            <iframe src="http://localhost:8502" width="100%" height="100%" frameborder="0"
+                style="border-radius: 12px; box-shadow: 0 0 16px rgba(0,0,0,0.1);">
+            </iframe>
+        </div>
+
     </div>
 
     <script>
@@ -110,4 +110,5 @@
         });
     </script>
 </body>
+
 </html>

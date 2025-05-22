@@ -20,7 +20,7 @@ class AlurMagang extends Model
         'nama_posisi',
         'id_tempat_magang',
         'surat_balasan',
-        'status',
+        'status_surat_balasan',
         'created_at',
         'updated_at'
     ];

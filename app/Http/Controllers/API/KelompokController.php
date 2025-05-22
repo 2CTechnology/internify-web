@@ -14,6 +14,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response as FacadesResponse;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use stdClass;
@@ -254,10 +255,35 @@ class KelompokController extends Controller
 
     DB::beginTransaction();
     try {
+        if ($request->hasFile('surat_balasan')) {
+            $file = $request->file('surat_balasan');
+
+            Log::info('🔍 MIME TYPE:', [$file->getMimeType()]);
+            Log::info('🔍 Client Extension:', [$file->getClientOriginalExtension()]);
+            Log::info('🔍 Real Path:', [$file->getRealPath()]);
+        } else {
+            Log::warning('❌ Tidak ada file terkirim di surat_balasan');
+        }
+
+
         // Validasi file
         $request->validate([
-            'surat_balasan' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'surat_balasan' => 'required|mimetypes:application/pdf,image/jpg,image/jpeg,image/png|max:2048',
+        ], [
+            'required' => 'File surat balasan wajib diunggah.',
+            'mimetypes' => 'File harus berupa PDF atau gambar (JPG, PNG).',
+            'max' => 'Ukuran file maksimal 2MB.',
         ]);
+
+        // Tambahan safety check
+        if (!$request->hasFile('surat_balasan')) {
+            return response()->json(['message' => 'File tidak dikirim ke server.'], 400);
+        }
+
+        $file = $request->file('surat_balasan');
+        if (!$file->isValid()) {
+            return response()->json(['message' => 'File rusak atau gagal upload.'], 400);
+        }
 
         // Cari data alur magang berdasarkan id kelompok
         $alurMagang = AlurMagang::where('id_kelompok', $id)->first();
@@ -279,7 +305,7 @@ class KelompokController extends Controller
 
         // Update database
         $alurMagang->surat_balasan = '/upload/surat-balasan/' . $id . '/' . $filename;
-        $alurMagang->status = null; // Set status ke NULL (menunggu konfirmasi)
+        $alurMagang->status_surat_balasan = "menunggu konfirmasi"; // Set status ke NULL (menunggu konfirmasi)
         $alurMagang->updated_at = now();
         $alurMagang->save();
 
@@ -415,7 +441,7 @@ class KelompokController extends Controller
                             $returnData->message = 'Status proposal belum tersedia.';
                     }
 
-                    switch ($alurMagang->status) {
+                    switch ($alurMagang->status_surat_balasan) {
                         case 'menunggu konfirmasi':
                             $returnData->message = 'Surat balasan menunggu konfirmasi.';
                             break;

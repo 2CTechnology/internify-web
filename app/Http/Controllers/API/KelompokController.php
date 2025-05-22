@@ -248,47 +248,55 @@ class KelompokController extends Controller
 
 
     public function uploadSuratBalasan($id, Request $request)
-    {
-        $message = '';
-        $responseCode = Response::HTTP_BAD_REQUEST;
+{
+    $message = '';
+    $responseCode = Response::HTTP_BAD_REQUEST;
 
-        DB::beginTransaction();
-        try {
-            $alurMagang = AlurMagang::where('id_kelompok', $id)->first();
+    DB::beginTransaction();
+    try {
+        // Validasi file
+        $request->validate([
+            'surat_balasan' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
+        ]);
 
-            $file = $request->file('surat_balasan');
-            $filename = $file->getClientOriginalName();
-            $filePath = public_path() . '/upload/surat-balasan/' . $id;
-            if (!File::isDirectory($filePath)) {
-                File::makeDirectory($filePath, 493, true);
-            }
-            $file->move($filePath, $filename);
+        // Cari data alur magang berdasarkan id kelompok
+        $alurMagang = AlurMagang::where('id_kelompok', $id)->first();
 
-            $alurMagang->surat_balasan = '/upload/surat-balasan/' . $id . '/' . $filename;
-            $alurMagang->updated_at = now();
-            $alurMagang->save();
-
-            DB::commit();
-            $message = 'Berhasil upload surat balasan.';
-            $responseCode = Response::HTTP_OK;
-        } catch (Exception $e) {
-            DB::rollBack();
-            $message = 'Terjadi kesalahan. ' . $e->getMessage();
-            $data = null;
-            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
-        } catch (QueryException $e) {
-            DB::rollBack();
-            $message = 'Terjadi kesalahan. ' . $e->getMessage();
-            $data = null;
-            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
-        } finally {
-            $response = [
-                'message' => $message
-            ];
-
-            return response()->json($response, $responseCode);
+        if (!$alurMagang) {
+            throw new \Exception("Data alur magang tidak ditemukan.");
         }
+
+        // Proses upload file
+        $file = $request->file('surat_balasan');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $filePath = public_path('upload/surat-balasan/' . $id);
+
+        if (!File::isDirectory($filePath)) {
+            File::makeDirectory($filePath, 493, true);
+        }
+
+        $file->move($filePath, $filename);
+
+        // Update database
+        $alurMagang->surat_balasan = '/upload/surat-balasan/' . $id . '/' . $filename;
+        $alurMagang->status = null; // Set status ke NULL (menunggu konfirmasi)
+        $alurMagang->updated_at = now();
+        $alurMagang->save();
+
+        DB::commit();
+
+        $message = 'Berhasil upload surat balasan.';
+        $responseCode = Response::HTTP_OK;
+    } catch (\Exception $e) {
+        DB::rollBack();
+        $message = 'Terjadi kesalahan. ' . $e->getMessage();
+        $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
     }
+
+    return response()->json([
+        'message' => $message
+    ], $responseCode);
+}
 
     public function getKelompokById(Request $request)
     {

@@ -66,7 +66,7 @@ class BimbinganController extends Controller
         return redirect()->route('bimbingan.index')->with('success', 'Jadwal bimbingan berhasil ditambahkan.');
     }
 
-     public function edit(Request $request)
+    public function edit(Request $request)
     {
         // Validasi input
         $request->validate([

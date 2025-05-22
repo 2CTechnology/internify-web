@@ -38,7 +38,7 @@ class AlurMagang extends Model
     return match($this->status_surat_balasan) {
         1       => 'Diterima',
         0       => 'Mengulang',
-        default => 'Belum Ada',
+        default => 'Menunggu Konfirmasi',
     };
 }
 

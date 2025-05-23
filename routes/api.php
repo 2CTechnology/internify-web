@@ -48,6 +48,7 @@ Route::middleware('auth:sanctum')
         Route::post('/update-kelompok', [KelompokController::class, 'updateKelompok']);
         Route::post('/insert-tempat-magang/{id}', [KelompokController::class, 'insertTempatMagang']);
         Route::post('/upload-proposal/{id}', [KelompokController::class, 'uploadProposal']);
+        Route::post('/upload-revisi-proposal/{id}', [KelompokController::class, 'uploadProposalRevisi']);
         Route::post('/upload-surat-balasan/{id}', [KelompokController::class, 'uploadSuratBalasan']);
         Route::post('/insert-dospem/{id}', [KelompokController::class, 'insertDospem']);
         Route::post('/insert-tempat-magang-by-id/{id}', [KelompokController::class, 'insertTempatMagangById']);

@@ -2,18 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FileTemplate;
+use App\Models\TempatMagang;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class LandingController extends Controller
 {
     //
     public function index() {
-        return view('user.pages.landing');
+        $fileTemplate = FileTemplate::get();
+        return view('user.pages.landing', compact('fileTemplate'));
     }
     public function daftardosen() {
-        return view('user.pages.daftardosen');
+        $data = User::where('role', 'Dosen')
+            ->get();
+        return view('user.pages.daftardosen', compact('data'));
     }
     public function tempatmagang() {
-        return view('user.pages.tempatmagang');
+        $data = TempatMagang::get();
+        return view('user.pages.tempatmagang', compact('data'));
     }
 }

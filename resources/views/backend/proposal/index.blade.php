@@ -15,7 +15,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="table-responsive">
-                <table class="table">
+                <table class="table" id="table">
                     <thead>
                         <tr>
                             <th class="text-center">No.</th>
@@ -32,7 +32,15 @@
                                 <td class="text-center">{{ $loop->iteration }}</td>
                                 <td class="text-center">{{ $item?->kelompok?->ketua?->no_identitas ?? '-' }}</td>
                                 <td class="text-center">{{ $item?->kelompok?->ketua?->name ?? '-' }}</td>
-                                <td class="text-center">{{ $item?->tempat_magang ?? '-' }}</td>
+                                <td class="text-center">
+                                    @if ($item->tempatMagang)
+                                        {{ strtoupper($item->tempatMagang->nama_tempat) }}
+                                    @elseif($item?->tempat_magang)
+                                        {{ strtoupper($item->tempat_magang) }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
                                 <td class="text-center">{{ ucwords($item->status_proposal) }}</td>
                                 <td class="text-center d-flex justify-content-center">
                                     {{-- <div class="form-inline text-center"> --}}
@@ -129,6 +137,13 @@
             });
         })
 
-        $("")
+        $(document).ready( function () {
+            $('#table').DataTable({
+                columnDefs: [{
+                    "defaultContent": "-",
+                    "targets": "_all"
+                }]
+            });
+        });
     </script>
 @endpush

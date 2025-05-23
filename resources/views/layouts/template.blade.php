@@ -29,6 +29,12 @@
    <link rel="stylesheet" href="{{ asset('new-assets/vendor/@fortawesome/fontawesome-free/css/all.min.css')}}" type="text/css">
    <!-- Argon CSS -->
    <link rel="stylesheet" href="{{ asset('new-assets/css/argon.css?v=1.1.0')}}" type="text/css">
+
+   <style>
+    .hidden {
+      display: none;
+    }
+   </style>
  </head>
  
  <body>
@@ -49,49 +55,81 @@
            <!-- Nav items -->
            <ul class="navbar-nav">
              <li class="nav-item">
-               <a class="nav-link {{ (request()->segment(1) == 'akun-mahasiswa' || request()->segment(1) == 'proposal' || request()->segment(1) == 'surat-balasan') ? 'active' : '' }}" href="#navbar-manajemen" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-manajemen">
+               <a class="nav-link {{ (request()->segment(1) == 'akun-mahasiswa' || request()->segment(1) == 'proposal' || request()->segment(1) == 'surat-balasan' || request()->segment(1) == 'ploting-dosen') ? 'active' : '' }}" href="#navbar-manajemen" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-manajemen">
                  <i class="ni ni-shop text-primary"></i>
                  <span class="nav-link-text">Manajemen Magang</span>
                </a>
-               <div class="collapse {{ (request()->segment(1) == 'akun-mahasiswa' || request()->segment(1) == 'proposal' || request()->segment(1) == 'surat-balasan') ? 'show' : '' }}" id="navbar-manajemen">
+               <div class="collapse {{ (request()->segment(1) == 'akun-mahasiswa' || request()->segment(1) == 'proposal' || request()->segment(1) == 'surat-balasan' || request()->segment(1) == 'ploting-dosen') ? 'show' : '' }}" id="navbar-manajemen">
                  <ul class="nav nav-sm flex-column">
-                   <li class="nav-item">
-                     <a href="{{ route('akun-mahasiswa.index') }}" class="nav-link {{ (request()->segment(1) == 'akun-mahasiswa') ? 'active' : '' }}">Akun Mahasiswa</a>
-                   </li>
+                  @if (auth()->user()->role == 'Admin')
+                  <li class="nav-item">
+                    <a href="{{ route('akun-mahasiswa.index') }}" class="nav-link {{ (request()->segment(1) == 'akun-mahasiswa') ? 'active' : '' }}">Akun Mahasiswa</a>
+                  </li>
                    <li class="nav-item">
                      <a href="{{ route('proposal.index') }}" class="nav-link {{ (request()->segment(1) == 'proposal') ? 'active' : '' }}">Proposal Magang</a>
                    </li>
                    <li class="nav-item">
                      <a href="{{ route('surat-balasan.index') }}" class="nav-link {{ (request()->segment(1) == 'surat-balasan') ? 'active' : '' }}">Surat Balasan</a>
                    </li>
+                   <li class="nav-item">
+                     <a href="{{ route('ploting-dosen.ploting-dosen.index') }}" class="nav-link {{ (request()->segment(1) == 'ploting-dosen') ? 'active' : '' }}">Ploting Dosen</a>
+                   </li>
+                   @endif
+
+                    <!-- punya dosen -->
+                    @if (auth()->user()->role == 'Dosen')
+                   <li class="nav-item">
+                     <a href="{{ route('berita-acara.index') }}" class="nav-link {{ (request()->segment(1) == 'berita-acara') ? 'active' : '' }}">Berita Acara</a>
+                   </li>
+                   <li class="nav-item">
+                     <a href="{{ route('bimbingan.index') }}" class="nav-link {{ (request()->segment(1) == 'bimbingan') ? 'active' : '' }}">Bimbingan</a>
+                   </li>
+                   <li class="nav-item">
+                     <a href="{{ route('evaluasi-magang.index') }}" class="nav-link {{ (request()->segment(1) == 'evaluasi-magang') ? 'active' : '' }}">Evaluasi Tempat Magang</a>
+                   </li>
+                   <li class="nav-item">
+                     <a href="{{ route('laporan-magang.index') }}" class="nav-link {{ (request()->segment(1) == 'laporan-magang') ? 'active' : '' }}">Laporan Magang</a>
+                   </li>
+                   @endif
+
+
+                   <!-- punya Prodi -->
+                   @if (auth()->user()->role == 'Prodi')
+                   <li class="nav-item">
+                     <a href="{{ route('data-mahasiswa.index') }}" class="nav-link {{ (request()->segment(1) == 'data-mahasiswa') ? 'active' : '' }}">Data Mahasiswa</a>
+                   </li>
+                   <li class="nav-item">
+                     <a href="{{ route('surat-pelaksanaan.index') }}" class="nav-link {{ (request()->segment(1) == 'surat-pelaksanaan') ? 'active' : '' }}">Surat Pelaksanaan</a>
+                   </li>
+                   @endif
                  </ul>
                </div>
              </li>
-             <li class="nav-item">
-               <a class="nav-link {{ (request()->segment(1) == 'prodi' || request()->segment(1) == 'file-template' || request()->segment(1) == 'faq' || request()->segment(1) == 'tempat-magang' || request()->segment(1) == 'dospem') ? 'active' : '' }}" href="#navbar-master" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-master">
-                 <i class="ni ni-ungroup text-orange"></i>
-                 <span class="nav-link-text">Master</span>
-               </a>
-               <div class="collapse  {{ (request()->segment(1) == 'prodi' || request()->segment(1) == 'file-template' || request()->segment(1) == 'faq' || request()->segment(1) == 'tempat-magang' || request()->segment(1) == 'dospem') ? 'show' : '' }}" id="navbar-master">
-                 <ul class="nav nav-sm flex-column">
-                   <li class="nav-item">
-                     <a href="{{ route('dospem.index') }}" class="nav-link {{ (request()->segment(1) == 'dospem') ? 'active' : '' }}">Dosen</a>
-                   </li>
-                   <li class="nav-item">
-                     <a href="{{ route('tempat-magang.index') }}" class="nav-link {{ (request()->segment(1) == 'tempat-magang') ? 'active' : '' }}">Tempat Magang</a>
-                   </li>
-                   <li class="nav-item">
-                     <a href="{{ route('faq.index') }}" class="nav-link {{ (request()->segment(1) == 'faq') ? 'active' : '' }}">FAQ</a>
-                   </li>
-                   <li class="nav-item">
-                     <a href="{{ route('file-template.index') }}" class="nav-link {{ (request()->segment(1) == 'file-template') ? 'active' : '' }}">File Template</a>
-                   </li>
-                   <li class="nav-item">
-                     <a href="{{ route('prodi.index') }}" class="nav-link {{ (request()->segment(1) == 'prodi') ? 'active' : '' }}">Program Studi</a>
-                   </li>
-                 </ul>
-               </div>
-             </li>
+
+             @if (auth()->user()->role == 'Admin')
+              <li class="nav-item">
+                <a class="nav-link {{ (request()->segment(1) == 'prodi' || request()->segment(1) == 'file-template' || request()->segment(1) == 'faq' || request()->segment(1) == 'tempat-magang' || request()->segment(1) == 'dospem') ? 'active' : '' }}" href="#navbar-master" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-master">
+                  <i class="ni ni-ungroup text-orange"></i>
+                  <span class="nav-link-text">Master</span>
+                </a>
+                <div class="collapse  {{ (request()->segment(1) == 'prodi' || request()->segment(1) == 'file-template' || request()->segment(1) == 'faq' || request()->segment(1) == 'tempat-magang' || request()->segment(1) == 'dospem') ? 'show' : '' }}" id="navbar-master">
+                  <ul class="nav nav-sm flex-column">
+                    <li class="nav-item">
+                      <a href="{{ route('dospem.index') }}" class="nav-link {{ (request()->segment(1) == 'dospem') ? 'active' : '' }}">Dosen</a>
+                    </li>
+                    <li class="nav-item">
+                      <a href="{{ route('tempat-magang.index') }}" class="nav-link {{ (request()->segment(1) == 'tempat-magang') ? 'active' : '' }}">Tempat Magang</a>
+                    </li>
+                    <li class="nav-item">
+                      <a href="{{ route('file-template.index') }}" class="nav-link {{ (request()->segment(1) == 'file-template') ? 'active' : '' }}">File Template</a>
+                    </li>
+                    <li class="nav-item">
+                      <a href="{{ route('prodi.index') }}" class="nav-link {{ (request()->segment(1) == 'prodi') ? 'active' : '' }}">Program Studi</a>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+             @endif
            </ul>
          </div>
        </div>
@@ -107,23 +145,20 @@
                 <li class="nav-item dropdown">
                   <a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <div class="media align-items-center">
-                      <span class="avatar avatar-sm rounded-circle">
-                        <img alt="Image placeholder" src="{{ asset('new-assets/img/theme/team-4.jpg')}}">
-                      </span>
                       <div class="media-body ml-2 d-none d-lg-block">
-                        <span class="mb-0 text-sm  font-weight-bold">John Snow</span>
+                        <span class="mb-0 text-sm  font-weight-bold">{{ Auth::user()->name }}</span>
                       </div>
                     </div>
                   </a>
                   <div class="dropdown-menu dropdown-menu-right">
-                    <form action="{{ route('logout') }}" method="post">
+                    <div class="dropdown-item">
+                      <a href="#" id="btn-logout">
+                        <i class="ni ni-user-run"></i>
+                        Logout
+                      </a>
+                    </div>
+                    <form action="{{ route('logout') }}" method="post" id="logout">
                         @csrf
-                        <div class="dropdown-item">
-                            <button button type="submit" class="border-0">
-                                <i class="ni ni-user-run"></i>
-                                Logout
-                            </button>
-                        </div>
                     </form>
                   </div>
                 </li>
@@ -198,6 +233,31 @@
    <script src="{{ asset('new-assets/js/demo.min.js')}}"></script>
    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+   {{-- Datatable --}}
+   <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css" />
+   <script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+
+   <script>
+    $("#btn-logout").on('click', function() {
+      console.log('test');
+      Swal.fire({
+          title: "Konfirmasi",
+          text: "Apakah Anda Yakin Logout?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Ya",
+          cancelButtonText: "Tidak"
+      }).then((result) => {
+          if (result.isConfirmed) {
+              $(`#logout`).submit()
+          }
+      });
+    })
+
+   </script>
+   
    @stack('custom-script')
  </body>
  

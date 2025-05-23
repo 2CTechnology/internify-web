@@ -20,7 +20,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="table-responsive">
-                <table class="table">
+                <table class="table" id="table">
                     <thead>
                         <tr>
                             <th class="text-center">No.</th>
@@ -43,12 +43,12 @@
                                         <a href="{{ route('dospem.edit', $item->id) }}" class="mx-2">
                                             <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-md" data-toggle="tooltip" title="Edit" data-placement="top"><span class="fa fa-pen"></span></button>
                                         </a>
-                                        <form action="{{ route('dospem.destroy', $item->id) }}" method="post">
+                                        <button type="button" class="btn btn-danger btn-md btn-hapus" data-id="{{ $item->id }}" data-toggle="tooltip" title="Hapus" data-placement="top">
+                                            <span class="fa fa-trash"></span>
+                                        </button>
+                                        <form action="{{ route('dospem.destroy', $item->id) }}" method="post" id="hapus-{{ $item->id }}">
                                             @csrf
                                             @method('delete')
-                                            <button type="button" class="btn btn-danger btn-md" data-toggle="tooltip" title="Hapus" data-placement="top" onclick="confirm('{{ __("Apakah anda yakin ingin menghapus?") }}') ? this.parentElement.submit() : ''">
-                                                <span class="fa fa-trash"></span>
-                                            </button>
                                         </form>
                                     {{-- </div> --}}
                                 </td>
@@ -77,5 +77,33 @@
             $("#email-modal").val(email);
             $("#no_telp-modal").val(no_telp);
         })
+        
+        $(".btn-hapus").on("click", function(){
+            var id = $(this).data('id')
+            console.log(`dec: ${id}`);
+            Swal.fire({
+                title: "Konfirmasi",
+                text: "Apakah Anda Yakin Menghapus Data Ini?",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Ya",
+                cancelButtonText: "Tidak"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $(`#hapus-${id}`).submit()
+                }
+            });
+        })
+
+        $(document).ready( function () {
+            $('#table').DataTable({
+                columnDefs: [{
+                    "defaultContent": "-",
+                    "targets": "_all"
+                }]
+            });
+        });
     </script>
 @endpush

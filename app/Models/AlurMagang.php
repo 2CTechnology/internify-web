@@ -17,8 +17,10 @@ class AlurMagang extends Model
         'revisi_proposal',
         'alasan_proposal_ditolak',
         'tempat_magang',
+        'nama_posisi',
+        'id_tempat_magang',
         'surat_balasan',
-        'status',
+        'status_surat_balasan',
         'created_at',
         'updated_at'
     ];
@@ -26,4 +28,11 @@ class AlurMagang extends Model
     public function kelompok() {
         return $this->belongsTo(Kelompok::class, 'id_kelompok');
     }
+
+    public function tempatMagang () {
+        return $this->belongsTo(TempatMagang::class, 'id_tempat_magang');
+    }
+
+    
+
 }

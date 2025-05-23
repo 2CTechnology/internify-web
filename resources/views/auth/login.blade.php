@@ -19,7 +19,7 @@
    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
    <meta name="description" content="Start your development with a Dashboard for Bootstrap 4.">
    <meta name="author" content="Creative Tim">
-   <title>Argon Dashboard PRO - Premium Bootstrap 4 Admin Template</title>
+   <title>Internify | Login</title>
    <!-- Favicon -->
    <link rel="icon" href="{{ asset('new-assets/img/brand/favicon.png')}}" type="image/png">
    <!-- Fonts -->
@@ -57,6 +57,15 @@
                     Login
                 </div>
                 <div class="card-body px-lg-5 py-lg-5">
+      
+                  @if (Session::has('error'))
+                      <div class="alert alert-danger alert-dismissible" role="alert">
+                          <button type="button" class="close" data-dismiss="alert">
+                              <i class="fa fa-times"></i>
+                          </button>
+                          <strong> {{ session('error') }}</strong>
+                      </div>
+                  @endif
                     <form role="form" method="POST" action="{{ route('login') }}" enctype="multipart/form-data">
                             @csrf
                             <div class="form-group mb-3">
@@ -99,9 +108,10 @@
            </div>
            <div class="row mt-3">
              <div class="col-12 text-center">
-               <a href="#" class="text-light"><small>Forgot password?</small></a>
+               <a href="{{ route('password.request') }}" class="text-light"><small>Forgot password?</small></a>
              </div>
            </div>
+
          </div>
        </div>
      </div>

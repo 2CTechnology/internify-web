@@ -45,19 +45,28 @@ class TempatMagangController extends Controller
     {
         $validatedData = $request->validate([
             'nama_tempat' => 'required',
-            'daerah' => 'required'
+            'alamat' => 'required'
         ], [
             'required' => ':attribute Harus diisi.'
         ], [
             'nama_tempat' => 'Nama Tempat',
-            'daerah' => 'Daerah',
+            'alamat' => 'Alamat',
         ]);
 
         DB::beginTransaction();
         try {
             TempatMagang::insert([
                 'nama_tempat' => $request->nama_tempat,
-                'daerah' => $request->daerah,
+                'alamat' => $request->alamat,
+                'deskripsi_pekerjaan' => $request->deskripsi_pekerjaan,
+                'deskripsi_perusahaan' => $request->deskripsi_perusahaan,
+                'website' => $request->website,
+                'employee_size' => $request->employee_size,
+                'head_office' => $request->head_office,
+                'since' => $request->since,
+                'specialization' => $request->specialization,
+                'kriteria' => $request->kriteria,
+                'posisi' => $request->posisi,
                 'created_at' => now()
             ]);
             DB::commit();
@@ -98,21 +107,30 @@ class TempatMagangController extends Controller
     {
         $validatedData = $request->validate([
             'nama_tempat' => 'required',
-            'daerah' => 'required'
+            'alamat' => 'required'
         ], [
             'required' => ':attribute Harus diisi.'
         ], [
             'nama_tempat' => 'Nama Tempat',
-            'daerah' => 'Daerah',
+            'alamat' => 'Alamat',
         ]);
 
         DB::beginTransaction();
         try {
             TempatMagang::where('id', $id)
                 ->update([
-                'nama_tempat' => $request->nama_tempat,
-                'daerah' => $request->daerah,
-                'created_at' => now()
+                    'nama_tempat' => $request->nama_tempat,
+                    'alamat' => $request->alamat,
+                    'deskripsi_pekerjaan' => $request->deskripsi_pekerjaan,
+                    'deskripsi_perusahaan' => $request->deskripsi_perusahaan,
+                    'website' => $request->website,
+                    'employee_size' => $request->employee_size,
+                    'head_office' => $request->head_office,
+                    'since' => $request->since,
+                    'specialization' => $request->specialization,
+                    'kriteria' => $request->kriteria,
+                    'posisi' => $request->posisi,
+                    'updated_at' => now()
             ]);
             DB::commit();
 

@@ -30,7 +30,9 @@ class User extends Authenticatable
         'role',
         'is_accepted',
         'foto',
-        'no_telp'
+        'no_telp',
+        'tanggal_lahir',
+        'jenis_kelamin'
     ];
 
     /**

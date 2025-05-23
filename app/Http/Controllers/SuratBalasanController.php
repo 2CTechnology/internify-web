@@ -145,14 +145,14 @@ public function tindakLanjut(Request $request)
     // validasi
     $request->validate([
         'id'     => 'required|integer|exists:alur_magangs,id',
-        'status' => 'required|in:diterima,mengulang',
+        'status_surat_balasan' => 'required|in:diterima,mengulang',
     ], [
         'required' => ':attribute wajib diisi.',
         'in'       => ':attribute tidak valid.',
         'exists'   => 'Data tidak ditemukan.',
     ], [
         'id'     => 'ID',
-        'status' => 'Status',
+        'status_surat_balasan' => 'Status',
     ]);
 
     // map string → tinyint

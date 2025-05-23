@@ -14,6 +14,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response as FacadesResponse;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use stdClass;
@@ -248,47 +249,80 @@ class KelompokController extends Controller
 
 
     public function uploadSuratBalasan($id, Request $request)
-    {
-        $message = '';
-        $responseCode = Response::HTTP_BAD_REQUEST;
+{
+    $message = '';
+    $responseCode = Response::HTTP_BAD_REQUEST;
 
-        DB::beginTransaction();
-        try {
-            $alurMagang = AlurMagang::where('id_kelompok', $id)->first();
-
+    DB::beginTransaction();
+    try {
+        if ($request->hasFile('surat_balasan')) {
             $file = $request->file('surat_balasan');
-            $filename = $file->getClientOriginalName();
-            $filePath = public_path() . '/upload/surat-balasan/' . $id;
-            if (!File::isDirectory($filePath)) {
-                File::makeDirectory($filePath, 493, true);
-            }
-            $file->move($filePath, $filename);
 
-            $alurMagang->surat_balasan = '/upload/surat-balasan/' . $id . '/' . $filename;
-            $alurMagang->updated_at = now();
-            $alurMagang->save();
-
-            DB::commit();
-            $message = 'Berhasil upload surat balasan.';
-            $responseCode = Response::HTTP_OK;
-        } catch (Exception $e) {
-            DB::rollBack();
-            $message = 'Terjadi kesalahan. ' . $e->getMessage();
-            $data = null;
-            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
-        } catch (QueryException $e) {
-            DB::rollBack();
-            $message = 'Terjadi kesalahan. ' . $e->getMessage();
-            $data = null;
-            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
-        } finally {
-            $response = [
-                'message' => $message
-            ];
-
-            return response()->json($response, $responseCode);
+            Log::info('🔍 MIME TYPE:', [$file->getMimeType()]);
+            Log::info('🔍 Client Extension:', [$file->getClientOriginalExtension()]);
+            Log::info('🔍 Real Path:', [$file->getRealPath()]);
+        } else {
+            Log::warning('❌ Tidak ada file terkirim di surat_balasan');
         }
+
+
+        // Validasi file
+        $request->validate([
+            'surat_balasan' => 'required|mimetypes:application/pdf,image/jpg,image/jpeg,image/png|max:2048',
+        ], [
+            'required' => 'File surat balasan wajib diunggah.',
+            'mimetypes' => 'File harus berupa PDF atau gambar (JPG, PNG).',
+            'max' => 'Ukuran file maksimal 2MB.',
+        ]);
+
+        // Tambahan safety check
+        if (!$request->hasFile('surat_balasan')) {
+            return response()->json(['message' => 'File tidak dikirim ke server.'], 400);
+        }
+
+        $file = $request->file('surat_balasan');
+        if (!$file->isValid()) {
+            return response()->json(['message' => 'File rusak atau gagal upload.'], 400);
+        }
+
+        // Cari data alur magang berdasarkan id kelompok
+        $alurMagang = AlurMagang::where('id_kelompok', $id)->first();
+
+        if (!$alurMagang) {
+            throw new \Exception("Data alur magang tidak ditemukan.");
+        }
+
+        // Proses upload file
+        $file = $request->file('surat_balasan');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $filePath = public_path('upload/surat-balasan/' . $id);
+
+        if (!File::isDirectory($filePath)) {
+            File::makeDirectory($filePath, 493, true);
+        }
+
+        $file->move($filePath, $filename);
+
+        // Update database
+        $alurMagang->surat_balasan = '/upload/surat-balasan/' . $id . '/' . $filename;
+        $alurMagang->status_surat_balasan = "menunggu konfirmasi"; // Set status ke NULL (menunggu konfirmasi)
+        $alurMagang->updated_at = now();
+        $alurMagang->save();
+
+        DB::commit();
+
+        $message = 'Berhasil upload surat balasan.';
+        $responseCode = Response::HTTP_OK;
+    } catch (\Exception $e) {
+        DB::rollBack();
+        $message = 'Terjadi kesalahan. ' . $e->getMessage();
+        $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
     }
+
+    return response()->json([
+        'message' => $message
+    ], $responseCode);
+}
 
     public function getKelompokById(Request $request)
     {
@@ -380,6 +414,7 @@ class KelompokController extends Controller
             $responseCode = Response::HTTP_OK;
             $userId = auth()->user()->id;
             $kelompok = Kelompok::where('id_users', $userId)->orderBy('id', 'desc')->first();
+
             if (!$kelompok) {
                 $data = null;
                 $message = 'Data kelompok tidak ditemukan.';
@@ -387,22 +422,42 @@ class KelompokController extends Controller
                 $alurMagang = AlurMagang::where('id_kelompok', $kelompok?->id)->orderBy('id', 'desc')->first();
                 if (!$alurMagang) {
                     $returnData->message = 'Kelompok belum melakukan pemilihan tempat magang.';
-                    $returnData->dataAlurMagang = $alurMagang;
-                } else if ($alurMagang) {
-                    if ($alurMagang?->status_proposal == 'menunggu konfirmasi') {
-                        $returnData->message = 'Proposal menunggu konfirmasi dari admin atau dosen.';
-                        $returnData->dataAlurMagang = $alurMagang;
-                    } else if ($alurMagang->status_proposal == 'revisi') {
-                        $returnData->message = 'Terdapat revisi proposal. ' . $alurMagang->revisi_proposal;
-                        $returnData->dataAlurMagang = $alurMagang;
-                    } else if ($alurMagang->status_proposal == 'ditolak') {
-                        $returnData->message = 'Proposal ditolak. ' . $alurMagang->alasan_proposal_ditolak;
-                        $returnData->dataAlurMagang = $alurMagang;
-                    } else {
-                        $returnData->message = 'Proposal diterima.';
-                        $returnData->dataAlurMagang = $alurMagang;
+                    // $returnData->dataAlurMagang = $alurMagang;
+                } else {
+                    switch ($alurMagang->status_proposal) {
+                        case 'menunggu konfirmasi':
+                            $returnData->message = 'Proposal menunggu konfirmasi dari admin atau dosen.';
+                            break;
+                        case 'revisi':
+                            $returnData->message = 'Terdapat revisi proposal. ' . $alurMagang->revisi_proposal;
+                            break;
+                        case 'ditolak':
+                            $returnData->message = 'Proposal ditolak. ' . $alurMagang->alasan_proposal_ditolak;
+                            break;
+                        case 'diterima':
+                            $returnData->message = 'Proposal diterima.';
+                            break;
+                        default:
+                            $returnData->message = 'Status proposal belum tersedia.';
                     }
+
+                    switch ($alurMagang->status_surat_balasan) {
+                        case 'menunggu konfirmasi':
+                            $returnData->message = 'Surat balasan menunggu konfirmasi.';
+                            break;
+                        case 'mengulang':
+                            $returnData->message = 'Surat balasan diterima & mengulang. ';
+                            break;
+                        case 'diterima':
+                            $returnData->message = 'Surat balasan diterima. Tunggu proses surat pengantar.';
+                            break;
+                        default:
+                            $returnData->message = 'Surat balasan belum diunggah.';
+                    }
+
+                    $returnData->dataAlurMagang = $alurMagang;
                 }
+
                 $message = 'Berhasil menampilkan data alur magang.';
                 $data = $returnData;
             }

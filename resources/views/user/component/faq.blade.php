@@ -1,4 +1,4 @@
-{{-- <section id="alur-magang">
+<section id="alur-magang">
     <div class="container-lima position-relative">
       <div class="text-center mb-5">
         <h3 class="fw-bold mb-2 sub-judul-3" style="font-weight: bold; text-decoration: underline; font-size: 28px">Alur Magang</h3>
@@ -103,4 +103,4 @@
   
     </div>
 </section>
-   --}}
+  

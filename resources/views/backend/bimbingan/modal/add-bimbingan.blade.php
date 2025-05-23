@@ -30,7 +30,7 @@
                         @endif
 
                         <!-- Menampilkan pesan sukses jika ada -->
-                        @if(session('success'))
+                        @if (session('success'))
                             <div class="alert alert-success">
                                 {{ session('success') }}
                             </div>
@@ -46,7 +46,8 @@
                                     name="id_kelompok" required>
                                     <option value="">-- Pilih Nama Kelompok --</option>
                                     @foreach ($kelompoks as $kelompok)
-                                        <option value="{{ $kelompok->id }}" {{ old('id_kelompok') == $kelompok->id ? 'selected' : '' }}>
+                                        <option value="{{ $kelompok->id }}"
+                                            {{ old('id_kelompok') == $kelompok->id ? 'selected' : '' }}>
                                             {{ $kelompok->nama_kelompok }}
                                         </option>
                                     @endforeach
@@ -59,9 +60,11 @@
                             <!-- Input Tanggal -->
                             <div class="form-group mb-4">
                                 <label for="tanggal" class="form-label">Tanggal Acara</label>
-                                <input type="date"
-                                    class="form-control form-control-lg @error('jadwal') is-invalid @enderror" id="tanggal"
-                                    name="jadwal" value="{{ old('jadwal') }}" required>
+                                <input type="datetime-local"
+                                    class="form-control form-control-lg @error('jadwal') is-invalid @enderror"
+                                    id="tanggal" name="jadwal" value="{{ old('jadwal', now()->format('Y-m-d\TH:i')) }}"
+                                    required>
+
                                 @error('jadwal')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -70,9 +73,8 @@
                             <!-- Input Catatan -->
                             <div class="form-group mb-4">
                                 <label for="keterangan" class="form-label">Keterangan</label>
-                                <textarea class="form-control form-control-lg @error('catatan') is-invalid @enderror"
-                                    id="keterangan" name="catatan" rows="6"
-                                    placeholder="Tulis keterangan berita acara di sini...">{{ old('catatan') }}</textarea>
+                                <textarea class="form-control form-control-lg @error('catatan') is-invalid @enderror" id="keterangan" name="catatan"
+                                    rows="6" placeholder="Tulis keterangan berita acara di sini...">{{ old('catatan') }}</textarea>
                                 @error('catatan')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror

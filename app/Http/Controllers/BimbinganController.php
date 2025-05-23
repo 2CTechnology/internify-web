@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\JadwalBimbingan;
 use App\Models\Kelompok; // Pastikan model Kelompok diimpor
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class BimbinganController extends Controller
 {
@@ -52,9 +53,11 @@ class BimbinganController extends Controller
             'id_kelompok' => 'required|exists:kelompoks,id', // Validasi bahwa id_kelompok ada di tabel kelompoks
         ]);
 
+        $jadwalDateTime = Carbon::createFromFormat('Y-m-d\TH:i', $validated['jadwal']);
+
         // Simpan data ke tabel jadwal_bimbingans
         JadwalBimbingan::create([
-            'jadwal' => $validated['jadwal'],
+            'jadwal'      => $jadwalDateTime,
             'catatan' => $validated['catatan'],
             'id_kelompok' => $validated['id_kelompok'], // Menyertakan id_kelompok
         ]);
@@ -63,7 +66,7 @@ class BimbinganController extends Controller
         return redirect()->route('bimbingan.index')->with('success', 'Jadwal bimbingan berhasil ditambahkan.');
     }
 
-     public function edit(Request $request)
+    public function edit(Request $request)
     {
         // Validasi input
         $request->validate([

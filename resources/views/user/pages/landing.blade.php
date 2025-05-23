@@ -4,6 +4,7 @@
     @include('user.component.hero')
     @include('user.component.about')
     @include('user.component.informasi')
+    @include('user.component.faq')
     @include('user.component.panduan')
     @include('user.component.footer')
 @endsection

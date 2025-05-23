@@ -33,13 +33,6 @@ class AlurMagang extends Model
         return $this->belongsTo(TempatMagang::class, 'id_tempat_magang');
     }
 
-    public function getStatusSuratBalasanLabelAttribute(): string
-{
-    return match($this->status_surat_balasan) {
-        1       => 'Diterima',
-        0       => 'Mengulang',
-        default => 'Menunggu Konfirmasi',
-    };
-}
+    
 
 }

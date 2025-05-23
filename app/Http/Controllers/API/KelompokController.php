@@ -350,7 +350,7 @@ class KelompokController extends Controller
 
             // Update database
             $alurMagang->surat_balasan = '/upload/surat-balasan/' . $id . '/' . $filename;
-            $alurMagang->status_surat_balasan = "menunggu konfirmasi"; // Set status ke NULL (menunggu konfirmasi)
+            $alurMagang->status_surat_balasan = "menunggu konfirmasi"; 
             $alurMagang->updated_at = now();
             $alurMagang->save();
 

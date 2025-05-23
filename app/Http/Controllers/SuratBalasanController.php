@@ -146,31 +146,16 @@ public function tindakLanjut(Request $request)
     $request->validate([
         'id'     => 'required|integer|exists:alur_magangs,id',
         'status_surat_balasan' => 'required|in:diterima,mengulang',
-    ], [
-        'required' => ':attribute wajib diisi.',
-        'in'       => ':attribute tidak valid.',
-        'exists'   => 'Data tidak ditemukan.',
-    ], [
-        'id'     => 'ID',
-        'status_surat_balasan' => 'Status',
     ]);
 
-    // map string → tinyint
-    $statusMap = [
-        'diterima'  => 1,
-        'mengulang' => 0,
-    ];
+    // Ambil data berdasarkan ID
+        $alurMagang = AlurMagang::find($request->id);
 
-    try {
-        $alur            = AlurMagang::findOrFail($request->id);
-        $alur->status    = $statusMap[$request->status];   // kolom di DB bernama `status`
-        $alur->updated_at = now();                         // opsional, Eloquent juga otomatis
-        $alur->save();
+        // Update status
+        $alurMagang->status = $request->ubah_status;
+        $alurMagang->save();
 
         return back()->with('success', 'Status surat balasan berhasil diperbarui.');
-    } catch (\Throwable $e) {
-        return back()->with('error', 'Gagal memperbarui status: ' . $e->getMessage());
-    }
 }
 
 }

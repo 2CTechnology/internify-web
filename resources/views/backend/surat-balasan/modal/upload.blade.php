@@ -10,7 +10,6 @@
             </div>
 
             <div class="modal-body">
-                {{-- id alur --}}
                 <input type="hidden" name="id" id="hidden-id-status">
 
                 <label for="select-status">Status</label>

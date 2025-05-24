@@ -30,18 +30,16 @@ jobs:
 
       - name: Create .env file from secret
         run: |
-          echo "${{ secrets.ENV_FILE_CONTENT }}" > .env
+          mkdir -p env
+          echo "${{ secrets.ENV_FILE_CONTENT }}" > env/.env
 
-      - name: Sync docker-compose.yml and .env to VPS
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_KEY }}
-          source: |
-            docker-compose.yml
-            .env
-          target: "/var/www/internify-web"
+      - name: Upload docker-compose.yml and .env to VPS
+        run: |
+          echo "${{ secrets.VPS_KEY }}" > private_key.pem
+          chmod 600 private_key.pem
+          scp -i private_key.pem -o StrictHostKeyChecking=no docker-compose.yml ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/internify-web/docker-compose.yml
+          scp -i private_key.pem -o StrictHostKeyChecking=no env/.env ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/internify-web/env/.env
+          rm -f private_key.pem
 
       - name: Deploy to VPS via SSH
         uses: appleboy/ssh-action@master

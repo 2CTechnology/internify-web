@@ -60,7 +60,7 @@
         </p>
 
         <!-- Tanda Tangan -->
-        <table style="width: 100%; margin-top: 50px; text-align: center;">
+        <table style="width: 100%; margin-top: 25px; text-align: center;">
             <tr>
                 <td style="padding-top: 78px;">
                     Dosen Pembimbing<br><br><br><br>

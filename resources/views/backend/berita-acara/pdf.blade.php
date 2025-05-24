@@ -35,11 +35,12 @@
             Pada hari ini {{ \Carbon\Carbon::parse($berita->jadwal)->translatedFormat('l') }}
             tanggal {{ \Carbon\Carbon::parse($berita->jadwal)->translatedFormat('d F Y') }}
             di {{ $berita->tempatMagang->nama_tempat ?? '-' }},
+            yang beralamat di {{ $berita->tempatMagang->alamat ?? '-' }},
             telah dilaksanakan monitoring dan evaluasi Magang mahasiswa program studi
-            {{ $berita->prodi }} Jurusan{{ $berita->jurusan }}
-            Politeknik Negeri Jember atas nama kelompok
-            {{ $berita->kelompok->nama_kelompok ?? '-' }} dengan anggota sebagai berikut:
+            {{ $berita->prodi }} Jurusan {{ $berita->jurusan }}
+            Politeknik Negeri Jember atas nama anggota sebagai berikut:
         </p>
+
 
         <ol class="mb-3">
             @if(isset($berita->kelompok) && $berita->kelompok->anggota && $berita->kelompok->anggota->count() > 0)
@@ -69,7 +70,7 @@
             Jember, {{ \Carbon\Carbon::parse($berita->jadwal)->translatedFormat('d F Y') }}
         </p>
         <!-- Tanda Tangan -->
-        <table style="width: 100%; margin-top: 50px; text-align: center;">
+        <table style="width: 100%; margin-top: 25px; text-align: center;">
             <tr>
                 <td style="padding-top: 78px;">
                     Pembimbing Lapang<br /><br /><br /><br />

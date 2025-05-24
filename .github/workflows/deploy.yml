@@ -28,13 +28,19 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/internify-web:latest
             ${{ secrets.DOCKER_USERNAME }}/internify-web:${{ github.sha }}
 
-      - name: Sync docker-compose.yml to VPS
+      - name: Create .env file from secret
+        run: |
+          echo "${{ secrets.ENV_FILE_CONTENT }}" > .env
+
+      - name: Sync docker-compose.yml and .env to VPS
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_KEY }}
-          source: "docker-compose.yml"
+          source: |
+            docker-compose.yml
+            .env
           target: "/var/www/internify-web"
 
       - name: Deploy to VPS via SSH
@@ -52,7 +58,7 @@ jobs:
             docker rm internify-app || true
 
             echo "[3] Recreate Laravel container with updated image"
-            docker-compose -f /var/www/internify-web/docker-compose.yml up -d app
+            docker-compose -f /var/www/internify-web/docker-compose.yml --env-file /var/www/internify-web/env/.env up -d app
 
             echo "[4] Optimize Laravel config and migrate database"
             docker exec internify-app php artisan config:clear

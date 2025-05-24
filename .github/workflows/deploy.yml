@@ -1,0 +1,66 @@
+name: CI/CD Laravel Docker to VPS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build & Push Docker Image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/internify-web:latest
+            ${{ secrets.DOCKER_USERNAME }}/internify-web:${{ github.sha }}
+
+      - name: Create .env file from secret
+        run: |
+          mkdir -p env
+          echo "${{ secrets.ENV_FILE_CONTENT }}" > env/.env
+
+      - name: Upload docker-compose.yml and .env to VPS
+        run: |
+          echo "${{ secrets.VPS_KEY }}" > private_key.pem
+          chmod 600 private_key.pem
+          scp -i private_key.pem -o StrictHostKeyChecking=no docker-compose.yml ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/internify-web/docker-compose.yml
+          scp -i private_key.pem -o StrictHostKeyChecking=no env/.env ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/internify-web/env/.env
+          rm -f private_key.pem
+
+      - name: Deploy to VPS via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_KEY }}
+          script: |
+            echo "[1] Pulling latest image from Docker Hub"
+            docker pull ${{ secrets.DOCKER_USERNAME }}/internify-web:latest
+
+            echo "[2] Stopping and removing existing Laravel container (if any)"
+            docker stop internify-app || true
+            docker rm internify-app || true
+
+            echo "[3] Recreate Laravel container with updated image"
+            docker-compose -f /var/www/internify-web/docker-compose.yml --env-file /var/www/internify-web/env/.env up -d app
+
+            echo "[4] Optimize Laravel config and migrate database"
+            docker exec internify-app php artisan config:clear
+            docker exec internify-app php artisan migrate --force
+
+            echo "[5] Set permission for storage and cache"
+            docker exec internify-app chmod -R 775 storage bootstrap/cache

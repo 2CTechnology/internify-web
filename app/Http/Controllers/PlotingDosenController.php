@@ -152,26 +152,22 @@ class PlotingDosenController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
-    {
-        $plotingDosen = PlotingDosen::findOrFail($id);
-        if($plotingDosen == null) {
-            return redirect()->back()->withError('Terjadi kesalahan. Data tidak ditemukan.');
-        }
+{
+    $plotingDosen = PlotingDosen::findOrFail($id);
 
-        DB::beginTransaction();
-        try {
-            $plotingDosen->status = 0;
-            $plotingDosen->save();
-            DB::commit();
-            return redirect()->route('ploting-dosen.ploting-dosen.index')->withStatus('Berhasil menonaktifkan data ploting dosen.');
-        } catch (Exception $e) {
-            DB::rollBack();
-            return redirect()->back()->withError('Terjadi kesalahan. ' . $e->getMessage());
-        } catch (QueryException $e) {
-            DB::rollBack();
-            return redirect()->back()->withError('Terjadi kesalahan. ' . $e->getMessage());
-        }
+    DB::beginTransaction();
+    try {
+        $plotingDosen->delete();
+        DB::commit();
+        return redirect()->route('ploting-dosen.ploting-dosen.index')->withStatus('Berhasil menghapus data ploting dosen.');
+    } catch (Exception $e) {
+        DB::rollBack();
+        return redirect()->back()->withError('Terjadi kesalahan. ' . $e->getMessage());
+    } catch (QueryException $e) {
+        DB::rollBack();
+        return redirect()->back()->withError('Terjadi kesalahan. ' . $e->getMessage());
     }
+}
 
     public function showImport() {
         $this->param['title'] = 'Ploting Dosen - Import';

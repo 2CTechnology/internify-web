@@ -17,9 +17,10 @@ class AlurMagang extends Model
         'revisi_proposal',
         'alasan_proposal_ditolak',
         'tempat_magang',
+        'nama_posisi',
         'id_tempat_magang',
         'surat_balasan',
-        'status',
+        'status_surat_balasan',
         'created_at',
         'updated_at'
     ];
@@ -31,4 +32,14 @@ class AlurMagang extends Model
     public function tempatMagang () {
         return $this->belongsTo(TempatMagang::class, 'id_tempat_magang');
     }
+
+    public function getStatusSuratBalasanLabelAttribute(): string
+{
+    return match($this->status_surat_balasan) {
+        1       => 'Diterima',
+        0       => 'Mengulang',
+        default => 'Menunggu Konfirmasi',
+    };
+}
+
 }

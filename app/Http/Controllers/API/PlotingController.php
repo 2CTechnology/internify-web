@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -61,6 +62,32 @@ class PlotingController extends Controller
                 )
                 ->where('status', 1)
                 ->where('kota', 'LIKE', "%$kota%")
+                ->get();
+        } catch (Exception $e) {
+            $data = null;
+            $message = 'Terjadi kesalahan. ' . $e->getMessage();
+        } catch (QueryException $e) {
+            $data = null;
+            $message = 'Terjadi kesalahan. ' . $e->getMessage();
+        } finally {
+            $response = [
+                'message' => $message,
+                'data' => $data
+            ];
+
+            return response()->json($response, $responseCode);
+        }
+    }
+
+    public function getDosen(Request $request) {
+        $data = null;
+        $message = '';
+        $responseCode = Response::HTTP_BAD_REQUEST;
+
+        try {
+            $responseCode = Response::HTTP_OK;
+            $message = 'Berhasil menampilkan area.';
+            $data = User::where('role', 'Dosen')
                 ->get();
         } catch (Exception $e) {
             $data = null;

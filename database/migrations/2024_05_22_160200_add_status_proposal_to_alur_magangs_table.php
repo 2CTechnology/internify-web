@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('alur_magangs', function (Blueprint $table) {
-            $table->enum('status_proposal', ['menunggu konfirmasi', 'diterima', 'ditolak', 'revisi'])->default('menunggu konfirmasi')->after('proposal');
+            $table->enum('status_proposal', ['belum ada','menunggu konfirmasi', 'diterima', 'ditolak', 'revisi'])->default('belum ada')->after('proposal');
         });
     }
 

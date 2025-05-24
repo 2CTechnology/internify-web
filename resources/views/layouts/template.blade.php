@@ -61,9 +61,10 @@
                </a>
                <div class="collapse {{ (request()->segment(1) == 'akun-mahasiswa' || request()->segment(1) == 'proposal' || request()->segment(1) == 'surat-balasan' || request()->segment(1) == 'ploting-dosen') ? 'show' : '' }}" id="navbar-manajemen">
                  <ul class="nav nav-sm flex-column">
-                   <li class="nav-item">
-                     <a href="{{ route('akun-mahasiswa.index') }}" class="nav-link {{ (request()->segment(1) == 'akun-mahasiswa') ? 'active' : '' }}">Akun Mahasiswa</a>
-                   </li>
+                  @if (auth()->user()->role == 'Admin')
+                  <li class="nav-item">
+                    <a href="{{ route('akun-mahasiswa.index') }}" class="nav-link {{ (request()->segment(1) == 'akun-mahasiswa') ? 'active' : '' }}">Akun Mahasiswa</a>
+                  </li>
                    <li class="nav-item">
                      <a href="{{ route('proposal.index') }}" class="nav-link {{ (request()->segment(1) == 'proposal') ? 'active' : '' }}">Proposal Magang</a>
                    </li>
@@ -73,34 +74,62 @@
                    <li class="nav-item">
                      <a href="{{ route('ploting-dosen.ploting-dosen.index') }}" class="nav-link {{ (request()->segment(1) == 'ploting-dosen') ? 'active' : '' }}">Ploting Dosen</a>
                    </li>
+                   @endif
+
+                    <!-- punya dosen -->
+                    @if (auth()->user()->role == 'Dosen')
+                   <li class="nav-item">
+                     <a href="{{ route('berita-acara.index') }}" class="nav-link {{ (request()->segment(1) == 'berita-acara') ? 'active' : '' }}">Berita Acara</a>
+                   </li>
+                   <li class="nav-item">
+                     <a href="{{ route('bimbingan.index') }}" class="nav-link {{ (request()->segment(1) == 'bimbingan') ? 'active' : '' }}">Bimbingan</a>
+                   </li>
+                   <li class="nav-item">
+                     <a href="{{ route('evaluasi-magang.index') }}" class="nav-link {{ (request()->segment(1) == 'evaluasi-magang') ? 'active' : '' }}">Evaluasi Tempat Magang</a>
+                   </li>
+                   <li class="nav-item">
+                     <a href="{{ route('laporan-magang.index') }}" class="nav-link {{ (request()->segment(1) == 'laporan-magang') ? 'active' : '' }}">Laporan Magang</a>
+                   </li>
+                   @endif
+
+
+                   <!-- punya Prodi -->
+                   @if (auth()->user()->role == 'Prodi')
+                   <li class="nav-item">
+                     <a href="{{ route('data-mahasiswa.index') }}" class="nav-link {{ (request()->segment(1) == 'data-mahasiswa') ? 'active' : '' }}">Data Mahasiswa</a>
+                   </li>
+                   <li class="nav-item">
+                     <a href="{{ route('surat-pelaksanaan.index') }}" class="nav-link {{ (request()->segment(1) == 'surat-pelaksanaan') ? 'active' : '' }}">Surat Pelaksanaan</a>
+                   </li>
+                   @endif
                  </ul>
                </div>
              </li>
-             <li class="nav-item">
-               <a class="nav-link {{ (request()->segment(1) == 'prodi' || request()->segment(1) == 'file-template' || request()->segment(1) == 'faq' || request()->segment(1) == 'tempat-magang' || request()->segment(1) == 'dospem') ? 'active' : '' }}" href="#navbar-master" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-master">
-                 <i class="ni ni-ungroup text-orange"></i>
-                 <span class="nav-link-text">Master</span>
-               </a>
-               <div class="collapse  {{ (request()->segment(1) == 'prodi' || request()->segment(1) == 'file-template' || request()->segment(1) == 'faq' || request()->segment(1) == 'tempat-magang' || request()->segment(1) == 'dospem') ? 'show' : '' }}" id="navbar-master">
-                 <ul class="nav nav-sm flex-column">
-                   <li class="nav-item">
-                     <a href="{{ route('dospem.index') }}" class="nav-link {{ (request()->segment(1) == 'dospem') ? 'active' : '' }}">Dosen</a>
-                   </li>
-                   <li class="nav-item">
-                     <a href="{{ route('tempat-magang.index') }}" class="nav-link {{ (request()->segment(1) == 'tempat-magang') ? 'active' : '' }}">Tempat Magang</a>
-                   </li>
-                   <li class="nav-item">
-                     <a href="{{ route('faq.index') }}" class="nav-link {{ (request()->segment(1) == 'faq') ? 'active' : '' }}">FAQ</a>
-                   </li>
-                   <li class="nav-item">
-                     <a href="{{ route('file-template.index') }}" class="nav-link {{ (request()->segment(1) == 'file-template') ? 'active' : '' }}">File Template</a>
-                   </li>
-                   <li class="nav-item">
-                     <a href="{{ route('prodi.index') }}" class="nav-link {{ (request()->segment(1) == 'prodi') ? 'active' : '' }}">Program Studi</a>
-                   </li>
-                 </ul>
-               </div>
-             </li>
+
+             @if (auth()->user()->role == 'Admin')
+              <li class="nav-item">
+                <a class="nav-link {{ (request()->segment(1) == 'prodi' || request()->segment(1) == 'file-template' || request()->segment(1) == 'faq' || request()->segment(1) == 'tempat-magang' || request()->segment(1) == 'dospem') ? 'active' : '' }}" href="#navbar-master" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-master">
+                  <i class="ni ni-ungroup text-orange"></i>
+                  <span class="nav-link-text">Master</span>
+                </a>
+                <div class="collapse  {{ (request()->segment(1) == 'prodi' || request()->segment(1) == 'file-template' || request()->segment(1) == 'faq' || request()->segment(1) == 'tempat-magang' || request()->segment(1) == 'dospem') ? 'show' : '' }}" id="navbar-master">
+                  <ul class="nav nav-sm flex-column">
+                    <li class="nav-item">
+                      <a href="{{ route('dospem.index') }}" class="nav-link {{ (request()->segment(1) == 'dospem') ? 'active' : '' }}">Dosen</a>
+                    </li>
+                    <li class="nav-item">
+                      <a href="{{ route('tempat-magang.index') }}" class="nav-link {{ (request()->segment(1) == 'tempat-magang') ? 'active' : '' }}">Tempat Magang</a>
+                    </li>
+                    <li class="nav-item">
+                      <a href="{{ route('file-template.index') }}" class="nav-link {{ (request()->segment(1) == 'file-template') ? 'active' : '' }}">File Template</a>
+                    </li>
+                    <li class="nav-item">
+                      <a href="{{ route('prodi.index') }}" class="nav-link {{ (request()->segment(1) == 'prodi') ? 'active' : '' }}">Program Studi</a>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+             @endif
            </ul>
          </div>
        </div>

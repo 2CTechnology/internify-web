@@ -108,9 +108,10 @@
            </div>
            <div class="row mt-3">
              <div class="col-12 text-center">
-               <a href="#" class="text-light"><small>Forgot password?</small></a>
+               <a href="{{ route('password.request') }}" class="text-light"><small>Forgot password?</small></a>
              </div>
            </div>
+
          </div>
        </div>
      </div>

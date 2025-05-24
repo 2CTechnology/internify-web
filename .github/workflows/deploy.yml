@@ -47,7 +47,7 @@ jobs:
             echo "[1] Pulling latest image from Docker Hub"
             docker pull ${{ secrets.DOCKER_USERNAME }}/internify-web:latest
 
-            echo "[2] Stopping and removing existing Laravel container (if any)"
+            echo "[2] Stopping and removing existing Laravel container (jika ada)"
             docker stop internify-app || true
             docker rm internify-app || true
 

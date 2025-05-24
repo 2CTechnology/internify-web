@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('mst_prodi', function (Blueprint $table) {
             $table->id();
             $table->string('nama_prodi');
+              $table->string('jurusan')->nullable(); 
             $table->timestamps();
         });
     }

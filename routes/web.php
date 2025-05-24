@@ -22,6 +22,10 @@ use App\Http\Controllers\SuratPelaksanaanController;
 use App\Http\Controllers\TemplateSuratController;
 use Illuminate\Support\Facades\Route;
 
+//ini firebase
+use Kreait\Laravel\Firebase\Facades\Firebase;
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -105,3 +109,12 @@ Route::get('/preview-berita-acara', [TemplateSuratController::class, 'previewBer
 Route::get('/preview-rekomendasi', [TemplateSuratController::class, 'previewRekomendasi']);
 
 Route::put('/surat-pelaksanaan/update', [SuratPelaksanaanController::class, 'update'])->name('surat-pelaksanaan.update');
+
+Route::get('/test-firebase', function () {
+    try {
+        $messaging = Firebase::messaging();
+        return '✅ Firebase terhubung dan siap digunakan!';
+    } catch (\Throwable $e) {
+        return '❌ Error: ' . $e->getMessage();
+    }
+});

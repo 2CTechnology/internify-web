@@ -13,7 +13,7 @@
                 <input type="hidden" name="id" id="hidden-id-status">
 
                 <label for="select-status">Status</label>
-                <select name="status" id="select-status" class="form-control" required>
+                <select name="status_surat_balasan" id="select-status" class="form-control" required>
                     <option value="">-- Pilih Status --</option>
                     <option value="diterima">Diterima</option>
                     <option value="mengulang">Mengulang (bikin proposal lagi)</option>

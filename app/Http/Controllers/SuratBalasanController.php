@@ -152,7 +152,8 @@ public function tindakLanjut(Request $request)
         $alurMagang = AlurMagang::find($request->id);
 
         // Update status
-        $alurMagang->status = $request->ubah_status;
+        $alurMagang->status_surat_balasan = $request->status_surat_balasan;
+        $alurMagang->updated_at = now();
         $alurMagang->save();
 
         return back()->with('success', 'Status surat balasan berhasil diperbarui.');

@@ -78,6 +78,9 @@ class KelompokController extends Controller
             $response = [
                 'status_code' => $responseCode,
                 'message' => $message,
+                'response' => [
+                    'id' => $kelompokId
+                    ]
             ];
 
             return response()->json($response, $responseCode);

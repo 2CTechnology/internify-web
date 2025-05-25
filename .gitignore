@@ -6,9 +6,10 @@
 /storage/*.key
 /vendor
 .env
+.env.testing
+.env.dusk.local
 .env.backup
 .env.production
-.env.testing
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml

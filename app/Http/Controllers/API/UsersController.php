@@ -15,68 +15,85 @@ use Illuminate\Support\Facades\Mail;
 
 class UsersController extends Controller
 {
-    public function login(Request $request) {
-        $data = null;
-        $message = '';
-        $responseCode = Response::HTTP_BAD_REQUEST;
+    
 
-        try {
-            $user = User::where('email', $request->get('email'))
-                ->where('role', 'Mahasiswa')
-                ->with([
-                    'kelompok',
-                    'kelompok.anggota'
-                ])
-                ->first();
-            if($user != null) {
-                if(Hash::check($request->get('password'), $user->password)){
-                    $token = $user->createToken($user->name.'-AuthToken')->plainTextToken;
-                    $data = [
-                        'token' => $token,
-                        'user' => $user
-                    ];
-                    $responseCode = Response::HTTP_OK;
-                    $message = 'Login Success';
-                } else {
-                    $data = [
-                        'user' => null,
-                        'token' => null
-                    ];
-                    $responseCode = Response::HTTP_UNAUTHORIZED;
-                    $message = 'Incorrect Password';
-                }
-            } else {
+    public function login(Request $request) {
+    $data = null;
+    $message = '';
+    $responseCode = Response::HTTP_BAD_REQUEST;
+
+    try {
+        $user = User::where('email', $request->get('email'))
+            ->where('role', 'Mahasiswa')
+            ->with([
+                'kelompok',
+                'kelompok.anggota'
+            ])
+            ->first();
+
+        if ($user) {
+            // Cek status akun
+            if ($user->is_accepted == 0 || is_null($user->is_accepted)) {
+                $responseCode = Response::HTTP_FORBIDDEN;
+                $message = 'Akun Anda belum dikonfirmasi.';
                 $data = [
                     'user' => null,
                     'token' => null
                 ];
+            } elseif ($user->is_accepted == 2) {
+                $responseCode = Response::HTTP_FORBIDDEN;
+                $message = 'Akun Anda telah ditolak. Silakan hubungi admin.';
+                $data = [
+                    'user' => null,
+                    'token' => null
+                ];
+            } elseif (Hash::check($request->get('password'), $user->password)) {
+                $token = $user->createToken($user->name.'-AuthToken')->plainTextToken;
+                $data = [
+                    'token' => $token,
+                    'user' => $user
+                ];
+                $responseCode = Response::HTTP_OK;
+                $message = 'Login Success';
+            } else {
                 $responseCode = Response::HTTP_UNAUTHORIZED;
-                $message = 'Incorrect Email';
+                $message = 'Password salah.';
+                $data = [
+                    'user' => null,
+                    'token' => null
+                ];
             }
-        } catch (Exception $e) {
-            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
-            $message = 'Terjadi kesalahan. ' . $e->getMessage();
+        } else {
+            $responseCode = Response::HTTP_UNAUTHORIZED;
+            $message = 'Email tidak ditemukan.';
             $data = [
                 'user' => null,
                 'token' => null
             ];
-        } catch (QueryException $e) {
-            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
-            $message = 'Terjadi kesalahan. ' . $e->getMessage();
-            $data = [
-                'user' => null,
-                'token' => null
-            ];
-        } 
-        finally {
-            $response = [
-                'status_code' => $responseCode,
-                'message' => $message,
-                'response' => $data
-            ];
-            return response()->json($response, $responseCode);
         }
+    } catch (Exception $e) {
+        $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+        $message = 'Terjadi kesalahan. ' . $e->getMessage();
+        $data = [
+            'user' => null,
+            'token' => null
+        ];
+    } catch (QueryException $e) {
+        $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+        $message = 'Terjadi kesalahan. ' . $e->getMessage();
+        $data = [
+            'user' => null,
+            'token' => null
+        ];
+    } finally {
+        $response = [
+            'status_code' => $responseCode,
+            'message' => $message,
+            'response' => $data
+        ];
+        return response()->json($response, $responseCode);
     }
+}
 
     public function register(Request $request) {
         $data = null;

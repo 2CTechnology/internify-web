@@ -53,13 +53,22 @@
                                 </td>
 
                                 <td class="text-center">
-                                    @if ($item->surat_balasan)
+                                    {{-- @if ($item->surat_balasan)
                                         <a href="{{ asset('storage/' . $item->surat_balasan) }}" target="_blank"
                                             class="btn btn-success btn-sm" title="Preview Surat Balasan">
                                             <i class="fa fa-file-pdf-o"></i> Preview
                                         </a>
                                     @else
                                         <span class="text-muted">Belum Ada</span>
+                                    @endif --}}
+                                    @if ($item->surat_balasan)
+                                        {{-- <label for="proposal" class="label-form-control mt-2">Surat Balasan</label> --}}
+                                        <div>
+                                            <a href="{{ asset($item->surat_balasan) }}" target="_blank"
+                                                class="btn btn-success btn-sm">
+                                                <i class="fa fa-download"></i> Download balasan
+                                            </a>
+                                        </div>
                                     @endif
                                 </td>
                                 <td class="text-center d-flex justify-content-center">

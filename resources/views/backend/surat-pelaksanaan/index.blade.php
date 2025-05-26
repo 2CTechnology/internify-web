@@ -23,7 +23,7 @@
                             <th class="text-center">Nama Ketua</th>
                             <th class="text-center">Tempat Magang</th>
                             <th class="text-center">Status</th>
-                            <th class="text-center">Surat Balasan</th> {{-- Tambahan --}}
+                            <th class="text-center">Surat Balasan</th> 
                             <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
@@ -42,32 +42,62 @@
                                         -
                                     @endif
                                 </td>
-                                <td class="text-center">
-                                    @if ($item?->surat_pengantar)
-                                        Sudah Upload
+                                {{-- <td class="text-center">
+                                    @if ($item->status === 1)
+                                        Diterima
+                                    @elseif ($item->status === 0)
+                                        Mengulang
                                     @else
-                                        Belum Upload
-                                    @endif    
-                                </td>
+                                        Belum Ditindaklanjuti
+                                    @endif
+                                </td> --}}
+                                <td class="text-center">{{ ucwords($item->status_surat_balasan) }}</td>
+
                                 <td class="text-center">
-                                    @if ($item->surat_balasan)
-                                        <a href="{{ asset('storage/' . $item->surat_balasan) }}" target="_blank" class="btn btn-success btn-sm" title="Preview Surat Balasan">
+                                    {{-- @if ($item->surat_balasan)
+                                        <a href="{{ asset('storage/' . $item->surat_balasan) }}" target="_blank"
+                                            class="btn btn-success btn-sm" title="Preview Surat Balasan">
                                             <i class="fa fa-file-pdf-o"></i> Preview
                                         </a>
                                     @else
                                         <span class="text-muted">Belum Ada</span>
+                                    @endif --}}
+                                    @if ($item->surat_balasan)
+                                        {{-- <label for="proposal" class="label-form-control mt-2">Surat Balasan</label> --}}
+                                        <div>
+                                            <a href="{{ asset($item->surat_balasan) }}" target="_blank"
+                                                class="btn btn-success btn-sm">
+                                                <i class="fa fa-download"></i> Download balasan
+                                            </a>
+                                        </div>
                                     @endif
                                 </td>
                                 <td class="text-center d-flex justify-content-center">
-                                    {{-- <a href="#">
-                                        <button data-toggle="modal" data-target="#exampleModal{{ $item->id }}" data-prodi="{{ $item->prodi->nama_prodi ?? '-' }}" data-golongan="{{ $item->golongan }}" data-email="{{ $item->email }}" data-angkatan="{{ $item->angkatan }}" type="button" id="PopoverCustomT-1" class="btn btn-warning btn-md btn-show-modal" data-toggle="tooltip" title="Detail" data-placement="top"><span class="fa fa-eye"></span></button>    
-                                    </a> --}}
                                     <a href="#">
-                                        <button data-toggle="modal" data-target="#exampleModal{{ $item->id }}" data-prodi="{{ $item->prodi->nama_prodi ?? '-' }}" data-golongan="{{ $item->golongan }}" data-email="{{ $item->email }}" data-angkatan="{{ $item->angkatan }}" type="button" id="PopoverCustomT-1" class="btn btn-warning btn-md btn-show-modal" data-toggle="tooltip" title="Detail" data-placement="top"><span class="fa fa-eye"></span></button>    
+                                        <button data-toggle="modal" data-target="#exampleModal{{ $item->id }}"
+                                            data-prodi="{{ $item->prodi->nama_prodi ?? '-' }}"
+                                            data-golongan="{{ $item->golongan }}" data-email="{{ $item->email }}"
+                                            data-angkatan="{{ $item->angkatan }}" type="button" id="PopoverCustomT-1"
+                                            class="btn btn-warning btn-md btn-show-modal" data-toggle="tooltip"
+                                            title="Detail" data-placement="top"><span class="fa fa-eye"></span></button>
                                     </a>
-                                    <a href="#" class="mx-2">
-                                        <button data-toggle="modal" data-target="#modalUpload" type="button" id="PopoverCustomT-1" class="btn btn-primary btn-md btn-upload" data-id="{{ $item->id }}" data-toggle="tooltip" title="Tindak Lanjut" data-placement="top"><span class="fa fa-pen"></span></button>
-                                    </a>
+                                    {{-- <a href="#" class="mx-2">
+                                        <button data-toggle="modal" data-target="#modalUpload" type="button"
+                                            id="PopoverCustomT-1" class="btn btn-primary btn-md btn-upload"
+                                            data-id="{{ $item->id }}" data-status="{{ $item->status }}"
+                                            data-toggle="tooltip" title="Tindak Lanjut" data-placement="top"><span
+                                                class="fa fa-pen"></span></button>
+                                    </a> --}}
+                                    @if ($item->is_accepted == 0)
+                                        <a href="#" class="mx-2">
+                                            <button data-toggle="modal" data-target="#modalUpload"
+                                                class="btn btn-primary btn-md btn-konfirm" data-id="{{ $item->id }}"
+                                                data-status="{{ $item->status }}" title="Ubah Status">
+                                                <span class="fa fa-pen"></span>
+                                            </button>
+                                        </a>
+                                    @endif
+
                                 </td>
                             </tr>
                         @empty
@@ -97,12 +127,16 @@
             $("#email-modal").val(email);
         })
 
-        $(".btn-upload").on('click', function () {
-            var id = $(this).data('id')
-            $("#id-upload").val(id)
-        })
+        // ketika tombol "Tindak Lanjut" diklik
+        $('body').on('click', '.btn-konfirm', function() {
+            const id = $(this).data('id');
+            const status = $(this).data('status');
+            $('#hidden-id-status').val(id);
+            $('#select-status').val(status);
+        });
 
-        $(".btn-tolak").on('click', function () {
+
+        $(".btn-tolak").on('click', function() {
             var id = $(this).data('id')
             console.log(`dec: ${id}`);
             Swal.fire({
@@ -121,7 +155,7 @@
             });
         })
 
-        $(document).ready( function () {
+        $(document).ready(function() {
             $('#table').DataTable({
                 columnDefs: [{
                     "defaultContent": "-",

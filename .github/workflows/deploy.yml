@@ -1,17 +1,14 @@
 name: CI/CD Laravel Docker to VPS
 
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["Laravel Tests"]
+    types:
+      - completed
 
 jobs:
   deploy:
-    needs: laravel-tests
-    runs-on: ubuntu-latest
-
-jobs:
-  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     steps:

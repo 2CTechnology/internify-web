@@ -486,25 +486,25 @@ class KelompokController extends Controller
                             $returnData->message = 'Proposal diterima.';
                             break;
                         default:
-                            $returnData->message = 'Status proposal belum tersedia.';
+                            $returnData->message = 'Silahkan upload proposal.';
                     }
 
                     if ($alurMagang->status_proposal === 'diterima') {
                         switch ($alurMagang->status_surat_balasan) {
                             case 'menunggu konfirmasi':
-                                $returnData->message_surat_balasan = 'Surat balasan menunggu konfirmasi.';
+                                $returnData->message = 'Surat balasan menunggu konfirmasi.';
                                 break;
                             case 'mengulang':
-                                $returnData->message_surat_balasan = 'Surat balasan ditolak. Silakan unggah ulang.';
+                                $returnData->message = 'Surat balasan diterima & mengulang. Silakan apply di perusahaan lain.';
                                 break;
                             case 'diterima':
-                                $returnData->message_surat_balasan = 'Surat balasan diterima. Tunggu proses surat pengantar.';
+                                $returnData->message = 'Surat balasan diterima. Tunggu proses surat pelaksanaan.';
                                 break;
                             default:
-                                $returnData->message_surat_balasan = 'Surat balasan belum diunggah.';
+                                $returnData->message = 'Surat balasan belum diunggah.';
                         }
                     } else {
-                        $returnData->message_surat_balasan = 'Belum bisa unggah surat balasan karena proposal belum diterima.';
+                        $returnData->message = 'Belum bisa unggah surat balasan karena proposal belum diterima.';
                     }
 
                     $returnData->dataAlurMagang = $alurMagang;

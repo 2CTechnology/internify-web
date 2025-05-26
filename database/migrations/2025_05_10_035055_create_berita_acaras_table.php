@@ -18,7 +18,7 @@ return new class extends Migration
 
             $table->date('jadwal');
             $table->string('prodi')->nullable();
-            $table->string('jurusan')->nullable();
+           // $table->string('jurusan')->nullable();
             $table->string('alamat')->nullable();
             $table->text('keterangan')->nullable();
             $table->text('catatan'); // tidak nullable

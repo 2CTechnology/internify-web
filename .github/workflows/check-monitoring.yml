@@ -3,7 +3,7 @@ name: Check Monitoring & Auto-Recovery
 on:
   schedule:
     - cron: '*/10 * * * *'  # Setiap 10 menit
-  workflow_dispatch:        # Bisa dijalankan manual juga
+  workflow_dispatch:        
 
 jobs:
   check-monitoring:

@@ -73,6 +73,6 @@ jobs:
           APP_URL: http://localhost:8000
           DB_HOST: 127.0.0.1
       
-      - name: Show Laravel log if test fail
+      - name: Show Laravel log if test fails
         if: failure()
         run: cat storage/logs/laravel.log || echo "No log found"

@@ -46,7 +46,7 @@ class BeritaAcaraController extends Controller
             'tempat_magang_id' => $validated['tempat_magang_id'],
             'kelompok_id' => $validated['kelompok_id'],
             'prodi' => $validated['prodi'],
-            // 'jurusan' => $validated['jurusan'], // ini dihapus karena tidak disimpan
+            // 'jurusan' => $validated['jurusan'], 
             'alamat' => $validated['alamat'],
             'keterangan' => $validated['keterangan'],
             'catatan' => $validated['catatan'] ?? '',
@@ -66,7 +66,7 @@ class BeritaAcaraController extends Controller
         $berita = BeritaAcara::with(['tempatMagang', 'kelompok.anggota'])->findOrFail($id);
 
         // Ambil jurusan dari session
-        $jurusan = session('berita_jurusan_' . $id, ''); // default ke '' jika tidak ada
+        $jurusan = session('berita_jurusan_' . $id, ''); 
 
         // Kirim ke view PDF
         $pdf = Pdf::loadView('backend.berita-acara.pdf', [

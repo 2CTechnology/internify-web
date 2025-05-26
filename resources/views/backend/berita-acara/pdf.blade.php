@@ -77,14 +77,17 @@
                 <tr>
                     <td style="padding-top: 78px;">
                         Pembimbing Lapang<br /><br /><br /><br />
-                        ________________________
+                        ________________________<br />
+                        .
                     </td>
 
                     <td style="padding-top: 78px;">
                         Dosen Pembimbing<br /><br /><br /><br />
-                        ________________________
+                        ________________________<br />
+                        {{ Auth::user()->name }}
                     </td>
                 </tr>
+
             </table>
 
 </body>

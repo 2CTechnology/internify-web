@@ -45,8 +45,11 @@ jobs:
       - name: Generate APP Key
         run: php artisan key:generate --env=testing
 
-      - name: Run Migrations
-        run: php artisan migrate --env=testing --force
+      - name: Run Migrations && Seeding
+        run: |
+          php artisan migrate --env=testing --force
+          php artisan db:seed --env=testing --force
+
 
       - name: Run PHP Unit Tests
         run: php artisan test

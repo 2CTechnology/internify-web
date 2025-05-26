@@ -31,58 +31,61 @@
             <h3 class="text-uppercase">Formulir Berita Acara Monitoring dan Evaluasi</h3>
         </div>
 
-        <p class="text-justify">
+        <<p class="text-justify">
             Pada hari ini {{ \Carbon\Carbon::parse($berita->jadwal)->translatedFormat('l') }}
             tanggal {{ \Carbon\Carbon::parse($berita->jadwal)->translatedFormat('d F Y') }}
             di {{ $berita->tempatMagang->nama_tempat ?? '-' }},
             yang beralamat di {{ $berita->tempatMagang->alamat ?? '-' }},
             telah dilaksanakan monitoring dan evaluasi Magang mahasiswa program studi
-            {{ $berita->prodi }} Jurusan {{ $berita->jurusan }}
+            {{ $berita->prodi }} Jurusan {{ $jurusan }}
             Politeknik Negeri Jember atas nama anggota sebagai berikut:
-        </p>
+            </p>
 
 
-        <ol class="mb-3">
-            @if(isset($berita->kelompok) && $berita->kelompok->anggota && $berita->kelompok->anggota->count() > 0)
-                @foreach ($berita->kelompok->anggota as $anggota)
-                    <li>{{ $anggota->nama }}</li>
-                @endforeach
-            @else
-                <li>Data anggota tidak tersedia.</li>
-            @endif
-        </ol>
 
-        <div class="border border-dark rounded p-3 mt-3 content-section">
-            <p class="mb-2">
-                <strong> Catatan selama pelaksanaan monitoring dan evaluasi Magang:</strong><br />
-            <div style="border: 1px solid #000; padding: 10px; margin-top: 20px;">
-                {{ $berita->keterangan }}
+
+            <ol class="mb-3">
+                @if(isset($berita->kelompok) && $berita->kelompok->anggota && $berita->kelompok->anggota->count() > 0)
+                    @foreach ($berita->kelompok->anggota as $anggota)
+                        <li>{{ $anggota->nama }}</li>
+                    @endforeach
+                @else
+                    <li>Data anggota tidak tersedia.</li>
+                @endif
+            </ol>
+
+            <div class="border border-dark rounded p-3 mt-3 content-section">
+                <p class="mb-2">
+                    <strong> Catatan selama pelaksanaan monitoring dan evaluasi Magang:</strong><br />
+                <div style="border: 1px solid #000; padding: 10px; margin-top: 20px;">
+                    {{ $berita->keterangan }}
+                </div>
+
+                </p>
+
+                <p class="text-justify mb-0">
+                    Demikian berita acara monitoring dan evaluasi Magang ini dibuat dan diketahui oleh dosen pembimbing
+                    dan
+                    pembimbing lapang.
+                </p>
             </div>
-
+            <p style="text-align: right; margin-bottom: 20px;">
+                Jember, {{ \Carbon\Carbon::parse($berita->jadwal)->translatedFormat('d F Y') }}
             </p>
+            <!-- Tanda Tangan -->
+            <table style="width: 100%; margin-top: 25px; text-align: center;">
+                <tr>
+                    <td style="padding-top: 78px;">
+                        Pembimbing Lapang<br /><br /><br /><br />
+                        ________________________
+                    </td>
 
-            <p class="text-justify mb-0">
-                Demikian berita acara monitoring dan evaluasi Magang ini dibuat dan diketahui oleh dosen pembimbing dan
-                pembimbing lapang.
-            </p>
-        </div>
-        <p style="text-align: right; margin-bottom: 20px;">
-            Jember, {{ \Carbon\Carbon::parse($berita->jadwal)->translatedFormat('d F Y') }}
-        </p>
-        <!-- Tanda Tangan -->
-        <table style="width: 100%; margin-top: 25px; text-align: center;">
-            <tr>
-                <td style="padding-top: 78px;">
-                    Pembimbing Lapang<br /><br /><br /><br />
-                    ________________________
-                </td>
-
-                <td style="padding-top: 78px;">
-                    Dosen Pembimbing<br /><br /><br /><br />
-                    ________________________
-                </td>
-            </tr>
-        </table>
+                    <td style="padding-top: 78px;">
+                        Dosen Pembimbing<br /><br /><br /><br />
+                        ________________________
+                    </td>
+                </tr>
+            </table>
 
 </body>
 

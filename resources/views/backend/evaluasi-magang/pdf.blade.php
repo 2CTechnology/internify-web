@@ -60,11 +60,12 @@
         </p>
 
         <!-- Tanda Tangan -->
-        <table style="width: 100%; margin-top: 25px; text-align: center;">
+        <table style="width: 100%; margin-top: 25px; text-align: right;">
             <tr>
                 <td style="padding-top: 78px;">
                     Dosen Pembimbing<br><br><br><br>
-                    ________________________
+                    ________________________<br />
+                    {{ Auth::user()->name }}
                 </td>
             </tr>
         </table>

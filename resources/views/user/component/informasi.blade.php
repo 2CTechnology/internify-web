@@ -11,7 +11,7 @@
                 <div class="content">
                     <p>Daftar Tempat Magang</p>
                     <a href="/tempatmagang">
-                        <button>Cek Tempat</button>
+                        <button dusk="btn-daftar-tempat">Cek Tempat</button>
                     </a>
                 </div>
             </div>
@@ -22,7 +22,7 @@
                 <div class="content">
                     <p>Daftar Dosen Pembimbing</p>
                     <a href="/daftardosen">
-                        <button>Cek Dosen</button>
+                        <button dusk="btn-daftar-dosen">Cek Dosen</button>
                     </a>
                 </div>
             </div>

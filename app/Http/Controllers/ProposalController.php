@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Services\FirebaseNotificationService;
 
 class ProposalController extends Controller
 {
@@ -89,6 +90,24 @@ class ProposalController extends Controller
             }
             $alurMagang->updated_at = now();
             $alurMagang->save();
+            
+            //kirim notif ke ketua kelompok
+            $ketua = $alurMagang->kelompok->ketua;
+
+        if ($ketua && $ketua->fcm_token) {
+            $notifier = new FirebaseNotificationService();
+
+            $status = $request->tindak_lanjut;
+
+            if ($status === 'diterima') {
+                $notifier->sendToDevice($ketua->fcm_token, 'Proposal Diterima', 'Proposal magang kamu telah diterima.');
+            } elseif ($status === 'revisi') {
+                $notifier->sendToDevice($ketua->fcm_token, 'Proposal Direvisi', 'Proposal magang kamu perlu direvisi.');
+            } elseif ($status === 'ditolak') {
+                $notifier->sendToDevice($ketua->fcm_token, 'Proposal Ditolak', 'Proposal magang kamu ditolak.');
+            }
+        }
+
             DB::commit();
 
             return redirect()->route('proposal.index')->withStatus('Berhasil menambahkan menindaklanjuti proposal.');

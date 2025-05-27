@@ -78,6 +78,9 @@ class KelompokController extends Controller
             $response = [
                 'status_code' => $responseCode,
                 'message' => $message,
+                'response' => [
+                    'id' => $kelompokId
+                    ]
             ];
 
             return response()->json($response, $responseCode);
@@ -157,7 +160,7 @@ class KelompokController extends Controller
             $alurMagang->tempat_magang = $request->get('tempat_magang');
             $alurMagang->nama_posisi = $request->get('nama_posisi');
             $alurMagang->status_proposal = "menunggu konfirmasi";
-            $alurMagang->status = null;
+            $alurMagang->status_surat_balasan = null;
             $alurMagang->updated_at = now();
             $alurMagang->save();
 
@@ -221,12 +224,7 @@ class KelompokController extends Controller
             $file->move($path, $safeName);
             $filePath = '/uploads/proposal/' . $kelompok->id . '/' . $safeName;
 
-            if ($alurMagang->status_proposal == 'revisi') {
-                $alurMagang->revisi_proposal = $filePath;
-            } else {
-                $alurMagang->revisi_proposal = $filePath;
-            }
-
+            $alurMagang->proposal = $filePath;
             $alurMagang->status_proposal = 'menunggu konfirmasi';
             $alurMagang->updated_at = now();
             $alurMagang->save();
@@ -247,82 +245,132 @@ class KelompokController extends Controller
         return response()->json(['message' => $message], $responseCode);
     }
 
+    public function uploadProposalRevisi($id, Request $request)
+    {
+        $message = '';
+        $responseCode = Response::HTTP_BAD_REQUEST;
 
-    public function uploadSuratBalasan($id, Request $request)
-{
-    $message = '';
-    $responseCode = Response::HTTP_BAD_REQUEST;
+        DB::beginTransaction();
+        try {
+            $kelompok = Kelompok::find($id);
+            if (!$kelompok) {
+                return response()->json(['message' => 'Kelompok tidak ditemukan.'], Response::HTTP_NOT_FOUND);
+            }
 
-    DB::beginTransaction();
-    try {
-        if ($request->hasFile('surat_balasan')) {
-            $file = $request->file('surat_balasan');
+            $alurMagang = AlurMagang::where('id_kelompok', $kelompok->id)->first();
+            if (!$alurMagang) {
+                return response()->json(['message' => 'Data alur magang tidak ditemukan.'], Response::HTTP_NOT_FOUND);
+            }
 
-            Log::info('🔍 MIME TYPE:', [$file->getMimeType()]);
-            Log::info('🔍 Client Extension:', [$file->getClientOriginalExtension()]);
-            Log::info('🔍 Real Path:', [$file->getRealPath()]);
-        } else {
-            Log::warning('❌ Tidak ada file terkirim di surat_balasan');
+            if (!$request->hasFile('proposal')) {
+                return response()->json(['message' => 'File revisi tidak ditemukan.'], Response::HTTP_BAD_REQUEST);
+            }
+
+            $file = $request->file('proposal');
+            $safeName = time() . '-' . str_replace(["\n", "\r"], '', trim($file->getClientOriginalName()));
+            $path = public_path('uploads/proposal/' . $kelompok->id);
+
+            if (!File::isDirectory($path)) {
+                File::makeDirectory($path, 0755, true);
+            }
+
+            $file->move($path, $safeName);
+            $filePath = '/uploads/proposal/' . $kelompok->id . '/' . $safeName;
+
+            $alurMagang->revisi_proposal = $filePath;
+            $alurMagang->status_proposal = 'menunggu konfirmasi';
+            $alurMagang->updated_at = now();
+            $alurMagang->save();
+
+            DB::commit();
+            $message = 'Berhasil upload proposal revisi.';
+            $responseCode = Response::HTTP_OK;
+        } catch (Exception $e) {
+            DB::rollBack();
+            $message = 'Terjadi kesalahan: ' . $e->getMessage();
+            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
         }
 
-
-        // Validasi file
-        $request->validate([
-            'surat_balasan' => 'required|mimetypes:application/pdf,image/jpg,image/jpeg,image/png|max:2048',
-        ], [
-            'required' => 'File surat balasan wajib diunggah.',
-            'mimetypes' => 'File harus berupa PDF atau gambar (JPG, PNG).',
-            'max' => 'Ukuran file maksimal 2MB.',
-        ]);
-
-        // Tambahan safety check
-        if (!$request->hasFile('surat_balasan')) {
-            return response()->json(['message' => 'File tidak dikirim ke server.'], 400);
-        }
-
-        $file = $request->file('surat_balasan');
-        if (!$file->isValid()) {
-            return response()->json(['message' => 'File rusak atau gagal upload.'], 400);
-        }
-
-        // Cari data alur magang berdasarkan id kelompok
-        $alurMagang = AlurMagang::where('id_kelompok', $id)->first();
-
-        if (!$alurMagang) {
-            throw new \Exception("Data alur magang tidak ditemukan.");
-        }
-
-        // Proses upload file
-        $file = $request->file('surat_balasan');
-        $filename = time() . '_' . $file->getClientOriginalName();
-        $filePath = public_path('upload/surat-balasan/' . $id);
-
-        if (!File::isDirectory($filePath)) {
-            File::makeDirectory($filePath, 493, true);
-        }
-
-        $file->move($filePath, $filename);
-
-        // Update database
-        $alurMagang->surat_balasan = '/upload/surat-balasan/' . $id . '/' . $filename;
-        $alurMagang->status_surat_balasan = "menunggu konfirmasi"; // Set status ke NULL (menunggu konfirmasi)
-        $alurMagang->updated_at = now();
-        $alurMagang->save();
-
-        DB::commit();
-
-        $message = 'Berhasil upload surat balasan.';
-        $responseCode = Response::HTTP_OK;
-    } catch (\Exception $e) {
-        DB::rollBack();
-        $message = 'Terjadi kesalahan. ' . $e->getMessage();
-        $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+        return response()->json(['message' => $message], $responseCode);
     }
 
-    return response()->json([
-        'message' => $message
-    ], $responseCode);
-}
+
+
+    public function uploadSuratBalasan($id, Request $request)
+    {
+        $message = '';
+        $responseCode = Response::HTTP_BAD_REQUEST;
+
+        DB::beginTransaction();
+        try {
+            if ($request->hasFile('surat_balasan')) {
+                $file = $request->file('surat_balasan');
+
+                Log::info('🔍 MIME TYPE:', [$file->getMimeType()]);
+                Log::info('🔍 Client Extension:', [$file->getClientOriginalExtension()]);
+                Log::info('🔍 Real Path:', [$file->getRealPath()]);
+            } else {
+                Log::warning('❌ Tidak ada file terkirim di surat_balasan');
+            }
+
+
+            // Validasi file
+            $request->validate([
+                'surat_balasan' => 'required|mimetypes:application/pdf,image/jpg,image/jpeg,image/png|max:2048',
+            ], [
+                'required' => 'File surat balasan wajib diunggah.',
+                'mimetypes' => 'File harus berupa PDF atau gambar (JPG, PNG).',
+                'max' => 'Ukuran file maksimal 2MB.',
+            ]);
+
+            // Tambahan safety check
+            if (!$request->hasFile('surat_balasan')) {
+                return response()->json(['message' => 'File tidak dikirim ke server.'], 400);
+            }
+
+            $file = $request->file('surat_balasan');
+            if (!$file->isValid()) {
+                return response()->json(['message' => 'File rusak atau gagal upload.'], 400);
+            }
+
+            // Cari data alur magang berdasarkan id kelompok
+            $alurMagang = AlurMagang::where('id_kelompok', $id)->first();
+
+            if (!$alurMagang) {
+                throw new \Exception("Data alur magang tidak ditemukan.");
+            }
+
+            // Proses upload file
+            $file = $request->file('surat_balasan');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $filePath = public_path('upload/surat-balasan/' . $id);
+
+            if (!File::isDirectory($filePath)) {
+                File::makeDirectory($filePath, 493, true);
+            }
+
+            $file->move($filePath, $filename);
+
+            // Update database
+            $alurMagang->surat_balasan = '/upload/surat-balasan/' . $id . '/' . $filename;
+            $alurMagang->status_surat_balasan = "menunggu konfirmasi"; 
+            $alurMagang->updated_at = now();
+            $alurMagang->save();
+
+            DB::commit();
+
+            $message = 'Berhasil upload surat balasan.';
+            $responseCode = Response::HTTP_OK;
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $message = 'Terjadi kesalahan. ' . $e->getMessage();
+            $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+        }
+
+        return response()->json([
+            'message' => $message
+        ], $responseCode);
+    }
 
     public function getKelompokById(Request $request)
     {
@@ -426,7 +474,7 @@ class KelompokController extends Controller
                 } else {
                     switch ($alurMagang->status_proposal) {
                         case 'menunggu konfirmasi':
-                            $returnData->message = 'Proposal menunggu konfirmasi dari admin atau dosen.';
+                            $returnData->message = 'Proposal menunggu konfirmasi dari admin.';
                             break;
                         case 'revisi':
                             $returnData->message = 'Terdapat revisi proposal. ' . $alurMagang->revisi_proposal;
@@ -438,21 +486,25 @@ class KelompokController extends Controller
                             $returnData->message = 'Proposal diterima.';
                             break;
                         default:
-                            $returnData->message = 'Status proposal belum tersedia.';
+                            $returnData->message = 'Silahkan upload proposal.';
                     }
 
-                    switch ($alurMagang->status_surat_balasan) {
-                        case 'menunggu konfirmasi':
-                            $returnData->message = 'Surat balasan menunggu konfirmasi.';
-                            break;
-                        case 'mengulang':
-                            $returnData->message = 'Surat balasan diterima & mengulang. ';
-                            break;
-                        case 'diterima':
-                            $returnData->message = 'Surat balasan diterima. Tunggu proses surat pengantar.';
-                            break;
-                        default:
-                            $returnData->message = 'Surat balasan belum diunggah.';
+                    if ($alurMagang->status_proposal === 'diterima') {
+                        switch ($alurMagang->status_surat_balasan) {
+                            case 'menunggu konfirmasi':
+                                $returnData->message = 'Surat balasan menunggu konfirmasi.';
+                                break;
+                            case 'mengulang':
+                                $returnData->message = 'Surat balasan diterima & mengulang. Silakan apply di perusahaan lain.';
+                                break;
+                            case 'diterima':
+                                $returnData->message = 'Surat balasan diterima. Tunggu proses surat pelaksanaan.';
+                                break;
+                            default:
+                                $returnData->message = 'Surat balasan belum diunggah.';
+                        }
+                    } else {
+                        $returnData->message = 'Belum bisa unggah surat balasan karena proposal belum diterima.';
                     }
 
                     $returnData->dataAlurMagang = $alurMagang;

@@ -55,6 +55,22 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    public function isAccepted(): bool
+{
+    return $this->is_accepted == 1;
+}
+
+public function isPending(): bool
+{
+    return is_null($this->is_accepted) || $this->is_accepted == 0;
+}
+
+public function isRejected(): bool
+{
+    return $this->is_accepted == 2;
+}
+
+
     public function kelompok () {
         return $this->hasOne(Kelompok::class, 'id_users');
     }

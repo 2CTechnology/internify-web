@@ -70,7 +70,7 @@ return [
     |
     */
 
-    'timezone' => 'Asia/Jakarta',
+    'timezone' => 'UTC',
 
     /*
     |--------------------------------------------------------------------------
@@ -83,7 +83,7 @@ return [
     |
     */
 
-    'locale' => 'id',
+    'locale' => 'en',
 
     /*
     |--------------------------------------------------------------------------
@@ -168,6 +168,10 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+
+        //buat firebase
+        Kreait\Laravel\Firebase\ServiceProvider::class,
+
     ])->toArray(),
 
     /*
@@ -183,6 +187,10 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
+
+        //buat firebase
+        'Firebase' => Kreait\Laravel\Firebase\Facades\Firebase::class,
+
     ])->toArray(),
 
 ];

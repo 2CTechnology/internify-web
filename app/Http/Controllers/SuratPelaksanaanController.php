@@ -5,9 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\AlurMagang;
 use Exception;
-use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 
 class SuratPelaksanaanController extends Controller
 {
@@ -20,50 +17,43 @@ class SuratPelaksanaanController extends Controller
     
     public function index()
     {
-
         $this->param['title'] = 'form Surat Pelaksanaan';
-        if(auth()->user()->role == 'Admin') {
-            $data = AlurMagang::with('kelompok')
-                ->with('kelompok.anggota')
-                ->with('kelompok.ketua')
-                ->with('kelompok.dospem')
-                ->with('kelompok.ketua.prodi')
-                ->with('kelompok.anggota.prodi')
-                ->with('tempatMagang')
+
+        // Ambil data hanya untuk role Prodi
+        if(auth()->user()->role == 'Prodi') {
+            $data = AlurMagang::with([
+                    'kelompok',
+                    'kelompok.anggota',
+                    'kelompok.ketua',
+                    'kelompok.dospem',
+                    'kelompok.ketua.prodi',
+                    'kelompok.anggota.prodi',
+                    'tempatMagang'
+                ])
                 ->whereNotNull('alur_magangs.proposal')
                 ->where('alur_magangs.status_proposal', 'diterima')
                 ->orderBy('id', 'desc')
                 ->get();
-        } else if(auth()->user()->role == 'Prodi') {
-            $data = AlurMagang::with('tempatMagang')
-                ->withWhereHas('kelompok', function($q) {
-                    return $q->where('id_dospem', auth()->user()->id);
-                })
-                ->with('kelompok.anggota')
-                ->with('kelompok.ketua')
-                ->with('kelompok.dospem')
-                ->with('kelompok.ketua.prodi')
-                ->with('kelompok.anggota.prodi')
-                ->whereNotNull('alur_magangs.proposal')
-                ->where('alur_magangs.status_proposal', 'diterima')
-                ->orderBy('id', 'desc')
-                ->get();
+
+            $this->param['data'] = $data;
+        } else {
+            // Jika bukan Prodi, tidak ada data dikembalikan
+            $this->param['data'] = collect(); // atau -> [] untuk array kosong
         }
-        $this->param['data'] = $data;
+
         return view('backend.surat-pelaksanaan.index', $this->param);
     }
 
     public function update(Request $request)
-{
-    try {
-        $alur = AlurMagang::findOrFail($request->id);
-        $alur->status_surat_pelaksanaan = 'dibuat'; // Ganti sesuai nama kolom di database
-        $alur->save();
+    {
+        try {
+            $alur = AlurMagang::findOrFail($request->id);
+            $alur->status_surat_pelaksanaan = 'Surat Pelaksanaan Telah Dibuat'; 
+            $alur->save();
 
-        return redirect()->back()->with('success', 'Surat pelaksanaan berhasil ditandai.');
-    } catch (Exception $e) {
-        return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan.');
+            return redirect()->back()->with('success', 'Surat pelaksanaan berhasil ditandai.');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan.');
+        }
     }
-}
-
 }

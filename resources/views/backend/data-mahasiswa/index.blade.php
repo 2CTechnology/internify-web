@@ -8,6 +8,8 @@
     {{ $header }}
 @endpush
 
+@include('backend.data-mahasiswa.modal.detail')
+
 @section('content')
     <div class="row">
         <div class="col-md-12">
@@ -17,11 +19,12 @@
                         <tr>
                             <th class="text-center">No.</th>
                             <th class="text-center">NIM</th>
-                            <th class="text-center">Nama Ketua</th>
+                            <th class="text-center">Prodi</th>
+                            <th class="text-center">Nama</th>
                             <th class="text-center">Tempat Magang</th>
+                            <th class="text-center">Kota</th>
                             <th class="text-center">Status</th>
-                            <th class="text-center">Proposal</th> 
-                            <th class="text-center">Detail</th>
+                            <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -29,6 +32,7 @@
                             <tr>
                                 <td class="text-center">{{ $loop->iteration }}</td>
                                 <td class="text-center">{{ $item->kelompok->ketua->no_identitas ?? '-' }}</td>
+                                <td class="text-center">{{ $item->kelompok->ketua->prodi->nama_prodi ?? '-' }}</td>
                                 <td class="text-center">{{ $item->kelompok->ketua->name ?? '-' }}</td>
                                 <td class="text-center">
                                     @if ($item->tempatMagang)
@@ -39,27 +43,35 @@
                                         -
                                     @endif
                                 </td>
-                                <td class="text-center">{{ ucwords($item->status_proposal) }}</td>
-                                <td class="text-center">
-                                    @if ($item->file_proposal)
-                                        <a href="{{ asset('storage/' . $item->file_proposal) }}" target="_blank">Lihat</a>
-                                    @else
-                                        -
-                                    @endif
-                                </td>
+                                <td class="text-center">{{ $item->tempatMagang->kota ?? '-' }}</td>
+                                <td class="text-center">{{ ucwords($item->status_surat_balasan ?? '-') }}</td>
                                 <td class="text-center d-flex justify-content-center">
                                     <a href="#">
-                                        <button data-toggle="modal" data-target="#exampleModal{{ $item->id }}" data-prodi="{{ $item->prodi->nama_prodi ?? '-' }}" data-golongan="{{ $item->golongan }}" data-email="{{ $item->email }}" data-angkatan="{{ $item->angkatan }}" type="button" id="PopoverCustomT-1" class="btn btn-warning btn-md btn-show-modal" data-toggle="tooltip" title="Detail" data-placement="top"><span class="fa fa-eye"></span></button>    
-                                    </a>
+    <button 
+        data-toggle="modal" 
+        data-target="#exampleModal{{ $item->id }}" 
+        data-prodi="{{ $item->prodi->nama_prodi ?? '-' }}" 
+        data-golongan="{{ $item->golongan }}" 
+        data-email="{{ $item->email }}" 
+        data-angkatan="{{ $item->angkatan }}" 
+        type="button" 
+        class="btn btn-warning btn-md btn-show-modal" 
+        title="Detail"
+    >
+        <span class="fa fa-eye"></span>
+    </button>    
+</a>
+
+
+
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center">Tidak Ada Data Tersedia.</td>
+                                <td colspan="8" class="text-center">Tidak Ada Data Tersedia.</td>
                             </tr>
                         @endforelse
                     </tbody>
-                    
                 </table>
             </div>
         </div>
@@ -68,12 +80,25 @@
 
 @push('custom-script')
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#table').DataTable({
                 columnDefs: [{
                     targets: '_all',
                     defaultContent: '-'
                 }]
+            });
+
+            $(document).on('click', '.btn-show-modal', function() {
+                var angkatan = $(this).data('angkatan');
+                var golongan = $(this).data('golongan');
+                var prodi = $(this).data('prodi');
+                var email = $(this).data('email');
+                console.log(angkatan);
+
+                $("#angkatan-modal").val(angkatan);
+                $("#golongan-modal").val(golongan);
+                $("#prodi-modal").val(prodi);
+                $("#email-modal").val(email);
             });
         });
     </script>

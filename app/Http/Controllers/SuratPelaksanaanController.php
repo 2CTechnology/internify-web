@@ -48,7 +48,7 @@ class SuratPelaksanaanController extends Controller
     {
         try {
             $alur = AlurMagang::findOrFail($request->id);
-            $alur->status_surat_pelaksanaan = 'dibuat'; // Pastikan nama kolom sesuai DB
+            $alur->status_surat_pelaksanaan = 'Surat Pelaksanaan Telah Dibuat'; 
             $alur->save();
 
             return redirect()->back()->with('success', 'Surat pelaksanaan berhasil ditandai.');

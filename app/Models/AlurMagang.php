@@ -21,6 +21,7 @@ class AlurMagang extends Model
         'id_tempat_magang',
         'surat_balasan',
         'status_surat_balasan',
+        'surat_pengantar',
         'created_at',
         'updated_at'
     ];

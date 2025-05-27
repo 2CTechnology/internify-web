@@ -8,7 +8,7 @@
     {{ $header }}
 @endpush
 
-@include('backend.surat-balasan.modal.detail')
+@include('backend.surat-pelaksanaan.modal.update')
 @include('backend.surat-pelaksanaan.modal.update')
 
 @section('content')
@@ -81,13 +81,6 @@
                                             class="btn btn-warning btn-md btn-show-modal" data-toggle="tooltip"
                                             title="Detail" data-placement="top"><span class="fa fa-eye"></span></button>
                                     </a>
-                                    {{-- <a href="#" class="mx-2">
-                                        <button data-toggle="modal" data-target="#modalUpload" type="button"
-                                            id="PopoverCustomT-1" class="btn btn-primary btn-md btn-upload"
-                                            data-id="{{ $item->id }}" data-status="{{ $item->status }}"
-                                            data-toggle="tooltip" title="Tindak Lanjut" data-placement="top"><span
-                                                class="fa fa-pen"></span></button>
-                                    </a> --}}
                                     @if ($item->is_accepted == 0)
                                         <a href="#" class="mx-2">
                                             <button data-toggle="modal" data-target="#modalUpload"
@@ -134,26 +127,6 @@
             $('#hidden-id-status').val(id);
             $('#select-status').val(status);
         });
-
-
-        $(".btn-tolak").on('click', function() {
-            var id = $(this).data('id')
-            console.log(`dec: ${id}`);
-            Swal.fire({
-                title: "Konfirmasi",
-                text: "Apakah Anda Yakin Menolak Akun Ini?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Ya",
-                cancelButtonText: "Tidak"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $(`#decline-${id}`).submit()
-                }
-            });
-        })
 
         $(document).ready(function() {
             $('#table').DataTable({

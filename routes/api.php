@@ -8,6 +8,7 @@ use App\Http\Controllers\API\UsersController;
 use App\Http\Controllers\API\CounselingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -56,3 +57,25 @@ Route::middleware('auth:sanctum')
         Route::post('/post-laporan/{id}', [CounselingController::class, 'postLaporan']);
         Route::get('/jadwal-bimbingan/{id}', [CounselingController::class, 'getBimbingan']);
     });
+
+//firebase
+// Route::middleware('auth:sanctum')->post('/save-fcm-token', function (Request $request) {
+//     $user = auth()->user();
+//     $user->fcm_token = $request->fcm_token;
+//     $user->save();
+
+//     return response()->json(['message' => 'Token FCM disimpan']);
+// });
+
+Route::middleware('auth:sanctum')->post('/save-fcm-token', function (Request $request) {
+    $user = auth()->user();
+
+    if (!$user instanceof User) {
+        return response()->json(['message' => 'User tidak valid'], 401);
+    }
+
+    $user->fcm_token = $request->fcm_token;
+    $user->save();
+
+    return response()->json(['message' => 'Token FCM disimpan']);
+});

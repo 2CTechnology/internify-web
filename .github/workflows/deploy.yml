@@ -40,12 +40,13 @@ jobs:
           mkdir -p storage/app/firebase
           echo "${{ secrets.FIREBASE_CREDENTIALS_JSON }}" > storage/app/firebase/firebase_credentials.json
 
-      - name: Upload docker-compose.yml and .env to VPS
+      - name: Upload docker-compose.yml and .env to VPS and Firebase credentials
         run: |
           echo "${{ secrets.VPS_KEY }}" > private_key.pem
           chmod 600 private_key.pem
           scp -i private_key.pem -o StrictHostKeyChecking=no docker-compose.yml ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/internify-web/docker-compose.yml
           scp -i private_key.pem -o StrictHostKeyChecking=no env/.env ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/internify-web/env/.env
+          scp -i private_key.pem -o StrictHostKeyChecking=no storage/app/firebase/firebase_credentials.json ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/internify-web/storage/app/firebase/firebase_credentials.json
           rm -f private_key.pem
 
       - name: Deploy to VPS via SSH

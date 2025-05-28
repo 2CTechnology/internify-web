@@ -35,6 +35,11 @@ jobs:
           mkdir -p env
           echo "${{ secrets.ENV_FILE_CONTENT }}" > env/.env
 
+      - name: Create Firebase Credentials JSON from secret
+        run: |
+          mkdir -p storage/app/firebase
+          echo "${{ secrets.FIREBASE_CREDENTIALS_JSON }}" > storage/app/firebase/firebase_credentials.json
+
       - name: Upload docker-compose.yml and .env to VPS
         run: |
           echo "${{ secrets.VPS_KEY }}" > private_key.pem

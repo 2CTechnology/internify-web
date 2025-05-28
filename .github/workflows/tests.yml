@@ -94,4 +94,3 @@ jobs:
       - name: Show Laravel log if test fail
         if: failure()
         run: cat storage/logs/laravel.log || echo "No log found"
-      

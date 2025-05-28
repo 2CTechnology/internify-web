@@ -39,6 +39,7 @@ use Kreait\Laravel\Firebase\Facades\Firebase;
 
 Route::get('/data-mahasiswa', [DataMahasiswaController::class, 'index'])->name('data-mahasiswa.index');
 Route::get('/surat-pelaksanaan', [SuratPelaksanaanController::class, 'index'])->name('surat-pelaksanaan.index');
+Route::put('/surat-pelaksanaan/update', [SuratPelaksanaanController::class, 'update'])->name('surat-pelaksanaan.update');
 
 Route::get('/berita-acara', [BeritaAcaraController::class, 'index'])->name('berita-acara.index');
 Route::post('/berita-acara', [BeritaAcaraController::class, 'store'])->name('berita-acara.store');

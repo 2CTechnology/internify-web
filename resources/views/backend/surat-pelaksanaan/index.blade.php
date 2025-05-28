@@ -8,7 +8,7 @@
     {{ $header }}
 @endpush
 
-@include('backend.surat-pelaksanaan.modal.update')
+@include('backend.surat-pelaksanaan.modal.detail')
 @include('backend.surat-pelaksanaan.modal.update')
 
 @section('content')
@@ -24,6 +24,7 @@
                             <th class="text-center">Tempat Magang</th>
                             <th class="text-center">Status</th>
                             <th class="text-center">Surat Balasan</th> 
+                            <th class="text-center">Surat Pelaksanaan</th>
                             <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
@@ -72,6 +73,14 @@
                                         </div>
                                     @endif
                                 </td>
+                                <td class="text-center">
+    @if ($item->surat_pengantar == 'surat pelaksanaan telah dibuat')
+        <span class="badge badge-success">Sudah Dibuat</span>
+    @else
+        <span class="badge badge-secondary">Belum</span>
+    @endif
+</td>
+
                                 <td class="text-center d-flex justify-content-center">
                                     <a href="#">
                                         <button data-toggle="modal" data-target="#exampleModal{{ $item->id }}"
@@ -121,12 +130,11 @@
         })
 
         // ketika tombol "Tindak Lanjut" diklik
-        $('body').on('click', '.btn-konfirm', function() {
+        $('body').on('click', '.btn-konfirm', function () {
             const id = $(this).data('id');
-            const status = $(this).data('status');
-            $('#hidden-id-status').val(id);
-            $('#select-status').val(status);
+            $('#id-upload').val(id);
         });
+
 
         $(document).ready(function() {
             $('#table').DataTable({

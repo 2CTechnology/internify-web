@@ -44,6 +44,7 @@ jobs:
         run: |
           echo "${{ secrets.VPS_KEY }}" > private_key.pem
           chmod 600 private_key.pem
+          ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "mkdir -p /var/www/internify-web/storage/app/firebase"
           scp -i private_key.pem -o StrictHostKeyChecking=no docker-compose.yml ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/internify-web/docker-compose.yml
           scp -i private_key.pem -o StrictHostKeyChecking=no env/.env ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/internify-web/env/.env
           scp -i private_key.pem -o StrictHostKeyChecking=no storage/app/firebase/firebase_credentials.json ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/internify-web/storage/app/firebase/firebase_credentials.json

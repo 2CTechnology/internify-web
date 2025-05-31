@@ -35,10 +35,10 @@ jobs:
           mkdir -p env
           echo "${{ secrets.ENV_FILE_CONTENT }}" > env/.env
 
-      - name: Create Firebase Credentials JSON from secret
+      - name: Decode and Create Firebase Credentials JSON from base64 secret
         run: |
           mkdir -p storage/app/firebase
-          printf "%s" "${{ secrets.FIREBASE_CREDENTIALS_JSON }}" > storage/app/firebase/firebase_credentials.json
+          echo "${{ secrets.FIREBASE_CREDENTIALS_B64 }}" | base64 -d > storage/app/firebase/firebase_credentials.json
 
       - name: Upload docker-compose.yml and .env and Firebase credentials to VPS
         run: |

@@ -33,14 +33,21 @@ jobs:
       - name: Create .env file from secret
         run: |
           mkdir -p env
-          echo "${{ secrets.ENV_FILE_CONTENT }}" > env/.env
+          echo "${{ secrets.ENV_FILE_CONTENT_B64 }}" | base64 -d > env/.env
 
-      - name: Upload docker-compose.yml and .env to VPS
+      - name: Decode and Create Firebase Credentials JSON from base64 secret
+        run: |
+          mkdir -p storage/app/firebase
+          echo "${{ secrets.FIREBASE_CREDENTIALS_B64 }}" | base64 -d > storage/app/firebase/firebase_credentials.json
+
+      - name: Upload docker-compose.yml and .env and Firebase credentials to VPS
         run: |
           echo "${{ secrets.VPS_KEY }}" > private_key.pem
           chmod 600 private_key.pem
+          ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "mkdir -p /var/www/internify-web/storage/app/firebase"
           scp -i private_key.pem -o StrictHostKeyChecking=no docker-compose.yml ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/internify-web/docker-compose.yml
           scp -i private_key.pem -o StrictHostKeyChecking=no env/.env ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/internify-web/env/.env
+          scp -i private_key.pem -o StrictHostKeyChecking=no storage/app/firebase/firebase_credentials.json ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/internify-web/storage/app/firebase/firebase_credentials.json
           rm -f private_key.pem
 
       - name: Deploy to VPS via SSH
@@ -60,9 +67,14 @@ jobs:
             echo "[3] Recreate Laravel container with updated image"
             docker-compose -f /var/www/internify-web/docker-compose.yml --env-file /var/www/internify-web/env/.env up -d app
 
-            echo "[4] Optimize Laravel config and migrate database"
+            echo "[5] Creating directory in container for Firebase credentials & Copying firebase_credentials.json into container"
+            docker exec internify-app mkdir -p /var/www/storage/app/firebase
+            docker cp /var/www/internify-web/storage/app/firebase/firebase_credentials.json internify-app:/var/www/storage/app/firebase/firebase_credentials.json
+
+            echo "[5] Optimize Laravel config and migrate database"
             docker exec internify-app php artisan config:clear
             docker exec internify-app php artisan migrate --force
 
-            echo "[5] Set permission for storage and cache"
+            echo "[6] Set permission for storage and cache"
             docker exec internify-app chmod -R 775 storage bootstrap/cache
+            

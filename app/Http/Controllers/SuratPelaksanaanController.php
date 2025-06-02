@@ -46,14 +46,17 @@ class SuratPelaksanaanController extends Controller
 
     public function update(Request $request)
     {
-        try {
-            $alur = AlurMagang::findOrFail($request->id);
-            $alur->status_surat_pelaksanaan = 'Surat Pelaksanaan Telah Dibuat'; 
-            $alur->save();
+    $request->validate([
+        'id' => 'required|integer|exists:alur_magangs,id',
+    ]);
 
-            return redirect()->back()->with('success', 'Surat pelaksanaan berhasil ditandai.');
-        } catch (Exception $e) {
-            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan.');
-        }
+    $alurMagang = AlurMagang::find($request->id);
+
+    $alurMagang->surat_pengantar = 'surat pelaksanaan telah dibuat';
+    $alurMagang->updated_at = now();
+    $alurMagang->save();
+
+    return back()->with('success', 'Surat pelaksanaan berhasil diperbarui.');
     }
+
 }

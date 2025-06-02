@@ -151,6 +151,17 @@ public function tindakLanjut(Request $request)
     // Ambil data berdasarkan ID
         $alurMagang = AlurMagang::find($request->id);
 
+        if ($request->status_surat_balasan === 'mengulang') {
+        $alurMagang->proposal = null;
+        $alurMagang->status_proposal = 'belum ada';
+        $alurMagang->revisi_proposal = null;
+        $alurMagang->alasan_proposal_ditolak = null;
+        $alurMagang->tempat_magang = null;
+        $alurMagang->nama_posisi = null;
+        $alurMagang->surat_balasan = null;
+        $alurMagang->surat_pengantar = null;
+    }
+
         // Update status
         $alurMagang->status_surat_balasan = $request->status_surat_balasan;
         $alurMagang->updated_at = now();

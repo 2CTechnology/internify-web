@@ -39,7 +39,7 @@ jobs:
         run: |
           mkdir -p storage/app/firebase
           echo "${{ secrets.FIREBASE_CREDENTIALS_B64 }}" | base64 -d > storage/app/firebase/firebase_credentials.json
- 
+
       - name: Upload docker-compose.yml and .env and Firebase credentials to VPS
         run: |
           echo "${{ secrets.VPS_KEY }}" > private_key.pem

@@ -19,6 +19,10 @@
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
   }
+  .logo {
+    max-width: 120px;
+    margin-bottom: 20px;
+  }
   h1 {
     color: #4666DE;
     text-align: center;
@@ -41,6 +45,7 @@
 </head>
 <body>
   <div class="email-container">
+    <img src="{{ asset('assest-landing/img/logo.png') }}" alt="Logo" class="logo">
     <h1>Kode OTP Anda</h1>
     <div class="otp-code">{{ $param['otp'] }}</div>
     <p>Masukkan kode OTP ini untuk melanjutkan proses reset password. Jangan berikan kode ini kepada siapapun.</p>

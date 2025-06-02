@@ -23,7 +23,7 @@
                             <th class="text-center">Nama Ketua</th>
                             <th class="text-center">Tempat Magang</th>
                             <th class="text-center">Status</th>
-                            <th class="text-center">Surat Balasan</th> 
+                            <th class="text-center">Surat Balasan</th>
                             <th class="text-center">Surat Pelaksanaan</th>
                             <th class="text-center">Aksi</th>
                         </tr>
@@ -74,13 +74,12 @@
                                     @endif
                                 </td>
                                 <td class="text-center">
-    @if ($item->surat_pengantar == 'surat pelaksanaan telah dibuat')
-        <span class="badge badge-success">Sudah Dibuat</span>
-    @else
-        <span class="badge badge-secondary">Belum</span>
-    @endif
-</td>
-
+                                    @if ($item->surat_pengantar == 'surat pelaksanaan telah dibuat')
+                                        <span class="badge badge-success">Sudah Dibuat</span>
+                                    @else
+                                        <span class="badge badge-secondary">Belum</span>
+                                    @endif
+                                </td>
                                 <td class="text-center d-flex justify-content-center">
                                     <a href="#">
                                         <button data-toggle="modal" data-target="#exampleModal{{ $item->id }}"
@@ -130,7 +129,7 @@
         })
 
         // ketika tombol "Tindak Lanjut" diklik
-        $('body').on('click', '.btn-konfirm', function () {
+        $('body').on('click', '.btn-konfirm', function() {
             const id = $(this).data('id');
             $('#id-upload').val(id);
         });

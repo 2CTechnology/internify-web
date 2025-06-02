@@ -95,23 +95,7 @@
                                 @enderror
                             </div>
 
-                           {{-- Jurusan --}}
-<div class="form-group mb-4">
-    <label for="jurusan" class="form-label">Jurusan</label>
-    <select id="jurusan" name="jurusan"
-        class="form-control form-control-lg @error('jurusan') is-invalid @enderror"
-        required>
-        <option value="">-- Pilih Jurusan --</option>
-        <option value="Teknik Informatika" {{ old('jurusan') == 'Teknik Informatika' ? 'selected' : '' }}>Teknik Informatika</option>
-        <option value="Sistem Informasi" {{ old('jurusan') == 'Sistem Informasi' ? 'selected' : '' }}>Sistem Informasi</option>
-        <option value="Teknik Elektro" {{ old('jurusan') == 'Teknik Elektro' ? 'selected' : '' }}>Teknik Elektro</option>
-    </select>
-    @error('jurusan')
-        <div class="invalid-feedback">{{ $message }}</div>
-    @enderror
-</div>
-
-
+                            {{-- Jurusan --}}
                             {{-- Alamat Magang --}}
                             <div class="form-group mb-4">
                                 <label for="alamat" class="form-label">Alamat Magang</label>

@@ -9,6 +9,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use App\Services\FirebaseNotificationService;
+use Illuminate\Support\Facades\Log;
+
 
 class SuratBalasanController extends Controller
 {
@@ -96,6 +99,19 @@ class SuratBalasanController extends Controller
             $alurMagang->surat_pengantar = '/upload/surat-pengantar/' . $id . '/' . $filename;
             $alurMagang->updated_at = now();
             $alurMagang->save();
+
+            //kirim notif
+            $ketua = $alurMagang->kelompok->ketua;
+            if ($ketua && $ketua->fcm_token) {
+                $notifier = new FirebaseNotificationService();
+                $notifier->sendToDevice(
+                    $ketua->fcm_token,
+                    'Surat Balasan Terbit',
+                    'Surat balasan magangmu sudah diterbitkan. Silakan cek di aplikasi.'
+                );
+                Log::info("Notifikasi surat balasan terkirim ke: " . $ketua->name);
+            }
+
             DB::commit();
 
             return redirect()->route('surat-balasan.index')->withStatus('Berhasil menambahkan surat proposal magang');
@@ -148,15 +164,57 @@ public function tindakLanjut(Request $request)
         'status_surat_balasan' => 'required|in:diterima,mengulang',
     ]);
 
+    DB::beginTransaction();
+    
+    try{
     // Ambil data berdasarkan ID
         $alurMagang = AlurMagang::find($request->id);
 
-        // Update status
-        $alurMagang->status_surat_balasan = $request->status_surat_balasan;
-        $alurMagang->updated_at = now();
-        $alurMagang->save();
+        if ($request->status_surat_balasan === 'mengulang') {
+            $alurMagang->proposal = null;
+            $alurMagang->status_proposal = 'belum ada';
+            $alurMagang->revisi_proposal = null;
+            $alurMagang->alasan_proposal_ditolak = null;
+            $alurMagang->tempat_magang = null;
+            $alurMagang->nama_posisi = null;
+            $alurMagang->surat_balasan = null;
+            $alurMagang->surat_pengantar = null;
+        }
 
+            // Update status
+            $alurMagang->status_surat_balasan = $request->status_surat_balasan;
+            $alurMagang->updated_at = now();
+            $alurMagang->save();
+
+            // Kirim notif
+           
+            $ketua = $alurMagang->kelompok->ketua;
+                if ($ketua && $ketua->fcm_token) {
+                    $notifier = new FirebaseNotificationService();
+
+                    if ($request->status_surat_balasan === 'mengulang') {
+                        $notifier->sendToDevice(
+                            $ketua->fcm_token,
+                            'Surat Balasan Ditolak',
+                            'Surat balasanmu ditolak. Silakan unggah ulang proposal.'
+                        );
+                    } else {
+                        $notifier->sendToDevice(
+                            $ketua->fcm_token,
+                            'Surat Balasan Diterima',
+                            'Surat balasanmu diterima. Silahkan menunggu Surat Pelaksanaan Terbit dari admin prodi.'
+                        );
+                    }
+                }
+        DB::commit();
         return back()->with('success', 'Status surat balasan berhasil diperbarui.');
-}
+        }catch(Exception $e){
+            DB::rollBack();
+                return redirect()->back()->withError('Terjadi kesalahan. ' . $e->getMessage());
+        }catch (QueryException $e) {
+                DB::rollBack();
+                return redirect()->back()->withError('Terjadi kesalahan. ' . $e->getMessage());
+        }
+    }
 
 }

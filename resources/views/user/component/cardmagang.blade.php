@@ -8,7 +8,7 @@
                 <div class="content-magang">
                     <p>{{ $item->nama_tempat }}</p>
                     <p>{{ $item->head_office }}</p>
-                        <button data-bs-toggle="modal" data-bs-target="#exampleModal{{$item->id}}">
+                        <button dusk="btn-detail-tempat-1" data-bs-toggle="modal" data-bs-target="#exampleModal{{$item->id}}">
                             Detail Data
                         </button>
                 </div>

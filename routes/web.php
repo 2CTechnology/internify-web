@@ -6,7 +6,6 @@ use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DospemController;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\FaqController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\FileTemplateController;
 use App\Http\Controllers\PlotingDosenController;
@@ -25,7 +24,6 @@ use Illuminate\Support\Facades\Route;
 //ini firebase
 use Kreait\Laravel\Firebase\Facades\Firebase;
 
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -39,12 +37,12 @@ use Kreait\Laravel\Firebase\Facades\Firebase;
 
 Route::get('/data-mahasiswa', [DataMahasiswaController::class, 'index'])->name('data-mahasiswa.index');
 Route::get('/surat-pelaksanaan', [SuratPelaksanaanController::class, 'index'])->name('surat-pelaksanaan.index');
+Route::put('/surat-pelaksanaan/update', [SuratPelaksanaanController::class, 'update'])->name('surat-pelaksanaan.update');
 
 Route::get('/berita-acara', [BeritaAcaraController::class, 'index'])->name('berita-acara.index');
 Route::post('/berita-acara', [BeritaAcaraController::class, 'store'])->name('berita-acara.store');
 Route::get('/berita-acara/{id}/pdf', [BeritaAcaraController::class, 'generatePDF'])->name('berita-acara.pdf');
 Route::get('berita-acara/kelompok/{namaKelompok}', [BeritaAcaraController::class, 'showKelompokAnggota'])->name('berita-acara.kelompok');
-
 
 Route::get('/bimbingan', [BimbinganController::class, 'index'])->name('bimbingan.index');
 Route::post('/bimbingan', [BimbinganController::class, 'store'])->name('bimbingan.store');
@@ -59,7 +57,6 @@ Route::resource('laporan-magang', LaporanMagangController::class);
 
 Route::post('/surat-balasan/tindak-lanjut', [SuratBalasanController::class, 'tindakLanjut'])->name('surat-balasan.tindak-lanjut');
 
-
 Route::group(['middleware' => 'auth'], function () {
     Route::group(['middleware' => 'checkRole'], function () {
         // Route::resource('faq', FaqController::class);
@@ -70,27 +67,28 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('akun-mahasiswa', AkunMahasiswaController::class);
         Route::resource('proposal', ProposalController::class);
         Route::resource('surat-balasan', SuratBalasanController::class);
-        
-        
-        Route::prefix('ploting-dosen')->name('ploting-dosen.')->group(function() {
-            Route::resource('ploting-dosen', PlotingDosenController::class);
-            Route::get('/import', [PlotingDosenController::class, 'showImport'])->name('import');
-            Route::post('/post-import', [PlotingDosenController::class, 'storeImport'])->name('store-import');
-            Route::post('/get-dosen-by-nidn', [PlotingDosenController::class, 'getDosenByNIDN'])->name('get-dosen-by-nidn');
-        }); 
+
+        Route::prefix('ploting-dosen')
+            ->name('ploting-dosen.')
+            ->group(function () {
+                Route::resource('ploting-dosen', PlotingDosenController::class);
+                Route::get('/import', [PlotingDosenController::class, 'showImport'])->name('import');
+                Route::post('/post-import', [PlotingDosenController::class, 'storeImport'])->name('store-import');
+                Route::post('/get-dosen-by-nidn', [PlotingDosenController::class, 'getDosenByNIDN'])->name('get-dosen-by-nidn');
+            });
     });
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index']);
 Route::get('/form', [DashboardController::class, 'form']);
 
-Route::get('/landing', function(){
+Route::get('/landing', function () {
     return view('user.landing');
 });
 Auth::routes([
     'register' => false, // Registration Routes...
     'verify' => false, // Email Verification Routes...
-  ]);
+]);
 
 Route::get('/template', function () {
     return view('layouts.template');

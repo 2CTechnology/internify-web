@@ -1,0 +1,96 @@
+name: Laravel Tests
+
+on:
+  push:
+      branches:
+        - main
+      pull_request:
+
+jobs:
+  laravel-tests:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: internifyweb
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          extensions: mbstring, pdo, mysql
+          tools: composer
+ 
+      - name: Install dependencies
+        run: composer install --no-progress --no-interaction --prefer-dist
+
+      - name: Create .env.testing
+        run: |
+          echo "${{ secrets.ENV_TESTING }}" > .env.testing
+
+      - name: Generate APP Key
+        run: php artisan key:generate --env=testing
+
+      - name: Run Migrations && Seeding
+        run: |
+          php artisan migrate --env=testing --force
+          php artisan db:seed --env=testing --force
+
+      - name: Start Laravel Server
+        run: php artisan serve --host=127.0.0.1 --port=8000 --env=testing &
+
+      - name: Make wait-for-it executable
+        run: chmod +x tests/wait-for-it.sh
+        shell: bash
+
+      - name: Wait for laravel to be ready
+        run: tests/wait-for-it.sh 127.0.0.1:8000 --timeout=30 --strict -- echo "Laravel is up"
+        shell: bash
+
+      - name: Install Chrome & ChromeDriver (Matching Version)
+        run: |
+          # Get installed Chrome major version
+          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+' | head -1)
+          echo "Detected Chrome major version: $CHROME_VERSION"
+
+          # Get matching ChromeDriver version
+          CHROMEDRIVER_VERSION=$(curl -sS "https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_$CHROME_VERSION")
+          echo "Matching ChromeDriver version: $CHROMEDRIVER_VERSION"
+
+          # Download ChromeDriver
+          wget -q https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/$CHROMEDRIVER_VERSION/linux64/chromedriver-linux64.zip
+          unzip chromedriver-linux64.zip
+          sudo mv chromedriver-linux64/chromedriver /usr/local/bin/chromedriver
+          sudo chmod +x /usr/local/bin/chromedriver
+
+          # Override Dusk's default chromedriver
+          mkdir -p vendor/laravel/dusk/bin
+          cp /usr/local/bin/chromedriver vendor/laravel/dusk/bin/chromedriver-linux
+          chmod +x vendor/laravel/dusk/bin/chromedriver-linux
+
+      - name: Run PHP Unit Tests
+        run: php artisan test
+
+      - name: Run Laravel Dusk Tests
+        run: php artisan dusk
+        env:
+          APP_URL: http://localhost:8000
+          DB_HOST: 127.0.0.1
+      
+      - name: Show Laravel log if test fail
+        if: failure()
+        run: cat storage/logs/laravel.log || echo "No log found"

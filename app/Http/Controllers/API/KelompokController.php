@@ -78,6 +78,9 @@ class KelompokController extends Controller
             $response = [
                 'status_code' => $responseCode,
                 'message' => $message,
+                'response' => [
+                    'id' => $kelompokId,
+                ],
             ];
 
             return response()->json($response, $responseCode);
@@ -156,7 +159,7 @@ class KelompokController extends Controller
             $alurMagang->id_kelompok = $id;
             $alurMagang->tempat_magang = $request->get('tempat_magang');
             $alurMagang->nama_posisi = $request->get('nama_posisi');
-            $alurMagang->status_proposal = "menunggu konfirmasi";
+            $alurMagang->status_proposal = 'menunggu konfirmasi';
             $alurMagang->status_surat_balasan = null;
             $alurMagang->updated_at = now();
             $alurMagang->save();
@@ -291,8 +294,6 @@ class KelompokController extends Controller
         return response()->json(['message' => $message], $responseCode);
     }
 
-
-
     public function uploadSuratBalasan($id, Request $request)
     {
         $message = '';
@@ -310,15 +311,17 @@ class KelompokController extends Controller
                 Log::warning('❌ Tidak ada file terkirim di surat_balasan');
             }
 
-
             // Validasi file
-            $request->validate([
-                'surat_balasan' => 'required|mimetypes:application/pdf,image/jpg,image/jpeg,image/png|max:2048',
-            ], [
-                'required' => 'File surat balasan wajib diunggah.',
-                'mimetypes' => 'File harus berupa PDF atau gambar (JPG, PNG).',
-                'max' => 'Ukuran file maksimal 2MB.',
-            ]);
+            $request->validate(
+                [
+                    'surat_balasan' => 'required|mimetypes:application/pdf,image/jpg,image/jpeg,image/png|max:2048',
+                ],
+                [
+                    'required' => 'File surat balasan wajib diunggah.',
+                    'mimetypes' => 'File harus berupa PDF atau gambar (JPG, PNG).',
+                    'max' => 'Ukuran file maksimal 2MB.',
+                ],
+            );
 
             // Tambahan safety check
             if (!$request->hasFile('surat_balasan')) {
@@ -334,7 +337,7 @@ class KelompokController extends Controller
             $alurMagang = AlurMagang::where('id_kelompok', $id)->first();
 
             if (!$alurMagang) {
-                throw new \Exception("Data alur magang tidak ditemukan.");
+                throw new \Exception('Data alur magang tidak ditemukan.');
             }
 
             // Proses upload file
@@ -350,7 +353,7 @@ class KelompokController extends Controller
 
             // Update database
             $alurMagang->surat_balasan = '/upload/surat-balasan/' . $id . '/' . $filename;
-            $alurMagang->status_surat_balasan = "menunggu konfirmasi"; 
+            $alurMagang->status_surat_balasan = 'menunggu konfirmasi';
             $alurMagang->updated_at = now();
             $alurMagang->save();
 
@@ -364,9 +367,12 @@ class KelompokController extends Controller
             $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
         }
 
-        return response()->json([
-            'message' => $message
-        ], $responseCode);
+        return response()->json(
+            [
+                'message' => $message,
+            ],
+            $responseCode,
+        );
     }
 
     public function getKelompokById(Request $request)
@@ -376,14 +382,7 @@ class KelompokController extends Controller
         $responseCode = Response::HTTP_BAD_REQUEST;
 
         try {
-            $kelompok = Kelompok::with('anggota')
-                ->where('id_users', $request->get('id'))
-                ->leftJoin('users as d', 'd.id', 'kelompoks.id_dospem')
-                ->select(
-                    'kelompoks.*',
-                    'd.name as nama_dosen'
-                )
-                ->first();
+            $kelompok = Kelompok::with('anggota')->where('id_users', $request->get('id'))->leftJoin('users as d', 'd.id', 'kelompoks.id_dospem')->select('kelompoks.*', 'd.name as nama_dosen')->first();
 
             if ($kelompok != null) {
                 $responseCode = Response::HTTP_OK;
@@ -405,7 +404,7 @@ class KelompokController extends Controller
         } finally {
             $response = [
                 'message' => $message,
-                'response' => $data
+                'response' => $data,
             ];
 
             return response()->json($response, $responseCode);
@@ -451,7 +450,7 @@ class KelompokController extends Controller
     {
         // return auth()->user();
         $data = null;
-        $returnData = new stdClass;
+        $returnData = new stdClass();
         $message = '';
         $responseCode = Response::HTTP_BAD_REQUEST;
 
@@ -483,25 +482,25 @@ class KelompokController extends Controller
                             $returnData->message = 'Proposal diterima.';
                             break;
                         default:
-                            $returnData->message = 'Status proposal belum tersedia.';
+                            $returnData->message = 'Silahkan upload proposal.';
                     }
 
                     if ($alurMagang->status_proposal === 'diterima') {
                         switch ($alurMagang->status_surat_balasan) {
                             case 'menunggu konfirmasi':
-                                $returnData->message_surat_balasan = 'Surat balasan menunggu konfirmasi.';
+                                $returnData->message = 'Surat balasan menunggu konfirmasi.';
                                 break;
                             case 'mengulang':
-                                $returnData->message_surat_balasan = 'Surat balasan ditolak. Silakan unggah ulang.';
+                                $returnData->message = 'Surat balasan diterima & mengulang. Silakan apply di perusahaan lain.';
                                 break;
                             case 'diterima':
-                                $returnData->message_surat_balasan = 'Surat balasan diterima. Tunggu proses surat pengantar.';
+                                $returnData->message = 'Surat balasan diterima. Tunggu proses surat pelaksanaan.';
                                 break;
                             default:
-                                $returnData->message_surat_balasan = 'Surat balasan belum diunggah.';
+                                $returnData->message = 'Surat balasan belum diunggah.';
                         }
                     } else {
-                        $returnData->message_surat_balasan = 'Belum bisa unggah surat balasan karena proposal belum diterima.';
+                        $returnData->message = 'Belum bisa unggah surat balasan karena proposal belum diterima.';
                     }
 
                     $returnData->dataAlurMagang = $alurMagang;

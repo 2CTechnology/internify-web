@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\AlurMagang;
 use Exception;
+use App\Services\FirebaseNotificationService;
+use Illuminate\Support\Facades\Log;
+
 
 class SuratPelaksanaanController extends Controller
 {
@@ -46,10 +49,27 @@ class SuratPelaksanaanController extends Controller
 
     public function update(Request $request)
     {
-        try {
-            $alur = AlurMagang::findOrFail($request->id);
-            $alur->status_surat_pelaksanaan = 'Surat Pelaksanaan Telah Dibuat'; 
-            $alur->save();
+    $request->validate([
+        'id' => 'required|integer|exists:alur_magangs,id',
+    ]);
+
+    $alurMagang = AlurMagang::find($request->id);
+
+    $alurMagang->surat_pengantar = 'surat pelaksanaan telah dibuat';
+    $alurMagang->updated_at = now();
+    $alurMagang->save();
+
+    // kirim notif
+    $ketua = $alurMagang->kelompok->ketua;
+    if ($ketua && $ketua->fcm_token) {
+        $notifier = new FirebaseNotificationService();
+        $notifier->sendToDevice(
+            $ketua->fcm_token,
+            'Surat Penerimaan Terbit',
+            'Surat penerimaan magang kamu telah diterbitkan.'
+        );
+        Log::info("Notifikasi surat penerimaan terkirim ke: " . $ketua->name);
+    }
 
             return redirect()->back()->with('success', 'Surat pelaksanaan berhasil ditandai.');
         } catch (Exception $e) {

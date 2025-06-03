@@ -35,30 +35,6 @@ class ProposalController extends Controller
                 ->whereNotNull('alur_magangs.proposal')
                 ->orderBy('id', 'desc')
                 ->get();
-        } else if (auth()->user()->role == 'Dosen') {
-            $data = AlurMagang::with('tempatMagang')
-                ->withWhereHas('kelompok', function($q) {
-                    return $q->where('id_dospem', auth()->user()->id);
-                })
-                ->with('kelompok.anggota')
-                ->with('kelompok.ketua')
-                ->with('kelompok.dospem')
-                ->with('kelompok.ketua.prodi')
-                ->with('kelompok.anggota.prodi')
-                ->whereNotNull('alur_magangs.proposal')
-                ->orderBy('id', 'desc')
-                ->get();
-        } else if (auth()->user()->role == 'Prodi') {
-            $data = AlurMagang::with('kelompok')
-                ->with('kelompok.anggota')
-                ->with('kelompok.ketua')
-                ->with('kelompok.dospem')
-                ->with('kelompok.ketua.prodi')
-                ->with('kelompok.anggota.prodi')
-                ->with('tempatMagang')
-                ->whereNotNull('alur_magangs.proposal')
-                ->orderBy('id', 'desc')
-                ->get();
         }
     
         $this->param['data'] = $data;

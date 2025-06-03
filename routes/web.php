@@ -71,27 +71,27 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('akun-mahasiswa', AkunMahasiswaController::class);
         Route::resource('proposal', ProposalController::class);
         Route::resource('surat-balasan', SuratBalasanController::class);
-        
-        
-        Route::prefix('ploting-dosen')->name('ploting-dosen.')->group(function() {
+
+
+        Route::prefix('ploting-dosen')->name('ploting-dosen.')->group(function () {
             Route::resource('ploting-dosen', PlotingDosenController::class);
             Route::get('/import', [PlotingDosenController::class, 'showImport'])->name('import');
             Route::post('/post-import', [PlotingDosenController::class, 'storeImport'])->name('store-import');
             Route::post('/get-dosen-by-nidn', [PlotingDosenController::class, 'getDosenByNIDN'])->name('get-dosen-by-nidn');
-        }); 
+        });
     });
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index']);
 Route::get('/form', [DashboardController::class, 'form']);
 
-Route::get('/landing', function(){
+Route::get('/landing', function () {
     return view('user.landing');
 });
 Auth::routes([
     'register' => false, // Registration Routes...
     'verify' => false, // Email Verification Routes...
-  ]);
+]);
 
 Route::get('/template', function () {
     return view('layouts.template');

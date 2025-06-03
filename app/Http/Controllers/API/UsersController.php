@@ -154,11 +154,32 @@ class UsersController extends Controller
                     'id_user' => $user->id,
                     'otp' => $otp,
                 ];
-                Mail::to($user->email)->send(new OTPMail($data));
+                
+                try{
+                    Mail::to($user->email)->send(new OTPMail($data));
+                }catch(\Exception $e){
+                    DB::rollBack();
+                    $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+                    $message = 'Gagal mengirim email OTP: ' . $e->getMessage();
+                    $data = null;
 
-                $responseCode = Response::HTTP_OK;
-                $message = 'We Have Sent OTP Code, Please Check Your Email';
+// <<<<<<< feat/laporan-magang
+//                 $responseCode = Response::HTTP_OK;
+//                 $message = 'We Have Sent OTP Code, Please Check Your Email';
 
+// =======
+//                 // return lebih cepat (supaya di finally tidak tumpang tindih)
+//                 return response()->json([
+//                     'status_code' => $responseCode,
+//                     'message' => $message,
+//                     'response' => $data
+//                     ], $responseCode);
+//                 }
+
+//                 // $responseCode = Response::HTTP_OK;
+//                 // $message = 'We Have Sent OTP Code, Please Check Your Email';
+                
+// >>>>>>> unfinish
                 DB::commit();
             } else {
                 $responseCode = Response::HTTP_UNAUTHORIZED;

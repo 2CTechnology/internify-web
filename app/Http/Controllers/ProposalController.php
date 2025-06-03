@@ -21,25 +21,27 @@ class ProposalController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        $this->param['title'] = 'Proposal';
-    
-        if (auth()->user()->role == 'Admin') {
-            $data = AlurMagang::with('kelompok')
-                ->with('kelompok.anggota')
-                ->with('kelompok.ketua')
-                ->with('kelompok.dospem')
-                ->with('kelompok.ketua.prodi')
-                ->with('kelompok.anggota.prodi')
-                ->with('tempatMagang')
-                ->whereNotNull('alur_magangs.proposal')
-                ->orderBy('id', 'desc')
-                ->get();
-        }
-    
-        $this->param['data'] = $data;
-        return view('backend.proposal.index', $this->param);
+{
+    $this->param['title'] = 'Proposal';
+    $data = []; 
+
+    if (auth()->user()->role == 'Admin') {
+        $data = AlurMagang::with('kelompok')
+            ->with('kelompok.anggota')
+            ->with('kelompok.ketua')
+            ->with('kelompok.dospem')
+            ->with('kelompok.ketua.prodi')
+            ->with('kelompok.anggota.prodi')
+            ->with('tempatMagang')
+            ->whereNotNull('alur_magangs.proposal')
+            ->orderBy('id', 'desc')
+            ->get();
     }
+
+    $this->param['data'] = $data;
+    return view('backend.proposal.index', $this->param);
+}
+
     
     /**
      * Show the form for creating a new resource.
@@ -125,6 +127,22 @@ class ProposalController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+         DB::beginTransaction();
+    try {
+        $proposal = AlurMagang::findOrFail($id);
+
+        // Pastikan hanya proposal yang belum diterima yang bisa dihapus
+        if ($proposal->is_accepted == 1) {
+            return redirect()->back()->withError('Proposal yang sudah diterima tidak dapat dihapus.');
+        }
+
+        $proposal->delete();
+
+        DB::commit();
+        return redirect()->route('proposal.index')->withStatus('Proposal berhasil dihapus.');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return redirect()->back()->withError('Terjadi kesalahan: ' . $e->getMessage());
+    }
     }
 }

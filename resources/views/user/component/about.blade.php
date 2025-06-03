@@ -18,7 +18,7 @@ meningkatkan transparansi, dan memastikan bahwa pengalaman magang yang diperoleh
 mereka.</p>
         </div>
         <div class="filler-image">
-            <img src="{{ asset('asset-landing/img/filler.png') }}" alt="Filler Image">
+            <img src="{{ asset('asset-landing/img/mockup.png') }}" alt="Filler Image">
         </div>
     </div>
 </section>

@@ -67,7 +67,8 @@ class TempatMagangController extends Controller
                 'specialization' => $request->specialization,
                 'kriteria' => $request->kriteria,
                 'posisi' => $request->posisi,
-                'created_at' => now()
+                'created_at' => now(),
+                'updated_at' => now()
             ]);
             DB::commit();
 

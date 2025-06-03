@@ -46,6 +46,18 @@
                 </div>
             </div>
             <div class="col-md-6">
+    <div class="form-group">
+        <label for="password" class="label-form-control">Password</label>
+        <input type="password" class="form-control @error('password') is-invalid @enderror" name="password">
+        @error('password')
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $message }}</strong>
+            </span>
+        @enderror
+    </div>
+</div>
+
+            <div class="col-md-6">
                 <div class="form-group">
                     <label for="foto" class="label-form-control">Foto</label>
                     <input type="file" class="form-control @error('foto') is-invalid @enderror" name="foto" value="{{ old('foto') }}">

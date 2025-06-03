@@ -37,7 +37,7 @@
             di {{ $berita->tempatMagang->nama_tempat ?? '-' }},
             yang beralamat di {{ $berita->tempatMagang->alamat ?? '-' }},
             telah dilaksanakan monitoring dan evaluasi Magang mahasiswa program studi
-            {{ $berita->prodi }} Jurusan {{ $jurusan }}
+            {{ $berita->prodi }} Jurusan Teknologi Informasi
             Politeknik Negeri Jember atas nama anggota sebagai berikut:
             </p>
 

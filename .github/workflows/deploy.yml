@@ -1,51 +1,19 @@
 name: CI/CD Laravel Docker to VPS
 
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["Laravel Tests"]
+    types:
+      - completed
 
 jobs:
   deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
-
-      - name: Create .env file for Docker
-        run: |
-          echo "APP_NAME=${{ secrets.APP_NAME }}" >> .env
-          echo "APP_ENV=local" >> .env
-          echo "APP_KEY=${{ secrets.APP_KEY }}" >> .env
-          echo "APP_DEBUG=true" >> .env
-          echo "APP_URL=http://localhost" >> .env
-
-          echo "LOG_CHANNEL=stack" >> .env
-          echo "LOG_LEVEL=debug" >> .env
-
-          echo "DB_CONNECTION=mysql" >> .env
-          echo "DB_HOST=mysql" >> .env
-          echo "DB_PORT=3306" >> .env
-          echo "DB_DATABASE=${{ secrets.DB_DATABASE }}" >> .env
-          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
-          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-
-          echo "BROADCAST_DRIVER=log" >> .env
-          echo "CACHE_DRIVER=file" >> .env
-          echo "FILESYSTEM_DISK=local" >> .env
-          echo "QUEUE_CONNECTION=sync" >> .env
-          echo "SESSION_DRIVER=file" >> .env
-          echo "SESSION_LIFETIME=120" >> .env
-
-          echo "MAIL_MAILER=smtp" >> .env
-          echo "MAIL_HOST=mailpit" >> .env
-          echo "MAIL_PORT=1025" >> .env
-          echo "MAIL_USERNAME=null" >> .env
-          echo "MAIL_PASSWORD=null" >> .env
-          echo "MAIL_ENCRYPTION=null" >> .env
-          echo "MAIL_FROM_ADDRESS=hello@example.com" >> .env
-          echo "MAIL_FROM_NAME=${{ secrets.APP_NAME }}" >> .env
 
       - name: Login to DockerHub
         uses: docker/login-action@v2
@@ -62,15 +30,25 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/internify-web:latest
             ${{ secrets.DOCKER_USERNAME }}/internify-web:${{ github.sha }}
 
-      - name: Sync docker-compose.yml to VPS
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_KEY }}
-          source: "docker-compose.yml"
-          target: "/var/www/internify-web"
+      - name: Create .env file from secret
+        run: |
+          mkdir -p env
+          echo "${{ secrets.ENV_FILE_CONTENT_B64 }}" | base64 -d > env/.env
 
+      - name: Decode and Create Firebase Credentials JSON from base64 secret
+        run: |
+          mkdir -p storage/app/firebase
+          echo "${{ secrets.FIREBASE_CREDENTIALS_B64 }}" | base64 -d > storage/app/firebase/firebase_credentials.json
+
+      - name: Upload docker-compose.yml and .env and Firebase credentials to VPS
+        run: |
+          echo "${{ secrets.VPS_KEY }}" > private_key.pem
+          chmod 600 private_key.pem
+          ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "mkdir -p /var/www/internify-web/storage/app/firebase"
+          scp -i private_key.pem -o StrictHostKeyChecking=no docker-compose.yml ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/internify-web/docker-compose.yml
+          scp -i private_key.pem -o StrictHostKeyChecking=no env/.env ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/internify-web/env/.env
+          scp -i private_key.pem -o StrictHostKeyChecking=no storage/app/firebase/firebase_credentials.json ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:/var/www/internify-web/storage/app/firebase/firebase_credentials.json
+          rm -f private_key.pem
 
       - name: Deploy to VPS via SSH
         uses: appleboy/ssh-action@master
@@ -87,9 +65,16 @@ jobs:
             docker rm internify-app || true
 
             echo "[3] Recreate Laravel container with updated image"
-            docker-compose -f /var/www/internify-web/docker-compose.yml up -d
+            docker-compose -f /var/www/internify-web/docker-compose.yml --env-file /var/www/internify-web/env/.env up -d app
 
-            echo "[4] Running Laravel optimize + migrate + seed"
+            echo "[5] Creating directory in container for Firebase credentials & Copying firebase_credentials.json into container"
+            docker exec internify-app mkdir -p /var/www/storage/app/firebase
+            docker cp /var/www/internify-web/storage/app/firebase/firebase_credentials.json internify-app:/var/www/storage/app/firebase/firebase_credentials.json
+
+            echo "[5] Optimize Laravel config and migrate database"
             docker exec internify-app php artisan config:clear
             docker exec internify-app php artisan migrate --force
-            docker exec internify-app php artisan db:seed --force
+
+            echo "[6] Set permission for storage and cache"
+            docker exec internify-app chmod -R 775 storage bootstrap/cache
+            

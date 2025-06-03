@@ -8,7 +8,7 @@
                     <div class="content-dosen">
                         <p>{{ $item->name }}</p>
                         <p>{{ $item->no_identitas }}</p>                   
-                            <button data-bs-toggle="modal" data-bs-target="#exampleModal{{$item->id}}">
+                            <button dusk="btn-detail-dosen-1" data-bs-toggle="modal" data-bs-target="#exampleModal{{$item->id}}">
                                 Detail Data
                             </button>
                     </div>

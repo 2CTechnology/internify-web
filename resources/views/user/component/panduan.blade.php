@@ -3,7 +3,7 @@
         <div class="sub-judul-4">
             <h3>Buku Panduan Magang</h3>
         </div>
-        <ul class="accordion-download">
+        <ul class="accordion-download" dusk="download-panduan">
             @forelse ($fileTemplate as $key => $item)
                 <a href="{{ asset($item->file) }}" download>
                     <li>

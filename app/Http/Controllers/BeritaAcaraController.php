@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BeritaAcara;
 use App\Models\TempatMagang;
 use App\Models\Prodi;
-use App\Models\Kelompok; // import model Kelompok
+use App\Models\Kelompok;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
@@ -16,7 +16,7 @@ class BeritaAcaraController extends Controller
         $data = BeritaAcara::with('tempatMagang')->get();
         $tempatMagangs = TempatMagang::all();
         $prodis = Prodi::all();
-        $kelompoks = Kelompok::all(); // Jangan lupa ambil data kelompok untuk dropdown/form
+        $kelompoks = Kelompok::all();
 
         return view('backend.berita-acara.index', [
             'title' => 'Berita Acara',
@@ -33,9 +33,9 @@ class BeritaAcaraController extends Controller
         $validated = $request->validate([
             'jadwal' => 'required|date',
             'tempat_magang_id' => 'required|exists:tempat_magangs,id',
-            'kelompok_id' => 'required|exists:kelompoks,id', // validasi kelompok_id
+            'kelompok_id' => 'required|exists:kelompoks,id',
             'prodi' => 'required|string',
-            'jurusan' => 'required|string',
+            // 'jurusan' => 'required|string', // tetap validasi karena dibutuhkan di form
             'alamat' => 'required|string',
             'keterangan' => 'required|string',
             'catatan' => 'nullable|string',
@@ -46,11 +46,14 @@ class BeritaAcaraController extends Controller
             'tempat_magang_id' => $validated['tempat_magang_id'],
             'kelompok_id' => $validated['kelompok_id'],
             'prodi' => $validated['prodi'],
-            'jurusan' => $validated['jurusan'],
+            // 'jurusan' => $validated['jurusan'], 
             'alamat' => $validated['alamat'],
             'keterangan' => $validated['keterangan'],
             'catatan' => $validated['catatan'] ?? '',
         ]);
+
+        // Simpan jurusan di session untuk dipakai saat generate PDF
+        session(['berita_jurusan_' . $berita->id => $validated['jurusan']]);
 
         return redirect()
             ->route('berita-acara.index')
@@ -60,16 +63,20 @@ class BeritaAcaraController extends Controller
 
     public function generatePDF($id)
     {
-        // Pastikan relasi kelompok dan anggota kelompok ada di model BeritaAcara
         $berita = BeritaAcara::with(['tempatMagang', 'kelompok.anggota'])->findOrFail($id);
 
-        // Untuk PDF, gunakan variabel 'berita' agar sesuai dengan compact
-        $pdf = Pdf::loadView('backend.berita-acara.pdf', compact('berita'));
+        // Ambil jurusan dari session
+        $jurusan = session('berita_jurusan_' . $id, ''); 
+
+        // Kirim ke view PDF
+        $pdf = Pdf::loadView('backend.berita-acara.pdf', [
+            'berita' => $berita,
+            // 'jurusan' => $jurusan
+        ]);
 
         return $pdf->download('berita_acara_' . $berita->id . '.pdf');
     }
 
-    // Optional: method untuk menampilkan anggota berdasarkan kelompok
     public function showKelompokAnggota($namaKelompok)
     {
         $kelompok = Kelompok::where('nama_kelompok', $namaKelompok)->with('anggotas')->firstOrFail();

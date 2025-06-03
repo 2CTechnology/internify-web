@@ -96,24 +96,6 @@
                             </div>
 
                             {{-- Jurusan --}}
-                            <div class="form-group mb-4">
-                                <label for="jurusan" class="form-label">Jurusan</label>
-                                <select id="jurusan" name="jurusan"
-                                    class="form-control form-control-lg @error('jurusan') is-invalid @enderror"
-                                    required>
-                                    <option value="">-- Pilih Jurusan --</option>
-                                    @foreach($mst_prodi as $prodi)
-                                        <option value="{{ $prodi->jurusan }}"
-                                            {{ old('jurusan') == $prodi->jurusan ? 'selected' : '' }}>
-                                            {{ $prodi->jurusan }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('jurusan')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-
                             {{-- Alamat Magang --}}
                             <div class="form-group mb-4">
                                 <label for="alamat" class="form-label">Alamat Magang</label>

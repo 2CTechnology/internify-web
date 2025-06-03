@@ -11,10 +11,10 @@
         </div>
         <div class="modal-body">
             <label for="nama" class="label-form-control">NIDN Dosen</label>
-            <input type="text" class="form-control" value="{{ $item->kelompok->dospem->no_identitas }}" readonly >
+            <input type="text" class="form-control" value="{{ optional($item->kelompok->dospem)->no_identitas ?? '-' }}" readonly >
 
             <label for="nama" class="label-form-control mt-2">Nama Dosen</label>
-            <input type="text" class="form-control" value="{{ $item->kelompok->dospem->name }}" readonly >
+            <input type="text" class="form-control" value="{{ optional($item->kelompok->dospem)->name ?? '-' }}" readonly >
             <hr>
             @foreach ($item->kelompok->anggota as $itemAnggota)
                 <label for="nama" class="label-form-control mt-2">NIM</label>

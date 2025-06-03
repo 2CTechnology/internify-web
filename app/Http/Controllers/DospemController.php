@@ -52,6 +52,7 @@ class DospemController extends Controller
             'nidn' => 'required',
             'foto' => 'required|image',
             'no_telp' => 'required',
+            'password' => 'required|min:8',
         ], [
             'required' => ':attribute Harus diisi.',
             'image' => ':attribute Harus berupa gambar.',
@@ -78,7 +79,7 @@ class DospemController extends Controller
             $user->no_identitas = $request->nidn;
             $user->no_telp = $request->no_telp;
             $user->foto = '/upload/foto-dosen/' . Str::slug($request->nama) . '/' . $filename;
-            $user->password = Hash::make('12345678');
+            $user->password = Hash::make($request->password);
             $user->role = 'Dosen';
             $user->save();
             DB::commit();
@@ -121,6 +122,7 @@ class DospemController extends Controller
             'email' => 'required',
             'nidn' => 'required',
             'no_telp' => 'required',
+            'password' => 'required',
         ], [
             'required' => ':attribute Harus diisi.'
         ], [
@@ -151,7 +153,7 @@ class DospemController extends Controller
             $user->email = $request->email;
             $user->no_identitas = $request->nidn;
             $user->no_telp = $request->no_telp;
-            $user->password = Hash::make('12345678');
+            $user->password = Hash::make($request->password);
             $user->role = 'Dosen';
             $user->save();
             DB::commit();

@@ -8,31 +8,22 @@ use Exception;
 use App\Services\FirebaseNotificationService;
 use Illuminate\Support\Facades\Log;
 
-
 class SuratPelaksanaanController extends Controller
 {
     private $param;
-    
+
     public function __construct()
     {
         $this->param['header'] = 'Surat Pelaksanaan';
     }
-    
+
     public function index()
     {
         $this->param['title'] = 'form Surat Pelaksanaan';
 
         // Ambil data hanya untuk role Prodi
-        if(auth()->user()->role == 'Prodi') {
-            $data = AlurMagang::with([
-                    'kelompok',
-                    'kelompok.anggota',
-                    'kelompok.ketua',
-                    'kelompok.dospem',
-                    'kelompok.ketua.prodi',
-                    'kelompok.anggota.prodi',
-                    'tempatMagang'
-                ])
+        if (auth()->user()->role == 'Prodi') {
+            $data = AlurMagang::with(['kelompok', 'kelompok.anggota', 'kelompok.ketua', 'kelompok.dospem', 'kelompok.ketua.prodi', 'kelompok.anggota.prodi', 'tempatMagang'])
                 ->whereNotNull('alur_magangs.proposal')
                 ->where('alur_magangs.status_proposal', 'diterima')
                 ->orderBy('id', 'desc')
@@ -49,36 +40,28 @@ class SuratPelaksanaanController extends Controller
 
     public function update(Request $request)
     {
-    $request->validate([
-        'id' => 'required|integer|exists:alur_magangs,id',
-    ]);
+        try {
+            $request->validate([
+                'id' => 'required|integer|exists:alur_magangs,id',
+            ]);
 
-    $alurMagang = AlurMagang::find($request->id);
+            $alurMagang = AlurMagang::find($request->id);
 
-    $alurMagang->surat_pengantar = 'surat pelaksanaan telah dibuat';
-    $alurMagang->updated_at = now();
-    $alurMagang->save();
+            $alurMagang->surat_pengantar = 'surat pelaksanaan telah dibuat';
+            $alurMagang->updated_at = now();
+            $alurMagang->save();
 
-// <<<<<<< feat/surat-balasan
-//     // kirim notif
-//     $ketua = $alurMagang->kelompok->ketua;
-//     if ($ketua && $ketua->fcm_token) {
-//         $notifier = new FirebaseNotificationService();
-//         $notifier->sendToDevice(
-//             $ketua->fcm_token,
-//             'Surat Penerimaan Terbit',
-//             'Surat penerimaan magang kamu telah diterbitkan.'
-//         );
-//         Log::info("Notifikasi surat penerimaan terkirim ke: " . $ketua->name);
-//     }
+            // kirim notif
+            $ketua = $alurMagang->kelompok->ketua;
+            if ($ketua && $ketua->fcm_token) {
+                $notifier = new FirebaseNotificationService();
+                $notifier->sendToDevice($ketua->fcm_token, 'Surat Penerimaan Terbit', 'Surat penerimaan magang kamu telah diterbitkan.');
+                Log::info('Notifikasi surat penerimaan terkirim ke: ' . $ketua->name);
+            }
 
-//             return redirect()->back()->with('success', 'Surat pelaksanaan berhasil ditandai.');
-//         } catch (Exception $e) {
-//             return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan.');
-//         }
-// =======
-//     return back()->with('success', 'Surat pelaksanaan berhasil diperbarui.');
-// >>>>>>> unfinish
+            return redirect()->back()->with('success', 'Surat pelaksanaan berhasil ditandai.');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan.');
+        }
     }
-
 }

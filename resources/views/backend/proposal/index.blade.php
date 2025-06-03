@@ -123,7 +123,7 @@
             console.log(`dec: ${id}`);
             Swal.fire({
                 title: "Konfirmasi",
-                text: "Apakah Anda Yakin Menolak Akun Ini?",
+                text: "Apakah Anda Yakin Menghapus Proposal Ini?",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",

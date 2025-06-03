@@ -35,7 +35,7 @@ class BeritaAcaraController extends Controller
             'tempat_magang_id' => 'required|exists:tempat_magangs,id',
             'kelompok_id' => 'required|exists:kelompoks,id',
             'prodi' => 'required|string',
-            'jurusan' => 'required|string', // tetap validasi karena dibutuhkan di form
+            // 'jurusan' => 'required|string', // tetap validasi karena dibutuhkan di form
             'alamat' => 'required|string',
             'keterangan' => 'required|string',
             'catatan' => 'nullable|string',
@@ -71,7 +71,7 @@ class BeritaAcaraController extends Controller
         // Kirim ke view PDF
         $pdf = Pdf::loadView('backend.berita-acara.pdf', [
             'berita' => $berita,
-            'jurusan' => $jurusan
+            // 'jurusan' => $jurusan
         ]);
 
         return $pdf->download('berita_acara_' . $berita->id . '.pdf');

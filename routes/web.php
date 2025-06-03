@@ -6,7 +6,6 @@ use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DospemController;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\FaqController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\FileTemplateController;
 use App\Http\Controllers\PlotingDosenController;
@@ -24,7 +23,6 @@ use Illuminate\Support\Facades\Route;
 
 //ini firebase
 use Kreait\Laravel\Firebase\Facades\Firebase;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -46,7 +44,6 @@ Route::post('/berita-acara', [BeritaAcaraController::class, 'store'])->name('ber
 Route::get('/berita-acara/{id}/pdf', [BeritaAcaraController::class, 'generatePDF'])->name('berita-acara.pdf');
 Route::get('berita-acara/kelompok/{namaKelompok}', [BeritaAcaraController::class, 'showKelompokAnggota'])->name('berita-acara.kelompok');
 
-
 Route::get('/bimbingan', [BimbinganController::class, 'index'])->name('bimbingan.index');
 Route::post('/bimbingan', [BimbinganController::class, 'store'])->name('bimbingan.store');
 Route::post('/status-bimbingan/edit', [BimbinganController::class, 'edit'])->name('status-bimbingan.edit');
@@ -60,7 +57,6 @@ Route::resource('laporan-magang', LaporanMagangController::class);
 
 Route::post('/surat-balasan/tindak-lanjut', [SuratBalasanController::class, 'tindakLanjut'])->name('surat-balasan.tindak-lanjut');
 
-
 Route::group(['middleware' => 'auth'], function () {
     Route::group(['middleware' => 'checkRole'], function () {
         // Route::resource('faq', FaqController::class);
@@ -72,13 +68,14 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('proposal', ProposalController::class);
         Route::resource('surat-balasan', SuratBalasanController::class);
 
-
-        Route::prefix('ploting-dosen')->name('ploting-dosen.')->group(function () {
-            Route::resource('ploting-dosen', PlotingDosenController::class);
-            Route::get('/import', [PlotingDosenController::class, 'showImport'])->name('import');
-            Route::post('/post-import', [PlotingDosenController::class, 'storeImport'])->name('store-import');
-            Route::post('/get-dosen-by-nidn', [PlotingDosenController::class, 'getDosenByNIDN'])->name('get-dosen-by-nidn');
-        });
+        Route::prefix('ploting-dosen')
+            ->name('ploting-dosen.')
+            ->group(function () {
+                Route::resource('ploting-dosen', PlotingDosenController::class);
+                Route::get('/import', [PlotingDosenController::class, 'showImport'])->name('import');
+                Route::post('/post-import', [PlotingDosenController::class, 'storeImport'])->name('store-import');
+                Route::post('/get-dosen-by-nidn', [PlotingDosenController::class, 'getDosenByNIDN'])->name('get-dosen-by-nidn');
+            });
     });
 });
 

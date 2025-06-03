@@ -37,19 +37,28 @@
                                 <td class="text-center">{{ $item->name }}</td>
                                 <td class="text-center d-flex justify-content-center">
                                     {{-- <div class="form-inline text-center"> --}}
-                                        <a href="#">
-                                            <button data-toggle="modal" data-target="#exampleModal" data-foto="{{ asset($item->foto) }}" data-no_telp="{{ $item->no_telp }}" data-email="{{ $item->email }}" type="button" id="PopoverCustomT-1" class="btn btn-warning btn-md btn-show-modal" data-toggle="tooltip" title="Detail" data-placement="top"><span class="fa fa-eye"></span></button>    
-                                        </a>
-                                        <a href="{{ route('dospem.edit', $item->id) }}" class="mx-2">
-                                            <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-md" data-toggle="tooltip" title="Edit" data-placement="top"><span class="fa fa-pen"></span></button>
-                                        </a>
-                                        <button type="button" class="btn btn-danger btn-md btn-hapus" data-id="{{ $item->id }}" data-toggle="tooltip" title="Hapus" data-placement="top">
-                                            <span class="fa fa-trash"></span>
-                                        </button>
-                                        <form action="{{ route('dospem.destroy', $item->id) }}" method="post" id="hapus-{{ $item->id }}">
-                                            @csrf
-                                            @method('delete')
-                                        </form>
+                                    <a href="#">
+                                        <button data-toggle="modal" data-target="#exampleModal"
+                                            data-foto="{{ asset($item->foto) }}" data-no_telp="{{ $item->no_telp }}"
+                                            data-email="{{ $item->email }}" type="button" id="PopoverCustomT-1"
+                                            class="btn btn-warning btn-md btn-show-modal" data-toggle="tooltip"
+                                            title="Detail" data-placement="top"><span class="fa fa-eye"></span></button>
+                                    </a>
+                                    <a href="{{ route('dospem.edit', $item->id) }}" class="mx-2">
+                                        <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-md"
+                                            data-toggle="tooltip" title="Edit" data-placement="top"><span
+                                                class="fa fa-pen"></span></button>
+                                    </a>
+                                    <button type="button" class="btn btn-danger btn-md btn-hapus"
+                                        data-id="{{ $item->id }}" data-toggle="tooltip" title="Hapus"
+                                        data-placement="top">
+                                        <span class="fa fa-trash"></span>
+                                    </button>
+                                    <form action="{{ route('dospem.destroy', $item->id) }}" method="post"
+                                        id="hapus-{{ $item->id }}">
+                                        @csrf
+                                        @method('delete')
+                                    </form>
                                     {{-- </div> --}}
                                 </td>
                             </tr>
@@ -77,8 +86,8 @@
             $("#email-modal").val(email);
             $("#no_telp-modal").val(no_telp);
         })
-        
-        $(".btn-hapus").on("click", function(){
+
+        $(".btn-hapus").on("click", function() {
             var id = $(this).data('id')
             console.log(`dec: ${id}`);
             Swal.fire({
@@ -97,7 +106,7 @@
             });
         })
 
-        $(document).ready( function () {
+        $(document).ready(function() {
             $('#table').DataTable({
                 columnDefs: [{
                     "defaultContent": "-",

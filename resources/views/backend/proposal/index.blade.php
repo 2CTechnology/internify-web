@@ -53,16 +53,21 @@
                                             </a>
                                         @endif
                                         @if ($item->is_accepted == 0)
-                                            <a href="#">
-                                                <button type="button" class="btn btn-danger btn-md btn-tolak" data-toggle="tooltip" title="Tolak" data-placement="top" data-id="{{ $item->id }}">
-                                                    <span class="fa fa-trash"></span>
-                                                </button>
-                                            </a>
-                                            <form action="{{ route('akun-mahasiswa.destroy', $item->id) }}" method="post" id="decline-{{ $item->id }}">
-                                                @csrf
-                                                @method('delete')
-                                            </form>
-                                        @endif
+    <button type="button"
+            class="btn btn-danger btn-md btn-hapus-proposal"
+            data-toggle="tooltip"
+            title="Hapus"
+            data-placement="top"
+            data-id="{{ $item->id }}">
+        <span class="fa fa-trash"></span>
+    </button>
+
+    <form action="{{ route('proposal.destroy', $item->id) }}" method="post" id="hapus-{{ $item->id }}">
+        @csrf
+        @method('delete')
+    </form>
+@endif
+
                                     {{-- </div> --}}
                                 </td>
                             </tr>
@@ -123,7 +128,7 @@
             console.log(`dec: ${id}`);
             Swal.fire({
                 title: "Konfirmasi",
-                text: "Apakah Anda Yakin Menolak Akun Ini?",
+                text: "Apakah Anda Yakin Menghapus Proposal Ini?",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",
@@ -136,6 +141,24 @@
                 }
             });
         })
+
+         $(".btn-hapus-proposal").on('click', function () {
+        var id = $(this).data('id');
+        Swal.fire({
+            title: "Konfirmasi",
+            text: "Apakah Anda yakin ingin menghapus proposal ini secara permanen?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Ya",
+            cancelButtonText: "Tidak"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $(`#hapus-${id}`).submit();
+            }
+        });
+    });
 
         $(document).ready( function () {
             $('#table').DataTable({

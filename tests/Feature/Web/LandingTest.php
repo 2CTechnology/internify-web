@@ -43,7 +43,7 @@ class LandingTest extends TestCase
     /** @test */
     public function masuk_ke_halaman_chatbot()
     {
-        $response = $this->get('/chatbot');
+        $response = $this->get('/chat');
         $response->assertStatus(200);
         $response->assertSee('Selamat Datang di Internify.AI');
     }

@@ -114,7 +114,7 @@ Route::get('/tempatmagang', [LandingController::class, 'tempatmagang']);
 
 // Route::get('/chatbot', [ChatbotController::class, 'index']);
 
-Route::get('/chatbot', function () {
+Route::get('/chat', function () {
     return view('user.pages.chatbot');
 })->name('chatbot');
 

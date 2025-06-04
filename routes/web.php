@@ -116,3 +116,7 @@ Route::get('/test-firebase', function () {
         return '❌ Error: ' . $e->getMessage();
     }
 });
+
+route::get('/erors', function () {
+    return view('errors');
+})->name('errors.404');

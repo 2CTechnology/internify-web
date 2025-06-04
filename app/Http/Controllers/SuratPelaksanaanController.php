@@ -47,7 +47,7 @@ class SuratPelaksanaanController extends Controller
 
             $alurMagang = AlurMagang::find($request->id);
 
-            $alurMagang->surat_pengantar = 'surat pelaksanaan telah dibuat';
+            $alurMagang->surat_pelaksanaan = 'surat pelaksanaan telah dibuat';
             $alurMagang->updated_at = now();
             $alurMagang->save();
 

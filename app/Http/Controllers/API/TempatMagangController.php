@@ -51,4 +51,14 @@ class TempatMagangController extends Controller
             return response()->json($response, $responseCode);
         }
     }
+    //tempat magang ready gan😎
+    public function getTempatMagangAvailable()
+    {
+        $data = TempatMagang::where('status', 'tersedia')->orderBy('id', 'desc')->get();
+
+        return response()->json([
+            'data' => $data
+        ], Response::HTTP_OK);
+    }
+
 }

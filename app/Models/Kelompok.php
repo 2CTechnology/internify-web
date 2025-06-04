@@ -42,4 +42,9 @@ class Kelompok extends Model
 {
     return $this->hasMany(LaporanMagang::class, 'id_kelompok');
 }
+    //relasi ke tempat magang
+    public function tempatMagang () 
+    {
+        return $this->belongsTo(TempatMagang::class, 'id_tempat_magang');
+    }
 }

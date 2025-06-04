@@ -226,8 +226,20 @@ class KelompokController extends Controller
 
             $alurMagang->proposal = $filePath;
             $alurMagang->status_proposal = 'menunggu konfirmasi';
+            $alurMagang->id_tempat_magang = $request->input('tempat_magang_id');
             $alurMagang->updated_at = now();
             $alurMagang->save();
+
+            $alurMagang->refresh();
+
+            //ubah status tempat magang
+            $tempatMagangId = $request->input('tempat_magang_id');
+            Log::info("🔥 TempatMagang relasi: " . json_encode($tempatMagangId));
+            $tempatMagang = \App\Models\TempatMagang::find($tempatMagangId);
+            if ($tempatMagang) {
+                $tempatMagang->status = 'tidak tersedia';
+                $tempatMagang->save();
+            }
 
             DB::commit();
             $message = 'Berhasil upload proposal.';

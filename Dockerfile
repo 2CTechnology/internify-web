@@ -30,7 +30,7 @@ RUN apt-get update && apt-get install -y \
     zlib1g-dev libncurses5-dev libncursesw5-dev liblzma-dev
 
 RUN python3 -m pip install --no-cache-dir --upgrade pip --break-system-packages \
- && python3 -m pip install --no-cache-dir flask --break-system-packages
+ && python3 -m pip install --no-cache-dir flask pandas scikit-learn flask-cors --break-system-packages
  
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 

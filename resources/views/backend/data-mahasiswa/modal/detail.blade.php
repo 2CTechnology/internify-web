@@ -33,7 +33,7 @@
 
                             <label class="form-label mt-2">No HP</label>
                             <input type="text" class="form-control" readonly
-                                value="{{ $itemAnggota->no_hp ?? '-' }}">
+                                value="{{ $itemAnggota->no_telp ?? '-' }}">
 
                             <label class="form-label mt-2">Program Studi / Angkatan / Golongan</label>
                             <input type="text" class="form-control" readonly

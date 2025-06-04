@@ -28,7 +28,7 @@
                 <hr>
             @endforeach
 
-            @if ($item->revisi_proposal != null)
+            {{-- @if ($item->revisi_proposal != null)
               <label for="nama" class="label-form-control mt-2">Revisi Proposal</label>
                 <textarea name="" id="" cols="" rows="" class="form-control" disabled>{{ $item->revisi_proposal }}</textarea>
             @endif
@@ -36,7 +36,7 @@
             @if ($item->alasan_proposal_ditolak != null)
               <label for="nama" class="label-form-control mt-2">Alasan Ditolak</label>
                 <textarea name="" id="" cols="" rows="" class="form-control" disabled>{{ $item->alasan_proposal_ditolak }}</textarea>
-            @endif
+            @endif --}}
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>

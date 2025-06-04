@@ -29,7 +29,7 @@ class LandingTest extends TestCase
     {
         $response = $this->get('/daftardosen');
         $response->assertStatus(200);
-        $response->assertSee('Ex Dosen');
+        $response->assertSee('Dosen Pembimbing');
     }
 
     /** @test */

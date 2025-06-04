@@ -16,7 +16,7 @@ class MahasiswaLandingTest extends DuskTestCase
         {
             $browser->visit('/')
                     ->click('@btn-daftar-dosen') // selector button untuk dusk
-                    ->assertSee('Ex Dosen')
+                    ->assertSee('Dosen Pembimbing')
                     ->click('@btn-detail-dosen-1') // selector detail dosen
                     ->pause(1000) // tunggu modal muncul
                     ->assertSee('Detail Dosen');

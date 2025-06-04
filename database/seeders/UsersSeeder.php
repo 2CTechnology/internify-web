@@ -13,12 +13,12 @@ class UsersSeeder extends Seeder
         $users = [
             [
                 'email' => 'dosen123@mail.com',
-                'name' => 'Ex Dosen',
+                'name' => 'Dosen Pembimbing',
                 'role' => 'Dosen',
             ],
             [
                 'email' => 'admin123@mail.com',
-                'name' => 'Ex Admin',
+                'name' => 'Koordinator Magang',
                 'role' => 'Admin',
             ],
             [
@@ -31,11 +31,11 @@ class UsersSeeder extends Seeder
                 'name' => 'Hafidz Fadhillah Febrianto',
                 'role' => 'Mahasiswa',
                 'prodi_id' => 1,
-                'angkatan' => '2024'
+                'angkatan' => '2022'
             ],
             [
                 'email' => 'rayasya.dziqi@gmail.com',
-                'name' => 'Rayasya',
+                'name' => 'Rayasya Dziqi Cahyana',
                 'role' => 'Mahasiswa',
                 'prodi_id' => 1,
                 'angkatan' => '2022'
@@ -48,7 +48,7 @@ class UsersSeeder extends Seeder
                 array_merge(
                     [
                         'name' => $user['name'],
-                        'no_identitas' => 'd1234',
+                        'no_identitas' => 'E41234567',
                         'password' => Hash::make('12345678'),
                         'role' => $user['role'],
                     ],

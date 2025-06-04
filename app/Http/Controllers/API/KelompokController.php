@@ -226,8 +226,20 @@ class KelompokController extends Controller
 
             $alurMagang->proposal = $filePath;
             $alurMagang->status_proposal = 'menunggu konfirmasi';
+            $alurMagang->id_tempat_magang = $request->input('tempat_magang_id');
             $alurMagang->updated_at = now();
             $alurMagang->save();
+
+            $alurMagang->refresh();
+
+            //ubah status tempat magang
+            $tempatMagangId = $request->input('tempat_magang_id');
+            Log::info("🔥 TempatMagang relasi: " . json_encode($tempatMagangId));
+            $tempatMagang = \App\Models\TempatMagang::find($tempatMagangId);
+            if ($tempatMagang) {
+                $tempatMagang->status = 'tidak tersedia';
+                $tempatMagang->save();
+            }
 
             DB::commit();
             $message = 'Berhasil upload proposal.';
@@ -468,46 +480,54 @@ class KelompokController extends Controller
                     $returnData->message = 'Kelompok belum melakukan pemilihan tempat magang.';
                     // $returnData->dataAlurMagang = $alurMagang;
                 } else {
+                    $messageParts = [];
                     switch ($alurMagang->status_proposal) {
                         case 'menunggu konfirmasi':
-                            $returnData->message = 'Proposal menunggu konfirmasi dari admin.';
+                            $messageParts[] = 'Proposal menunggu konfirmasi dari admin.';
                             break;
                         case 'revisi':
-                            $returnData->message = 'Terdapat revisi proposal. ' . $alurMagang->revisi_proposal;
+                            $messageParts[] = 'Terdapat revisi proposal. ' . $alurMagang->revisi_proposal;
                             break;
                         case 'ditolak':
-                            $returnData->message = 'Proposal ditolak. ' . $alurMagang->alasan_proposal_ditolak;
+                            $messageParts[] = 'Proposal ditolak. ' . $alurMagang->alasan_proposal_ditolak;
                             break;
                         case 'diterima':
-                            $returnData->message = 'Proposal diterima.';
+                            $messageParts[] = 'Proposal diterima.';
+
+                            switch ($alurMagang->status_surat_balasan) {
+                                case 'menunggu konfirmasi':
+                                    $messageParts[] = 'Surat balasan menunggu konfirmasi.';
+                                    break;
+                                case 'mengulang':
+                                    $messageParts[] = 'Surat balasan diterima & mengulang. Silakan apply di perusahaan lain.';
+                                    break;
+                                case 'diterima':
+                                    $messageParts[] = 'Surat balasan diterima.';
+
+                                    switch ($alurMagang->surat_pelaksanaan) {
+                                        case null:
+                                            $messageParts[] = 'Tunggu surat pelaksanaan terbit.';
+                                            break;
+                                        case 'surat pelaksanaan telah dibuat':
+                                            $messageParts[] = 'Surat pelaksanaan telah terbit';
+                                            break;
+                                        default:
+                                            $messageParts[] = 'Surat pelaksanaan belum bisa diakses.';
+                                    }
+                                    break;
+                                default:
+                                    $messageParts[] = 'Surat balasan belum diunggah.';
+                            }
                             break;
                         default:
-                            $returnData->message = 'Silahkan upload proposal.';
+                            $messageParts[] = 'Silahkan upload proposal.';
                     }
 
-                    if ($alurMagang->status_proposal === 'diterima') {
-                        switch ($alurMagang->status_surat_balasan) {
-                            case 'menunggu konfirmasi':
-                                $returnData->message = 'Surat balasan menunggu konfirmasi.';
-                                break;
-                            case 'mengulang':
-                                $returnData->message = 'Surat balasan diterima & mengulang. Silakan apply di perusahaan lain.';
-                                break;
-                            case 'diterima':
-                                $returnData->message = 'Surat balasan diterima. Tunggu proses surat pelaksanaan.';
-                                break;
-                            default:
-                                $returnData->message = 'Surat balasan belum diunggah.';
-                        }
-                    } else {
-                        $returnData->message = 'Belum bisa unggah surat balasan karena proposal belum diterima.';
-                    }
-
+                    $returnData->message = implode(' ', $messageParts);
                     $returnData->dataAlurMagang = $alurMagang;
+                    $message = 'Berhasil menampilkan data alur magang.';
+                    $data = $returnData;
                 }
-
-                $message = 'Berhasil menampilkan data alur magang.';
-                $data = $returnData;
             }
         } catch (Exception $e) {
             DB::rollBack();

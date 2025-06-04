@@ -154,32 +154,31 @@ class UsersController extends Controller
                     'id_user' => $user->id,
                     'otp' => $otp,
                 ];
-                
-                try{
+
+                try {
                     Mail::to($user->email)->send(new OTPMail($data));
-                }catch(\Exception $e){
+                } catch (\Exception $e) {
                     DB::rollBack();
                     $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
                     $message = 'Gagal mengirim email OTP: ' . $e->getMessage();
                     $data = null;
 
-// <<<<<<< feat/laporan-magang
-//                 $responseCode = Response::HTTP_OK;
-//                 $message = 'We Have Sent OTP Code, Please Check Your Email';
+                    //                 $responseCode = Response::HTTP_OK;
+                    //                 $message = 'We Have Sent OTP Code, Please Check Your Email';
 
-// =======
-//                 // return lebih cepat (supaya di finally tidak tumpang tindih)
-//                 return response()->json([
-//                     'status_code' => $responseCode,
-//                     'message' => $message,
-//                     'response' => $data
-//                     ], $responseCode);
-//                 }
+                    // return lebih cepat (supaya di finally tidak tumpang tindih)
+                    return response()->json(
+                        [
+                            'status_code' => $responseCode,
+                            'message' => $message,
+                            'response' => $data,
+                        ],
+                        $responseCode,
+                    );
+                }
+                $responseCode = Response::HTTP_OK;
+                $message = 'We Have Sent OTP Code, Please Check Your Email';
 
-//                 // $responseCode = Response::HTTP_OK;
-//                 // $message = 'We Have Sent OTP Code, Please Check Your Email';
-                
-// >>>>>>> unfinish
                 DB::commit();
             } else {
                 $responseCode = Response::HTTP_UNAUTHORIZED;

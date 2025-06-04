@@ -8,6 +8,9 @@
     {{ $header }}
 @endpush
 
+@include('backend.laporan-magang.modal.tindak-lanjut')
+@include('backend.laporan-magang.modal.detail')
+
 @section('content')
     <div class="row">
         <div class="col-md-12">
@@ -18,7 +21,8 @@
                             <th class="text-center">No.</th>
                             <th class="text-center">Nama Kelompok</th>
                             <th class="text-center">Status Laporan</th>
-                            <th class="text-center">aksi</th>
+                            <th class="text-center">File Laporan</th>
+                            <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -27,33 +31,53 @@
                                 <td class="text-center">{{ $loop->iteration }}</td>
                                 <td class="text-center">{{ $item->kelompok->nama_kelompok ?? '-' }}</td>
                                 <td class="text-center">{{ ucwords($item->status_laporan) }}</td>
-                                <td class="text-center d-flex justify-content-center">
-                                    {{-- <div class="form-inline text-center"> --}}
-                                        <a href="#">
-                                            <button data-toggle="modal" data-target="#exampleModal{{ $item->id }}" data-prodi="{{ $item->prodi->nama_prodi ?? '-' }}" data-golongan="{{ $item->golongan }}" data-email="{{ $item->email }}" data-angkatan="{{ $item->angkatan }}" type="button" id="PopoverCustomT-1" class="btn btn-warning btn-md btn-show-modal" data-toggle="tooltip" title="Detail" data-placement="top"><span class="fa fa-eye"></span></button>    
+                                <td class="text-center">
+                                    @if ($item->laporan)
+                                        <a href="{{ asset($item->laporan) }}" target="_blank" class="mx-2"
+                                            data-toggle="tooltip" title="Download Laporan" data-placement="top">
+                                            <button type="button" class="btn btn-success btn-md">
+                                                <span class="fa fa-download"></span>
+                                            </button>
                                         </a>
-                                        @if ($item->is_accepted == 0)
-                                            <a href="#" class="mx-2">
-                                                <button data-toggle="modal" data-target="#modalTindakLanjut" type="button" id="PopoverCustomT-1" class="btn btn-primary btn-md btn-konfirm" data-id="{{ $item->id }}" data-toggle="tooltip" title="Tindak Lanjut" data-placement="top"><span class="fa fa-pen"></span></button>
-                                            </a>
-                                        @endif
-                                        @if ($item->is_accepted == 0)
-                                            <a href="#">
-                                                <button type="button" class="btn btn-danger btn-md btn-tolak" data-toggle="tooltip" title="Tolak" data-placement="top" data-id="{{ $item->id }}">
-                                                    <span class="fa fa-trash"></span>
-                                                </button>
-                                            </a>
-                                            <form action="#" method="post" id="decline-{{ $item->id }}">
-                                                @csrf
-                                                @method('delete')
-                                            </form>
-                                        @endif
-                                    {{-- </div> --}}
+                                    @endif
+                                </td>
+                                <td class="text-center d-flex justify-content-center">
+                                    <!-- Detail Modal -->
+                                    <a href="#" data-toggle="modal" data-target="#modalDetail{{ $item->id }}">
+                                        <button type="button" class="btn btn-warning btn-md" data-toggle="tooltip"
+                                            title="Detail" data-placement="top">
+                                            <span class="fa fa-eye"></span>
+                                        </button>
+                                    </a>
+
+                                    <!-- Tindak Lanjut -->
+                                    <a href="#" class="mx-2" data-toggle="modal" data-target="#modalTindakLanjut">
+                                        <button type="button" class="btn btn-primary btn-md btn-konfirm"
+                                            data-id="{{ $item->id }}" data-toggle="tooltip" title="Tindak Lanjut"
+                                            data-placement="top">
+                                            <span class="fa fa-pen"></span>
+                                        </button>
+                                    </a>
+
+                                    <!-- Hapus -->
+                                    <a href="#" class="btn-tolak" data-id="{{ $item->id }}">
+                                        <button type="button" class="btn btn-danger btn-md" data-toggle="tooltip"
+                                            title="Hapus" data-placement="top">
+                                            <span class="fa fa-trash"></span>
+                                        </button>
+                                    </a>
+
+                                    <!-- Form Hapus -->
+                                    <form action="{{ route('laporan-magang.destroy', $item->id) }}" method="post"
+                                        id="decline-{{ $item->id }}">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="text-center">Tidak Ada Data Tersedia.</td>
+                                <td colspan="5" class="text-center">Tidak Ada Data Tersedia.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -65,12 +89,48 @@
 
 @push('custom-script')
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#table').DataTable({
                 columnDefs: [{
                     "defaultContent": "-",
                     "targets": "_all"
                 }]
+            });
+
+            // Set ID untuk modal tindak lanjut
+            $(".btn-konfirm").on('click', function() {
+                var id = $(this).data('id');
+                $("#id-tindak-lanjut").val(id);
+            });
+
+            // Opsi kondisi saat ganti tindak lanjut
+            $("#tindak_lanjut").change(function() {
+    var value = $(this).val();
+    if (value === 'revisi') {
+        $("#revisi-label, #revisi").removeClass('d-none');
+    } else {
+        $("#revisi-label, #revisi").addClass('d-none');
+    }
+});
+
+
+            // Konfirmasi hapus
+            $(".btn-tolak").on('click', function() {
+                var id = $(this).data('id');
+                Swal.fire({
+                    title: "Konfirmasi",
+                    text: "Apakah Anda yakin ingin menghapus laporan magang ini secara permanen?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Ya",
+                    cancelButtonText: "Tidak"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $(`#decline-${id}`).submit();
+                    }
+                });
             });
         });
     </script>

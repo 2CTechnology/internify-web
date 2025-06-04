@@ -23,7 +23,7 @@ class AlurMagang extends Model
         'status_surat_balasan',
         'surat_pengantar',
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 
     public function kelompok() {

@@ -171,7 +171,6 @@ class SuratBalasanController extends Controller
                 $alurMagang->tempat_magang = null;
                 $alurMagang->nama_posisi = null;
                 $alurMagang->surat_balasan = null;
-                $alurMagang->surat_pengantar = null;
             }
 
             // Update status

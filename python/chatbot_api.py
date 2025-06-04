@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 import pandas as pd
 import re
 import string
+import os
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from flask_cors import CORS
@@ -25,7 +26,8 @@ def preprocess(text):
     return " ".join(tokens)
 
 # Load dataset
-df = pd.read_csv("dataset_chatbot_updated5.csv")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+df = pd.read_csv(os.path.join(BASE_DIR, "dataset_chatbot_updated5.csv"))
 
 # TF-IDF vectorization
 vectorizer = TfidfVectorizer()

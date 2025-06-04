@@ -22,4 +22,16 @@ class PlotingDosen extends Model
     public function dosen() {
         return $this->belongsTo(User::class, 'id_dosen');
     }
+
+
+public function tempat()
+{
+    return $this->belongsTo(TempatMagang::class, 'id_tempat');
+}
+
+public function prodi()
+{
+    return $this->belongsTo(Prodi::class, 'id_prodi');
+}
+
 }

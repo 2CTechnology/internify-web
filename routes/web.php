@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\AkunMahasiswaController;
-use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\ProdiController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DospemController;
@@ -19,11 +18,13 @@ use App\Http\Controllers\DataMahasiswaController;
 use App\Http\Controllers\LaporanMagangController;
 use App\Http\Controllers\SuratPelaksanaanController;
 use App\Http\Controllers\TemplateSuratController;
-use App\Http\Controllers\DospemAssignController;
+use App\Http\Controllers\AssignDospemController;
+use App\Http\Controllers\AssignmentController;
 use Illuminate\Support\Facades\Route;
 
 //ini firebase
 use Kreait\Laravel\Firebase\Facades\Firebase;
+use PhpParser\Node\Expr\Assign;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,6 +59,9 @@ Route::resource('laporan-magang', LaporanMagangController::class);
 
 Route::post('/surat-balasan/tindak-lanjut', [SuratBalasanController::class, 'tindakLanjut'])->name('surat-balasan.tindak-lanjut');
 
+Route::get('/assign-dospem/form', [AssignDospemController::class, 'assignForm'])->name('assign-dospem.form');
+Route::post('/assign-dospem/store', [AssignDospemController::class, 'store'])->name('assign-dospem.store');
+
 Route::group(['middleware' => 'auth'], function () {
     Route::group(['middleware' => 'checkRole'], function () {
         // Route::resource('faq', FaqController::class);
@@ -69,7 +73,11 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('proposal', ProposalController::class);
         Route::resource('surat-balasan', SuratBalasanController::class);
 
-        Route::resource('dospem-assign', DospemAssignController::class);
+        Route::get('/dospem-assign', [AssignDospemController::class, 'index'])->name('dospem-assign.index');
+
+        Route::get('/assignments/create', [AssignmentController::class, 'create'])->name('assignments.create');
+Route::post('/assignments', [AssignmentController::class, 'store'])->name('assignments.store');
+
 
         Route::prefix('ploting-dosen')
             ->name('ploting-dosen.')

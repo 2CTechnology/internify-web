@@ -8,15 +8,6 @@
     {{ $header }}
 @endpush
 
-@push('add-button')
-    <a href="{{ route('ploting-dosen.ploting-dosen.create') }}">
-        <button class="btn btn-success">Tambah</button>
-    </a>
-    {{-- <a href="{{ route('ploting-dosen.import') }}">
-        <button class="btn btn-secondary">Import</button>
-    </a> --}}
-@endpush
-
 @section('content')
     <div class="row">
         <div class="col-md-12">
@@ -43,7 +34,7 @@
                                 <td class="text-center">{{ $item->jumlah_kelompok }}</td>
                                 <td class="text-center">{{ $item->status ? 'Aktif' : 'Nonaktif' }}</td>
                                 <td class="text-center d-flex justify-content-center">
-                                    <a href="{{ route('ploting-dosen.ploting-dosen.edit', $item->id) }}" class="mx-2">
+                                    <a href="{{ route('assign-dospem.form', $item->id) }}" class="mx-2">
                                         <button type="button" id="PopoverCustomT-1" class="btn btn-primary btn-md" data-toggle="tooltip" title="Edit" data-placement="top"><span class="fa fa-pen"></span></button>
                                     </a>
                                     @if ($item->status)

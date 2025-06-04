@@ -46,7 +46,7 @@ def jawab_pertanyaan(pertanyaan_user):
         return "Maaf, saya belum bisa memahami pertanyaan itu. Silahkan tanyakan kepada koordinator magang."
 
 # Flask route for API
-@app.route("/chat", methods=["POST"])
+@app.route("/chatbot", methods=["POST"])
 def chat():
     data = request.get_json()
     pertanyaan = data.get("pertanyaan", "")

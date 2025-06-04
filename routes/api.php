@@ -32,12 +32,13 @@ Route::post('/lupa-password', [UsersController::class, 'lupaPassword']);
 Route::post('/cek-otp', [UsersController::class, 'cekOTP']);
 Route::post('/reset-password', [UsersController::class, 'resetPassword']);
 
+Route::get('/get-tempat-magang', [TempatMagangController::class, 'get']);
+Route::get('/get-tempat-available', [TempatMagangController::class, 'getTempatMagangAvailable']);
 
 
 
 Route::middleware('auth:sanctum')
     ->group(function () {
-        Route::get('/get-tempat-magang', [TempatMagangController::class, 'get']);
         Route::get('/get-area', [PlotingController::class, 'getArea']);
         Route::get('/get-list-dospem', [PlotingController::class, 'getDosenByArea']);
         Route::post('/get-kelompok', [KelompokController::class, 'getKelompokById']);

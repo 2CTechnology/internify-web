@@ -65,50 +65,68 @@
             width: 20rem;
             height: auto;
         }
+
+        #sendBtn {
+            display: flex;
+            align-items: center;
+        }
     </style>
 </head>
 
 <body>
 
-    <!-- Tampilan Awal -->
     <div class="center-container" id="startContainer">
         <div class="logo">
-            <img src="{{ asset('asset-landing/img/logo.png') }}" alt="Logo" class="logo-img me-2">
+            <img src="asset-landing/img/logo.png" alt="Logo" class="logo-img me-2">
         </div>
         <div class="welcome-text">Selamat Datang di Internify.AI</div>
         <div class="center-container" id="chatbotContainer" style="width: 100%; height: 85vh;">
-            <iframe src="http://localhost:8502" width="100%" height="100%" frameborder="0"
-                style="border-radius: 12px; box-shadow: 0 0 16px rgba(0,0,0,0.1);">
-            </iframe>
+            <div class="container mt-4" style="max-width: 700px;">
+                <form id="chatForm">
+                    <div class="input-group">
+                        <input type="text" id="userInput" class="form-control" placeholder="Ketik pertanyaan magang kamu..." required>
+                        <button type="submit" class="input-group-text" id="sendBtn"><i class="bi bi-send-fill"></i></button>
+                    </div>
+                </form>
+                <div id="chatResponse" class="mt-3 p-3 bg-light rounded shadow-sm" style="min-height: 60px;"></div>
+            </div>
         </div>
-
     </div>
 
     <script>
-        const startForm = document.getElementById('startForm');
-        const startInput = document.getElementById('startInput');
+        const chatForm = document.getElementById('chatForm');
+        const userInput = document.getElementById('userInput');
+        const chatResponse = document.getElementById('chatResponse');
 
-        startForm.addEventListener('submit', function(e) {
+        chatForm.addEventListener('submit', async function (e) {
             e.preventDefault();
-            handleInput();
-        });
 
-        function handleInput() {
-            const text = startInput.value.trim();
-            if (text) {
-                alert("Kamu mengetik: " + text);
-                startInput.value = '';
-            }
-        }
+            const pertanyaan = userInput.value.trim();
+            if (!pertanyaan) return;
 
-        // Alert otomatis saat mengetik
-        startInput.addEventListener('input', () => {
-            const text = startInput.value.trim();
-            if (text.length === 5) {
-                alert(`Kamu baru mengetik: "${text}"`);
+            chatResponse.innerHTML = "<i class='bi bi-arrow-repeat'></i> Memproses jawaban...";
+
+            try {
+                const response = await fetch("http://167.71.192.145/chatbot", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ pertanyaan })
+                });
+
+                if (!response.ok) throw new Error("HTTP error " + response.status);
+
+                const data = await response.json();
+                chatResponse.innerHTML = `<strong>Jawaban:</strong> ${data.jawaban}`;
+            } catch (error) {
+                chatResponse.innerHTML = "Terjadi kesalahan saat menghubungi server.";
+                console.error("Error:", error);
             }
+
+            userInput.value = '';
         });
     </script>
-</body>
 
+</body>
 </html>

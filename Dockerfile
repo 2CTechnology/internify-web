@@ -24,8 +24,12 @@ RUN cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
 RUN sed -i 's/upload_max_filesize = .*/upload_max_filesize = 50M/' /usr/local/etc/php/php.ini \
  && sed -i 's/post_max_size = .*/post_max_size = 50M/' /usr/local/etc/php/php.ini
 
-RUN apt-get update && apt-get install -y python3 python3-pip
-RUN python3 -m pip install --upgrade pip && python3 -m pip install flask
+RUN apt-get update && apt-get install -y \
+    python3 python3-pip python3-venv build-essential libffi-dev
+
+RUN python3 -m pip install --no-cache-dir --upgrade pip \
+ && python3 -m pip install --no-cache-dir flask
+
  
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 

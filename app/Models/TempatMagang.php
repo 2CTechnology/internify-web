@@ -24,5 +24,6 @@ class TempatMagang extends Model
         'kriteria',
         'posisi',
         'alamat',
+        'status'
     ];
 }

@@ -8,6 +8,7 @@ use App\Models\LaporanMagang;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage; 
 
 class LaporanMagangController extends Controller
 {
@@ -83,6 +84,41 @@ class LaporanMagangController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+        $laporan = LaporanMagang::findOrFail($id);
+
+        // Hapus file jika ada
+        if ($laporan->laporan && file_exists(public_path($laporan->laporan))) {
+            unlink(public_path($laporan->laporan));
+        }
+
+        $laporan->delete();
+
+        return redirect()->route('laporan-magang.index')->with('success', 'Laporan berhasil dihapus.');
+    } catch (\Exception $e) {
+        return redirect()->route('laporan-magang.index')->with('error', 'Terjadi kesalahan saat menghapus laporan.');
     }
+    }
+
+    public function tindakLanjut(Request $request)
+{
+    $request->validate([
+        'id' => 'required|exists:laporan_magangs,id',
+        'tindak_lanjut' => 'required|in:diterima,revisi',
+        'catatan' => 'nullable|string',
+    ]);
+
+    try {
+        $laporan = LaporanMagang::findOrFail($request->id);
+        $laporan->status_laporan = $request->tindak_lanjut;
+        $laporan->catatan = $request->tindak_lanjut === 'revisi' ? $request->catatan : null;
+        $laporan->save();
+
+        return redirect()->route('laporan-magang.index')->with('success', 'Tindak lanjut berhasil disimpan.');
+    } catch (QueryException $e) {
+        return redirect()->back()->withErrors('Terjadi kesalahan saat menyimpan data.');
+    }
+}
+
+
 }

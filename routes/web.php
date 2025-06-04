@@ -19,6 +19,7 @@ use App\Http\Controllers\DataMahasiswaController;
 use App\Http\Controllers\LaporanMagangController;
 use App\Http\Controllers\SuratPelaksanaanController;
 use App\Http\Controllers\TemplateSuratController;
+use App\Http\Controllers\DospemAssignController;
 use Illuminate\Support\Facades\Route;
 
 //ini firebase
@@ -68,6 +69,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('proposal', ProposalController::class);
         Route::resource('surat-balasan', SuratBalasanController::class);
 
+        Route::resource('dospem-assign', DospemAssignController::class);
+
         Route::prefix('ploting-dosen')
             ->name('ploting-dosen.')
             ->group(function () {
@@ -78,6 +81,10 @@ Route::group(['middleware' => 'auth'], function () {
             });
     });
 });
+
+Route::post('/laporan-magang/tindak-lanjut', [LaporanMagangController::class, 'tindakLanjut'])->name('laporan-magang.tindak-lanjut');
+Route::resource('laporan-magang', LaporanMagangController::class);
+
 
 Route::get('/dashboard', [DashboardController::class, 'index']);
 Route::get('/form', [DashboardController::class, 'form']);

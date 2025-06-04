@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 import pandas as pd
 import re
 import string
+import os
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from flask_cors import CORS
@@ -25,7 +26,8 @@ def preprocess(text):
     return " ".join(tokens)
 
 # Load dataset
-df = pd.read_csv("dataset_chatbot_updated5.csv")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+df = pd.read_csv(os.path.join(BASE_DIR, "dataset_chatbot_updated5.csv"))
 
 # TF-IDF vectorization
 vectorizer = TfidfVectorizer()
@@ -46,7 +48,7 @@ def jawab_pertanyaan(pertanyaan_user):
         return "Maaf, saya belum bisa memahami pertanyaan itu. Silahkan tanyakan kepada koordinator magang."
 
 # Flask route for API
-@app.route("/chat", methods=["POST"])
+@app.route("/chatbot", methods=["POST"])
 def chat():
     data = request.get_json()
     pertanyaan = data.get("pertanyaan", "")

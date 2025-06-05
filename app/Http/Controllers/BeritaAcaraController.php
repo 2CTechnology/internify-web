@@ -53,7 +53,7 @@ class BeritaAcaraController extends Controller
         ]);
 
         // Simpan jurusan di session untuk dipakai saat generate PDF
-        session(['berita_jurusan_' . $berita->id => $validated['jurusan']]);
+        // session(['berita_jurusan_' . $berita->id => $validated['jurusan']]);
 
         return redirect()
             ->route('berita-acara.index')
@@ -66,7 +66,7 @@ class BeritaAcaraController extends Controller
         $berita = BeritaAcara::with(['tempatMagang', 'kelompok.anggota'])->findOrFail($id);
 
         // Ambil jurusan dari session
-        $jurusan = session('berita_jurusan_' . $id, ''); 
+        // $jurusan = session('berita_jurusan_' . $id, ''); 
 
         // Kirim ke view PDF
         $pdf = Pdf::loadView('backend.berita-acara.pdf', [

@@ -19,6 +19,7 @@ use App\Http\Controllers\LaporanMagangController;
 use App\Http\Controllers\SuratPelaksanaanController;
 use App\Http\Controllers\TemplateSuratController;
 use App\Http\Controllers\AssignDospemController;
+
 use App\Http\Controllers\AssignmentController;
 use Illuminate\Support\Facades\Route;
 
@@ -75,9 +76,9 @@ Route::group(['middleware' => 'auth'], function () {
 
         Route::get('/dospem-assign', [AssignDospemController::class, 'index'])->name('dospem-assign.index');
 
+
         Route::get('/assignments/create', [AssignmentController::class, 'create'])->name('assignments.create');
 Route::post('/assignments', [AssignmentController::class, 'store'])->name('assignments.store');
-
 
         Route::prefix('ploting-dosen')
             ->name('ploting-dosen.')

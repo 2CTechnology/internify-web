@@ -107,7 +107,7 @@
             chatResponse.innerHTML = "<i class='bi bi-arrow-repeat'></i> Memproses jawaban...";
 
             try {
-                const response = await fetch("http://167.71.192.145/chatbot", {
+                const response = await fetch("http://8.222.217.102/chatbot", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
